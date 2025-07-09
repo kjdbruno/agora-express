@@ -2,35 +2,18 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('ResidentCategories', {
       Id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      EmployeeNo: {
-        type: Sequelize.STRING,
-        allowNull: false, // Assuming EmployeeNo is a required field
-        unique: true // Assuming EmployeeNo should be unique
-      },
       Name: {
         type: Sequelize.STRING
       },
-      Username: {
+      Alias: {
         type: Sequelize.STRING
-      },
-      Password: {
-        type: Sequelize.STRING
-      },
-      RoleId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'Roles', // Assuming you have a Roles table
-          key: 'Id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
       },
       IsActive: {
         type: Sequelize.BOOLEAN,
@@ -47,6 +30,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Users');
+    await queryInterface.dropTable('ResidentCategories');
   }
 };

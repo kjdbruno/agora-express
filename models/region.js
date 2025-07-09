@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Region',
-    tableName: 'regions', // Specify the table name
+    tableName: 'Regions', // Specify the table name
     timestamps: true, // Enable timestamps if needed
   });
   return Region;

@@ -5,13 +5,7 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => { // <--- THIS IS THE REQUIRED FUNCTION EXPORT
   class UserLog extends Model {
     static associate(models) {
-      // Assuming UserLog belongs to User
-      // and UserLog has a foreign key UserId that references User's Id
-      // This allows you to access the User associated with a UserLog instance
-      UserLog.belongsTo(models.User, {
-        foreignKey: 'UserId',
-        as: 'User' 
-      });
+      // define association here
     }
   }
   UserLog.init({
@@ -43,7 +37,7 @@ module.exports = (sequelize, DataTypes) => { // <--- THIS IS THE REQUIRED FUNCTI
   }, {
     sequelize,
     modelName: 'UserLog',
-    tableName: 'userlogs',
+    tableName: 'UserLogs',
     timestamps: true,
   });
   return UserLog;

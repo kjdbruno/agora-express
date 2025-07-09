@@ -6,31 +6,6 @@ module.exports = (sequelize, DataTypes) => { // <--- THIS IS THE REQUIRED FUNCTI
   class User extends Model {
     static associate(models) {
       // Define associations here
-
-      // Assuming User belongs to Role
-      // and User has a foreign key RoleId that references Role's Id
-      User.belongsTo(models.Role, {
-        foreignKey: 'RoleId',
-        as: 'Role', // Optional: used for eager loading (e.g., user.getRole())
-      });
-      // Assuming User has many UserLogs
-      // and UserLog has a foreign key UserId that references User's Id
-      User.hasOne(models.UserLog, {
-        foreignKey: 'UserId',
-        as: 'UserLog',
-      });
-
-      //
-      User.hasMany(models.Notification, {
-        foreignKey: 'SenderId',
-        as: 'SentNotifications',
-      });
-
-      //
-      User.hasMany(models.Notification, {
-        foreignKey: 'ReceiverId',
-        as: 'ReceivedNotifications',
-      });
     }
   }
   User.init({
@@ -67,9 +42,6 @@ module.exports = (sequelize, DataTypes) => { // <--- THIS IS THE REQUIRED FUNCTI
       onUpdate: 'CASCADE',
       onDelete: 'SET NULL',
     },
-    Classification: {
-      type: DataTypes.ENUM('Management', 'Employee')
-    },
     IsActive: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
@@ -78,7 +50,7 @@ module.exports = (sequelize, DataTypes) => { // <--- THIS IS THE REQUIRED FUNCTI
   }, {
     sequelize,
     modelName: 'User',
-    tableName: 'users',
+    tableName: 'Users',
     timestamps: true,
   });
   return User;

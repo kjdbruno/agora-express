@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class BloodType extends Model {
+  class ResidentCategory extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  BloodType.init({
+  ResidentCategory.init({
     Id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -22,18 +22,21 @@ module.exports = (sequelize, DataTypes) => {
     },
     Name: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false
+    },
+    Alias: {
+      type: DataTypes.STRING,
+      allowNull: false
     },
     IsActive: {
       type: DataTypes.BOOLEAN,
-      defaultValue: true,
-      allowNull: false,
-    },
+      defaultValue: true
+    }
   }, {
     sequelize,
-    modelName: 'BloodType',
-    tableName: 'BloodTypes',
-    timestamps: true,
+    modelName: 'ResidentCategory',
+    tableName: 'ResidentCategories',
+    timestamps: true
   });
-  return BloodType;
+  return ResidentCategory;
 };
