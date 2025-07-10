@@ -1,4 +1,7 @@
 'use strict';
+
+const { all } = require('../routes/SexRoutes');
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -10,10 +13,12 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       Name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       IsActive: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: true
       },
       CreatedAt: {
         allowNull: false,

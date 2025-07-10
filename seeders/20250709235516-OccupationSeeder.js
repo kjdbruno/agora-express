@@ -1,5 +1,6 @@
 'use strict';
-const bcrypt = require('bcrypt');
+
+const occupations = require('./data/occupation.json');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -13,11 +14,11 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-    const hashedPassword = await bcrypt.hash('Agora@2025', 10);
-
-    await queryInterface.bulkInsert('Users', [
-      { EmployeeNo: '00000', name: 'Super Administrator', username: 'SuperAdministrator', password: hashedPassword, RoleId: 1, isActive: true, createdAt: new Date(), updatedAt: new Date() },
-    ]);
+    await queryInterface.bulkInsert('Occupations', occupations.map(b => ({
+      name: b.name, // Assuming occupation.json has a name field
+      CreatedAt: new Date(),
+      UpdatedAt: new Date()
+    })), {});
   },
 
   async down (queryInterface, Sequelize) {
@@ -27,6 +28,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    // await queryInterface.bulkDelete('Users', null, {});
+    await queryInterface.bulkDelete('Occupations', null, {});
   }
 };

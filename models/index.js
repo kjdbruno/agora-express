@@ -26,12 +26,15 @@ db.Province = require('./province')(sequelize, Sequelize.DataTypes);
 db.Town = require('./town')(sequelize, Sequelize.DataTypes);
 db.Barangay = require('./barangay')(sequelize, Sequelize.DataTypes);
 db.Relationship = require('./relationship')(sequelize, Sequelize.DataTypes);
-db.EducationalAttainment = require('./nationality')(sequelize, Sequelize.DataTypes);
+db.EducationalAttainment = require('./educationalattainment')(sequelize, Sequelize.DataTypes);
 db.Nationality = require('./nationality')(sequelize, Sequelize.DataTypes);
 db.Occupation = require('./occupation')(sequelize, Sequelize.DataTypes);
 db.Religion = require('./religion')(sequelize, Sequelize.DataTypes);
 db.ResidentCategory = require('./residentcategory')(sequelize, Sequelize.DataTypes);
 db.Zone = require('./zone')(sequelize, Sequelize.DataTypes);
+db.Resident = require('./resident')(sequelize, Sequelize.DataTypes);
+db.ResidentInformation = require('./residentinformation')(sequelize, Sequelize.DataTypes);
+db.ResidentPhoto = require('./residentphoto')(sequelize, Sequelize.DataTypes);
 
 // Associate all models
 Object.keys(db).forEach(modelName => {

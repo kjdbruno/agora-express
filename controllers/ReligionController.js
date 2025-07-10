@@ -1,126 +1,126 @@
 const { Op } = require("sequelize");
-const { Sex } = require('../models');
+const { Religion } = require('../models');
 
-exports.getAllSexes = async (req, res) => {
+exports.getAllReligions = async (req, res) => {
     try {
-        const sexes = await Sex.findAll();
-        res.json(sexes);
+        const religions = await Religion.findAll();
+        res.json(religions);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-exports.getSex = async (req, res) => {
+exports.getReligion = async (req, res) => {
     try {
-        const sexes = await Sex.findAll({
+        const religions = await Religion.findAll({
             where: {
                 IsActive: true
             },
             attributes: ['Id', 'Name']
         });
-        res.json(sexes);
+        res.json(religions);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-exports.createSex = async (req, res) => {
+exports.createReligion = async (req, res) => {
     const { name } = req.body;
     try {
-        const sexExist = await Sex.findOne({
+        const religionExist = await Religion.findOne({
             where: { 
                 [Op.or]: [{ Name: name }] 
             }
         });
-        if (sexExist) {
+        if (religionExist) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Sex already exists!",
+                    msg: "Religion already exists!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        const sex = await Sex.create({ Name: name });
-        res.status(201).json({ message: "Sex created successfully.", sex });
+        const religion = await Religion.create({ Name: name });
+        res.status(201).json({ message: "Religion created successfully.", religion });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 };
 
-exports.updateSex = async (req, res) => {
+exports.updateReligion = async (req, res) => {
 
     const { id } = req.params;
     const { name } = req.body;
   
     try {
-        const sex = await Sex.findByPk(id);
-        if (!sex) {
+        const religion = await Religion.findByPk(id);
+        if (!religion) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Sex not found!",
+                    msg: "Religion not found!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        const sexExist = await Sex.findOne({
+        const religionExist = await Religion.findOne({
             where: {
                 [Op.or]: [{ Name: name } ],
                 Id: { [Op.ne]: id }
             },
         });
-        if (sexExist) {
+        if (religionExist) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Sex is already in use!",
+                    msg: "Religion is already in use!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        await sex.update({ Name: name });
-        res.status(200).json({ message: "Sex updated successfully.", sex });
+        await religion.update({ Name: name });
+        res.status(200).json({ message: "Religion updated successfully.", religion });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-exports.disableSex = async (req, res) => {
+exports.disableReligion = async (req, res) => {
 
     const { id } = req.params;
     const isActive = false;
   
     try {
-        const sex = await Sex.findByPk(id);
-        if (!sex) {
-            return res.status(404).json({ error: "Sex not found." });
+        const religion = await Religion.findByPk(id);
+        if (!religion) {
+            return res.status(404).json({ error: "Religion not found." });
         }
-        await sex.update({ IsActive: isActive });
-        res.status(200).json({ message: "Sex disabled successfully.", sex });
+        await religion.update({ IsActive: isActive });
+        res.status(200).json({ message: "Religion disabled successfully.", religion });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-exports.enableSex = async (req, res) => {
+exports.enableReligion = async (req, res) => {
 
     const { id } = req.params;
     const isActive = true;
   
     try {
-        const sex = await Sex.findByPk(id);
-        if (!sex) {
-            return res.status(404).json({ error: "Sex not found." });
+        const religion = await Religion.findByPk(id);
+        if (!religion) {
+            return res.status(404).json({ error: "Religion not found." });
         }
-        await sex.update({ IsActive: isActive });
-        res.status(200).json({ message: "Sex enabled successfully.", sex });
+        await religion.update({ IsActive: isActive });
+        res.status(200).json({ message: "Religion enabled successfully.", religion });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

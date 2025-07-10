@@ -20,11 +20,15 @@ module.exports = (sequelize, DataTypes) => { // <--- THIS IS THE REQUIRED FUNCTI
       allowNull: false,
       unique: true,
     },
+    IsActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    }
   }, {
     sequelize,
     modelName: 'Sex',
     tableName: 'Sexes',
-    timestamps: false, // Sex types usually don't need timestamps
+    timestamps: true, // Sex types usually don't need timestamps
   });
   return Sex;
 };

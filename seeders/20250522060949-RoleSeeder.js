@@ -15,13 +15,9 @@ module.exports = {
     await queryInterface.bulkInsert('Roles', [
       { Name: 'Super Administrator', CreatedAt: new Date(), UpdatedAt: new Date() },
       { Name: 'Administrator', CreatedAt: new Date(), UpdatedAt: new Date() },
-      { Name: 'Human Resource: Training', CreatedAt: new Date(), UpdatedAt: new Date() },
-      { Name: 'Human Resource: Performance', CreatedAt: new Date(), UpdatedAt: new Date() },
-      { Name: 'Human Resource: Administration', CreatedAt: new Date(), UpdatedAt: new Date() },
-      { Name: 'Human Resource: Leave Management', CreatedAt: new Date(), UpdatedAt: new Date() },
-      { Name: 'Human Resource: Recruitment and Selection', CreatedAt: new Date(), UpdatedAt: new Date() },
-      { Name: 'Finance: Payroll', CreatedAt: new Date(), UpdatedAt: new Date() },
-      { Name: 'Employee', CreatedAt: new Date(), UpdatedAt: new Date() },
+      { Name: 'Supervisor', CreatedAt: new Date(), UpdatedAt: new Date() },
+      { Name: 'Barangay Health Worker', CreatedAt: new Date(), UpdatedAt: new Date() },
+      { Name: 'Lupong Tagapamayapa', CreatedAt: new Date(), UpdatedAt: new Date() },
     ]);
   },
 

@@ -1,126 +1,126 @@
 const { Op } = require("sequelize");
-const { Sex } = require('../models');
+const { BloodType } = require('../models');
 
-exports.getAllSexes = async (req, res) => {
+exports.getAllBloodTypes = async (req, res) => {
     try {
-        const sexes = await Sex.findAll();
-        res.json(sexes);
+        const types = await BloodType.findAll();
+        res.json(types);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-exports.getSex = async (req, res) => {
+exports.getBloodType = async (req, res) => {
     try {
-        const sexes = await Sex.findAll({
+        const types = await BloodType.findAll({
             where: {
                 IsActive: true
             },
             attributes: ['Id', 'Name']
         });
-        res.json(sexes);
+        res.json(types);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-exports.createSex = async (req, res) => {
+exports.createBloodType = async (req, res) => {
     const { name } = req.body;
     try {
-        const sexExist = await Sex.findOne({
+        const typeExist = await BloodType.findOne({
             where: { 
                 [Op.or]: [{ Name: name }] 
             }
         });
-        if (sexExist) {
+        if (typeExist) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Sex already exists!",
+                    msg: "Blood type already exists!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        const sex = await Sex.create({ Name: name });
-        res.status(201).json({ message: "Sex created successfully.", sex });
+        const type = await BloodType.create({ Name: name });
+        res.status(201).json({ message: "Blood type created successfully.", type });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 };
 
-exports.updateSex = async (req, res) => {
+exports.updateBloodType = async (req, res) => {
 
     const { id } = req.params;
     const { name } = req.body;
   
     try {
-        const sex = await Sex.findByPk(id);
-        if (!sex) {
+        const type = await BloodType.findByPk(id);
+        if (!type) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Sex not found!",
+                    msg: "Blood type not found!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        const sexExist = await Sex.findOne({
+        const typeExist = await BloodType.findOne({
             where: {
                 [Op.or]: [{ Name: name } ],
                 Id: { [Op.ne]: id }
             },
         });
-        if (sexExist) {
+        if (typeExist) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Sex is already in use!",
+                    msg: "Blood type is already in use!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        await sex.update({ Name: name });
-        res.status(200).json({ message: "Sex updated successfully.", sex });
+        await type.update({ Name: name });
+        res.status(200).json({ message: "Blood type updated successfully.", type });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-exports.disableSex = async (req, res) => {
+exports.disableBloodType = async (req, res) => {
 
     const { id } = req.params;
     const isActive = false;
   
     try {
-        const sex = await Sex.findByPk(id);
-        if (!sex) {
-            return res.status(404).json({ error: "Sex not found." });
+        const type = await BloodType.findByPk(id);
+        if (!type) {
+            return res.status(404).json({ error: "Blood type not found." });
         }
-        await sex.update({ IsActive: isActive });
-        res.status(200).json({ message: "Sex disabled successfully.", sex });
+        await type.update({ IsActive: isActive });
+        res.status(200).json({ message: "Blood type disabled successfully.", type });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-exports.enableSex = async (req, res) => {
+exports.enableBloodType = async (req, res) => {
 
     const { id } = req.params;
     const isActive = true;
   
     try {
-        const sex = await Sex.findByPk(id);
-        if (!sex) {
-            return res.status(404).json({ error: "Sex not found." });
+        const type = await BloodType.findByPk(id);
+        if (!type) {
+            return res.status(404).json({ error: "Blood type not found." });
         }
-        await sex.update({ IsActive: isActive });
-        res.status(200).json({ message: "Sex enabled successfully.", sex });
+        await type.update({ IsActive: isActive });
+        res.status(200).json({ message: "Blood type enabled successfully.", type });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

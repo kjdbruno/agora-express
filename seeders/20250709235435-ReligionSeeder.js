@@ -1,5 +1,4 @@
 'use strict';
-const bcrypt = require('bcrypt');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -13,10 +12,10 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-    const hashedPassword = await bcrypt.hash('Agora@2025', 10);
-
-    await queryInterface.bulkInsert('Users', [
-      { EmployeeNo: '00000', name: 'Super Administrator', username: 'SuperAdministrator', password: hashedPassword, RoleId: 1, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+   await queryInterface.bulkInsert('Religions', [
+      { Name: 'Roman Catholic', CreatedAt: new Date(), UpdatedAt: new Date() },
+      { Name: 'Iglesia Ni Cristo', CreatedAt: new Date(), UpdatedAt: new Date() },
+      { Name: 'Muslim', CreatedAt: new Date(), UpdatedAt: new Date() },
     ]);
   },
 
@@ -27,6 +26,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    // await queryInterface.bulkDelete('Users', null, {});
+    await queryInterface.bulkDelete('Religions', null, {});
   }
 };

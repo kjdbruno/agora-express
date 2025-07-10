@@ -1,126 +1,127 @@
 const { Op } = require("sequelize");
-const { Sex } = require('../models');
+const { Nationality } = require('../models');
+const nationality = require("../models/nationality");
 
-exports.getAllSexes = async (req, res) => {
+exports.getAllNationalities = async (req, res) => {
     try {
-        const sexes = await Sex.findAll();
-        res.json(sexes);
+        const nationalities = await Nationality.findAll();
+        res.json(nationalities);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-exports.getSex = async (req, res) => {
+exports.getNationality = async (req, res) => {
     try {
-        const sexes = await Sex.findAll({
+        const nationalities = await Nationality.findAll({
             where: {
                 IsActive: true
             },
             attributes: ['Id', 'Name']
         });
-        res.json(sexes);
+        res.json(nationalities);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-exports.createSex = async (req, res) => {
+exports.createNationality = async (req, res) => {
     const { name } = req.body;
     try {
-        const sexExist = await Sex.findOne({
+        const nationalityExist = await Nationality.findOne({
             where: { 
                 [Op.or]: [{ Name: name }] 
             }
         });
-        if (sexExist) {
+        if (nationalityExist) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Sex already exists!",
+                    msg: "Nationality already exists!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        const sex = await Sex.create({ Name: name });
-        res.status(201).json({ message: "Sex created successfully.", sex });
+        const nationality = await Nationality.create({ Name: name });
+        res.status(201).json({ message: "Nationality created successfully.", nationality });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 };
 
-exports.updateSex = async (req, res) => {
+exports.updateNationality = async (req, res) => {
 
     const { id } = req.params;
     const { name } = req.body;
   
     try {
-        const sex = await Sex.findByPk(id);
-        if (!sex) {
+        const nationality = await Nationality.findByPk(id);
+        if (!nationality) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Sex not found!",
+                    msg: "Nationality not found!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        const sexExist = await Sex.findOne({
+        const nationalityExist = await Nationality.findOne({
             where: {
                 [Op.or]: [{ Name: name } ],
                 Id: { [Op.ne]: id }
             },
         });
-        if (sexExist) {
+        if (nationalityExist) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Sex is already in use!",
+                    msg: "Nationality is already in use!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        await sex.update({ Name: name });
-        res.status(200).json({ message: "Sex updated successfully.", sex });
+        await nationality.update({ Name: name });
+        res.status(200).json({ message: "Nationality updated successfully.", nationality });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-exports.disableSex = async (req, res) => {
+exports.disableNationality = async (req, res) => {
 
     const { id } = req.params;
     const isActive = false;
   
     try {
-        const sex = await Sex.findByPk(id);
-        if (!sex) {
-            return res.status(404).json({ error: "Sex not found." });
+        const nationality = await Nationality.findByPk(id);
+        if (!nationality) {
+            return res.status(404).json({ error: "Nationality not found." });
         }
-        await sex.update({ IsActive: isActive });
-        res.status(200).json({ message: "Sex disabled successfully.", sex });
+        await nationality.update({ IsActive: isActive });
+        res.status(200).json({ message: "Nationality disabled successfully.", nationality });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-exports.enableSex = async (req, res) => {
+exports.enableNationality = async (req, res) => {
 
     const { id } = req.params;
     const isActive = true;
   
     try {
-        const sex = await Sex.findByPk(id);
-        if (!sex) {
-            return res.status(404).json({ error: "Sex not found." });
+        const nationality = await Nationality.findByPk(id);
+        if (!nationality) {
+            return res.status(404).json({ error: "Nationality not found." });
         }
-        await sex.update({ IsActive: isActive });
-        res.status(200).json({ message: "Sex enabled successfully.", sex });
+        await nationality.update({ IsActive: isActive });
+        res.status(200).json({ message: "Nationality enabled successfully.", nationality });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

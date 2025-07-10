@@ -1,126 +1,126 @@
 const { Op } = require("sequelize");
-const { Sex } = require('../models');
+const { Zone } = require('../models');
 
-exports.getAllSexes = async (req, res) => {
+exports.getAllZones = async (req, res) => {
     try {
-        const sexes = await Sex.findAll();
-        res.json(sexes);
+        const zones = await Zone.findAll();
+        res.json(zones);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-exports.getSex = async (req, res) => {
+exports.getZone = async (req, res) => {
     try {
-        const sexes = await Sex.findAll({
+        const zones = await Zone.findAll({
             where: {
                 IsActive: true
             },
             attributes: ['Id', 'Name']
         });
-        res.json(sexes);
+        res.json(zones);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-exports.createSex = async (req, res) => {
+exports.createZone = async (req, res) => {
     const { name } = req.body;
     try {
-        const sexExist = await Sex.findOne({
+        const zoneExist = await Zone.findOne({
             where: { 
                 [Op.or]: [{ Name: name }] 
             }
         });
-        if (sexExist) {
+        if (zoneExist) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Sex already exists!",
+                    msg: "Zone already exists!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        const sex = await Sex.create({ Name: name });
-        res.status(201).json({ message: "Sex created successfully.", sex });
+        const zone = await Zone.create({ Name: name });
+        res.status(201).json({ message: "Zone created successfully.", zone });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 };
 
-exports.updateSex = async (req, res) => {
+exports.updateZone = async (req, res) => {
 
     const { id } = req.params;
     const { name } = req.body;
   
     try {
-        const sex = await Sex.findByPk(id);
-        if (!sex) {
+        const zone = await Zone.findByPk(id);
+        if (!zone) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Sex not found!",
+                    msg: "Zone not found!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        const sexExist = await Sex.findOne({
+        const zoneExist = await Zone.findOne({
             where: {
                 [Op.or]: [{ Name: name } ],
                 Id: { [Op.ne]: id }
             },
         });
-        if (sexExist) {
+        if (zoneExist) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Sex is already in use!",
+                    msg: "Zone is already in use!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        await sex.update({ Name: name });
-        res.status(200).json({ message: "Sex updated successfully.", sex });
+        await zone.update({ Name: name });
+        res.status(200).json({ message: "Zone updated successfully.", zone });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-exports.disableSex = async (req, res) => {
+exports.disableZone = async (req, res) => {
 
     const { id } = req.params;
     const isActive = false;
   
     try {
-        const sex = await Sex.findByPk(id);
-        if (!sex) {
-            return res.status(404).json({ error: "Sex not found." });
+        const zone = await Zone.findByPk(id);
+        if (!zone) {
+            return res.status(404).json({ error: "Zone not found." });
         }
-        await sex.update({ IsActive: isActive });
-        res.status(200).json({ message: "Sex disabled successfully.", sex });
+        await zone.update({ IsActive: isActive });
+        res.status(200).json({ message: "Zone disabled successfully.", zone });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-exports.enableSex = async (req, res) => {
+exports.enableZone = async (req, res) => {
 
     const { id } = req.params;
     const isActive = true;
   
     try {
-        const sex = await Sex.findByPk(id);
-        if (!sex) {
-            return res.status(404).json({ error: "Sex not found." });
+        const zone = await Zone.findByPk(id);
+        if (!zone) {
+            return res.status(404).json({ error: "Zone not found." });
         }
-        await sex.update({ IsActive: isActive });
-        res.status(200).json({ message: "Sex enabled successfully.", sex });
+        await zone.update({ IsActive: isActive });
+        res.status(200).json({ message: "Zone enabled successfully.", zone });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

@@ -51,7 +51,15 @@ const AuthController = require('./controllers/AuthController');
 const Auth = AuthController(io);
 app.use('/api', AuthRoutes(Auth));
 
-app.use('/api/preference/sex', require('./routes/SexRoutes'));
+app.use('/api/sex', require('./routes/SexRoutes'));
+app.use('/api/civilstatus', require('./routes/CivilStatusRoutes'));
+app.use('/api/bloodtype', require('./routes/BloodTypeRoutes'));
+app.use('/api/zone', require('./routes/ZoneRoutes'));
+app.use('/api/religion', require('./routes/ReligionRoutes'));
+app.use('/api/educationalattainment', require('./routes/EducationalAttainmentRoutes'));
+app.use('/api/occupation', require('./routes/OccupationRoutes'));
+app.use('/api/nationality', require('./routes/NationalityRoutes'));
+app.use('/api/residentcategory', require('./routes/ResidentCategoryRoutes'));
 
 require('./sockets')(io);
 
