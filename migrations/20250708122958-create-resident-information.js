@@ -58,7 +58,7 @@ module.exports = {
         allowNull: false
       },
       Income: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.DECIMAL(10, 2),
         allowNull: true
       },
       ContactNo: {

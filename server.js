@@ -60,6 +60,7 @@ app.use('/api/educationalattainment', require('./routes/EducationalAttainmentRou
 app.use('/api/occupation', require('./routes/OccupationRoutes'));
 app.use('/api/nationality', require('./routes/NationalityRoutes'));
 app.use('/api/residentcategory', require('./routes/ResidentCategoryRoutes'));
+app.use('/api/resident', require('./routes/ResidentRoutes'));
 
 require('./sockets')(io);
 

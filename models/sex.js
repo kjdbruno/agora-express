@@ -6,6 +6,13 @@ module.exports = (sequelize, DataTypes) => { // <--- THIS IS THE REQUIRED FUNCTI
   class Sex extends Model {
     static associate(models) {
       // define association here
+
+      // Association with ResidentInformation
+      Sex.hasMany(models.ResidentInformation, {
+        foreignKey: 'sexId',
+        as: 'residentInformations'
+      });
+      
     }
   }
   Sex.init({

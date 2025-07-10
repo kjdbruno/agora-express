@@ -11,6 +11,66 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+
+      // Association with Resident
+      ResidentInformation.belongsTo(models.Resident, {
+        foreignKey: 'ResidentId',
+        as: 'resident'
+      });
+
+      // Association with ResidentCategory
+      ResidentInformation.belongsTo(models.ResidentCategory, {
+        foreignKey: 'ResidentCategoryId',
+        as: 'residentCategory'
+      });
+
+      // Association with Zone
+      ResidentInformation.belongsTo(models.Zone, {
+        foreignKey: 'ZoneId',
+        as: 'zone'
+      });
+
+      // Association with Sex
+      ResidentInformation.belongsTo(models.Sex, {
+        foreignKey: 'sexId',
+        as: 'sex'
+      });
+
+      // Associations with Religion
+      ResidentInformation.belongsTo(models.Religion, {
+        foreignKey: 'religionId',
+        as: 'religion'
+      });
+
+      // Associations with CivilStatus
+      ResidentInformation.belongsTo(models.CivilStatus, {
+        foreignKey: 'CivilStatusId',
+        as: 'civilStatus'
+      });
+
+      // Associations with BloodType
+      ResidentInformation.belongsTo(models.BloodType, {
+        foreignKey: 'BloodTypeId',
+        as: 'bloodType'
+      });
+
+      // Associations with EducationalAttainment
+      ResidentInformation.belongsTo(models.EducationalAttainment, {
+        foreignKey: 'EducationalAttainmentId',
+        as: 'educationalAttainment'
+      });
+
+      // Associations with Occupation
+      ResidentInformation.belongsTo(models.Occupation, {
+        foreignKey: 'OccupationId',
+        as: 'occupation'
+      });
+
+      // Associations with Nationality
+      ResidentInformation.belongsTo(models.Nationality, {
+        foreignKey: 'NationalityId',
+        as: 'nationality'
+      });
     }
   }
   ResidentInformation.init({
@@ -99,29 +159,123 @@ module.exports = (sequelize, DataTypes) => {
     },
     BloodTypeId: {
       type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'BloodTypes',
+        key: 'Id'
+      },
+      onDelete: 'SET NULL',
+      onUpdate: 'SET NULL'
     },
-    EducationalAttainmentId: DataTypes.INTEGER,
-    OccupationId: DataTypes.INTEGER,
-    NationalityId: DataTypes.INTEGER,
-    Income: DataTypes.FLOAT,
-    ContantNo: DataTypes.STRING,
-    Email: DataTypes.STRING,
-    PhilsysNo: DataTypes.STRING,
-    PrecintNo: DataTypes.STRING,
-    SSSNo: DataTypes.STRING,
-    GSISNo: DataTypes.STRING,
-    PagibigNo: DataTypes.STRING,
-    Tin: DataTypes.STRING,
-    PhilhealthNo: DataTypes.STRING,
-    IsPWD: DataTypes.BOOLEAN,
-    IsIndigent: DataTypes.BOOLEAN,
-    is4Ps: DataTypes.BOOLEAN,
-    isSoloParent: DataTypes.BOOLEAN,
-    isDeceased: DataTypes.BOOLEAN,
-    IsActive: DataTypes.BOOLEAN
+    EducationalAttainmentId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'EducationalAttainments',
+        key: 'Id'
+      },
+      onDelete: 'SET NULL',
+      onUpdate: 'SET NULL'
+    },
+    OccupationId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Occupations',
+        key: 'Id'
+      },
+      onDelete: 'SET NULL',
+      onUpdate: 'SET NULL'
+    },
+    NationalityId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Nationalities',
+        key: 'Id'
+      },
+      onDelete: 'SET NULL',
+      onUpdate: 'SET NULL'
+    },
+    Income: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true,
+      validate: {
+        isDecimal: true,
+        min: 0 // Ensure income is non-negative
+      }
+    },
+    ContactNo: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        is: /^[0-9\s\-\+]+$/i // Validate phone number format
+      }
+    },
+    Email: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        isEmail: true // Validate email format
+      }
+    },
+    PhilsysNo: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    PrecintNo: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    SSSNo: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    GSISNo: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    PagibigNo: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    Tin: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    PhilhealthNo: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    IsPWD: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
+    IsIndigent: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
+    is4Ps: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
+    isSoloParent: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
+    isDeceased: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
+    IsActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    }
   }, {
     sequelize,
     modelName: 'ResidentInformation',
+    tableName: 'ResidentInformations',
+    timestamps: true,
   });
   return ResidentInformation;
 };

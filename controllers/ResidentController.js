@@ -1,127 +1,150 @@
 const { Op } = require("sequelize");
-const { Resident, ResidentInformation, ResidentPhoto } = require('../models');
+const { Resident, ResidentInformation, ResidentCategory, ResidentPhoto, Sex, Zone, Religion, CivilStatus, BloodType, EducationalAttainment, Occupation, Nationality } = require('../models');
 
 exports.getAllResidents = async (req, res) => {
     try {
-        const sexes = await Sex.findAll();
-        res.json(sexes);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
-exports.getSex = async (req, res) => {
-    try {
-        const sexes = await Sex.findAll({
-            where: {
-                IsActive: true
-            },
-            attributes: ['Id', 'Name']
+        const residents = await ResidentInformation.findAll({
+            include: [
+                {
+                    model: Resident,
+                    as: 'resident',
+                    where: {
+                        IsResident: true
+                    },
+                    attributes: ['Id', 'Firstname', 'Middlename', 'Lastname', 'Suffix']
+                },
+                {
+                    model: ResidentCategory,
+                    as: 'residentCategory',
+                    attributes: ['Id', 'Name', 'Alias']
+                },
+                {
+                    model: Zone,
+                    as: 'zone',
+                    attributes: ['Id', 'Name']
+                },
+                {
+                    model: Sex,
+                    as: 'sex',
+                    attributes: ['Id', 'Name']
+                },
+                {
+                    model: Religion,
+                    as: 'religion',
+                    attributes: ['Id', 'Name']
+                },
+                {
+                    model: CivilStatus,
+                    as: 'civilStatus',
+                    attributes: ['Id', 'Name']
+                },
+                {
+                    model: BloodType,
+                    as: 'bloodType',
+                    attributes: ['Id', 'Name']
+                },
+                {
+                    model: EducationalAttainment,
+                    as: 'educationalAttainment',
+                    attributes: ['Id', 'Name']
+                },
+                {
+                    model: Occupation,
+                    as: 'occupation',
+                    attributes: ['Id', 'Name']
+                },
+                {
+                    model: Nationality,
+                    as: 'nationality',
+                    attributes: ['Id', 'Name']
+                }
+            ]
         });
-        res.json(sexes);
+        res.json(residents);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-exports.createSex = async (req, res) => {
-    const { name } = req.body;
+exports.createResident = async (req, res) => {
+    const { 
+        Firstname, 
+        Middlename, 
+        Lastname, 
+        Suffix, 
+        IsResident, 
+        ResidentCategoryId, 
+        ZoneId, 
+        SexId, 
+        ReligionId, 
+        CivilStatusId, 
+        BloodTypeId, 
+        EducationalAttainmentId, 
+        OccupationId, 
+        NationalityId
+     } = req.body;
     try {
-        const sexExist = await Sex.findOne({
+        const residentExist = await Resident.findOne({
             where: { 
-                [Op.or]: [{ Name: name }] 
+                [Op.or]: [{ Firstname, Lastname, Middlename, Suffix }] 
             }
         });
-        if (sexExist) {
+        if (residentExist) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Sex already exists!",
+                    msg: "Resident already exists!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        const sex = await Sex.create({ Name: name });
-        res.status(201).json({ message: "Sex created successfully.", sex });
+
+        // create resident id number
+        const category = await ResidentCategory.findByPk(ResidentCategoryId);
+        const residentCategoryName = category.Alias;
+
+        // get the last resident number
+        const lastResident = await ResidentInformation.findOne({
+            where: {
+                ResidentCategoryId: ResidentCategoryId
+            },
+            order: [['ResidentNo', 'DESC']]
+        });
+        let residentNo;
+        //if there is no last resident, start with 1
+        if (!lastResident) {
+            residentNo = `${residentCategoryName}-0001`;
+        } else {
+            const lastNo = parseInt(lastResident.ResidentNo.split('-')[1]);
+            residentNo = `${residentCategoryName}-${String(lastNo + 1).padStart(4, '0')}`;
+        }
+        // create resident
+        const resident = await Resident.create({
+            Firstname,
+            Middlename,
+            Lastname,
+            Suffix,
+            IsResident: true
+        });
+        // create resident information
+        const residentInformation = await ResidentInformation.create({
+            ResidentId: resident.Id,
+            ResidentNo: residentNo,
+            ResidentCategoryId,
+            ZoneId,
+            SexId,
+            ReligionId,
+            CivilStatusId,
+            BloodTypeId,
+            EducationalAttainmentId,
+            OccupationId,
+            NationalityId
+        });
+
+        res.status(201).json({ message: "Resident created successfully.", sex });
     } catch (error) {
         res.status(400).json({ error: error.message });
-    }
-};
-
-exports.updateSex = async (req, res) => {
-
-    const { id } = req.params;
-    const { name } = req.body;
-  
-    try {
-        const sex = await Sex.findByPk(id);
-        if (!sex) {
-            return res.status(403).json({
-                errors: [{
-                    type: "manual",
-                    value: "",
-                    msg: "Sex not found!",
-                    path: "name",
-                    location: "body",
-                }],
-            });
-        }
-        const sexExist = await Sex.findOne({
-            where: {
-                [Op.or]: [{ Name: name } ],
-                Id: { [Op.ne]: id }
-            },
-        });
-        if (sexExist) {
-            return res.status(403).json({
-                errors: [{
-                    type: "manual",
-                    value: "",
-                    msg: "Sex is already in use!",
-                    path: "name",
-                    location: "body",
-                }],
-            });
-        }
-        await sex.update({ Name: name });
-        res.status(200).json({ message: "Sex updated successfully.", sex });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
-exports.disableSex = async (req, res) => {
-
-    const { id } = req.params;
-    const isActive = false;
-  
-    try {
-        const sex = await Sex.findByPk(id);
-        if (!sex) {
-            return res.status(404).json({ error: "Sex not found." });
-        }
-        await sex.update({ IsActive: isActive });
-        res.status(200).json({ message: "Sex disabled successfully.", sex });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
-exports.enableSex = async (req, res) => {
-
-    const { id } = req.params;
-    const isActive = true;
-  
-    try {
-        const sex = await Sex.findByPk(id);
-        if (!sex) {
-            return res.status(404).json({ error: "Sex not found." });
-        }
-        await sex.update({ IsActive: isActive });
-        res.status(200).json({ message: "Sex enabled successfully.", sex });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
     }
 };

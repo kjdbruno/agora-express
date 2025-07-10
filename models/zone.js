@@ -11,6 +11,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+
+      // Association with ResidentInformation
+      Zone.hasMany(models.ResidentInformation, {
+        foreignKey: 'ZoneId',
+        as: 'residentInformations'
+      });
     }
   }
   Zone.init({
