@@ -14,15 +14,92 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   ResidentInformation.init({
-    ResidentId: DataTypes.INTEGER,
-    ResidentNo: DataTypes.STRING,
-    ResidentCategoryId: DataTypes.INTEGER,
-    Birthdate: DataTypes.DATE,
-    ZoneId: DataTypes.INTEGER,
-    sexId: DataTypes.INTEGER,
-    religionId: DataTypes.INTEGER,
-    CivilStatusId: DataTypes.INTEGER,
-    BloodTypeId: DataTypes.INTEGER,
+    Id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
+    },
+    ResidentId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Residents',
+        key: 'Id'
+      },
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
+    },
+    ResidentNo: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+      validate: {
+        notEmpty: true,
+        len: [1, 50] // Adjust length as needed
+      }
+    },
+    ResidentCategoryId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'ResidentCategories',
+        key: 'Id'
+      },
+      onDelete: 'SET NULL',
+      onUpdate: 'SET NULL'
+    },
+    Birthdate: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      validate: {
+        isDate: true,
+        isBefore: new Date().toISOString() // Ensure birthdate is in the past
+      }
+    },
+    ZoneId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      reference: {
+        model: 'Zones',
+        key: 'Id'
+      },
+      omDelete: 'SET NULL',
+      onUpdate: 'SET NULL'
+    },
+    sexId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Sexes',
+        key: 'Id'
+      },
+      onDelete: 'SET NULL',
+      onUpdate: 'SET NULL'
+    },
+    religionId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Religions', 
+        key: 'Id',
+      },
+      onDelete: 'SET NULL',
+      onUpdate: 'SET NULL'
+    },
+    CivilStatusId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'CilvilStatuses',
+        key: 'Id'
+      },
+      onDelete: 'SET NULL',
+      onUpdate: 'SET NULL'
+    },
+    BloodTypeId: {
+      type: DataTypes.INTEGER,
+    },
     EducationalAttainmentId: DataTypes.INTEGER,
     OccupationId: DataTypes.INTEGER,
     NationalityId: DataTypes.INTEGER,
