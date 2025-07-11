@@ -41,6 +41,8 @@ db.BarangaySetting = require('./barangaysetting')(sequelize, Sequelize.DataTypes
 db.BusinessNature = require('./businessnature')(sequelize, Sequelize.DataTypes);
 db.BusinessType = require('./businesstype')(sequelize, Sequelize.DataTypes);
 db.Business = require('./business')(sequelize, Sequelize.DataTypes);
+db.CertificationType = require('./certificationtype')(sequelize, Sequelize.DataTypes);
+db.CertificationSetting = require('./certificationsetting')(sequelize, Sequelize.DataTypes);
 
 // Associate all models
 Object.keys(db).forEach(modelName => {
