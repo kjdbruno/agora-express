@@ -11,6 +11,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+
+      // Association with BarangaySetting
+      Province.hasOne(models.BarangaySetting, {
+        foreignKey: 'ProvinceId',
+        as: 'Setting'
+      });
     }
   }
   Province.init({

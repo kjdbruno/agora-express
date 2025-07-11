@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Barangay extends Model {
+  class Position extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -12,43 +12,34 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
 
-      // Association with BarangaySetting
-      Barangay.hasOne(models.BarangaySetting, {
-        foreignKey: 'BarangayId',
-        as: 'Setting'
+      // Association with OfficialSetting
+      Position.hasMany(models.OfficialSetting, {
+        foreignKey: 'PositionId',
+        as: 'officialSettings',
       });
+      
     }
   }
-  Barangay.init({
+  Position.init({
     Id: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
+      allowNull: false,
       autoIncrement: true,
-      allowNull: false,
-    },
-    TownCode: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    BarangayCode: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true, // Ensure BarangayCode is unique
+      primaryKey: true,
     },
     Name: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     IsActive: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
-      allowNull: false,
     },
   }, {
     sequelize,
-    modelName: 'Barangay',
-    tableName: 'Barangays',
+    modelName: 'Position',
+    tableName: 'Positions',
     timestamps: true,
   });
-  return Barangay;
+  return Position;
 };

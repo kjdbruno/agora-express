@@ -96,14 +96,13 @@ exports.updateNationality = async (req, res) => {
 exports.disableNationality = async (req, res) => {
 
     const { id } = req.params;
-    const isActive = false;
   
     try {
         const nationality = await Nationality.findByPk(id);
         if (!nationality) {
             return res.status(404).json({ error: "Nationality not found." });
         }
-        await nationality.update({ IsActive: isActive });
+        await nationality.update({ IsActive: false });
         res.status(200).json({ message: "Nationality disabled successfully.", nationality });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -113,14 +112,13 @@ exports.disableNationality = async (req, res) => {
 exports.enableNationality = async (req, res) => {
 
     const { id } = req.params;
-    const isActive = true;
   
     try {
         const nationality = await Nationality.findByPk(id);
         if (!nationality) {
             return res.status(404).json({ error: "Nationality not found." });
         }
-        await nationality.update({ IsActive: isActive });
+        await nationality.update({ IsActive: true });
         res.status(200).json({ message: "Nationality enabled successfully.", nationality });
     } catch (error) {
         res.status(500).json({ error: error.message });

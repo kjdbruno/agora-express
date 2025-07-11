@@ -95,14 +95,13 @@ exports.updateOccupation = async (req, res) => {
 exports.disableOccupation = async (req, res) => {
 
     const { id } = req.params;
-    const isActive = false;
   
     try {
         const occupation = await Occupation.findByPk(id);
         if (!occupation) {
             return res.status(404).json({ error: "Occupation not found." });
         }
-        await occupation.update({ IsActive: isActive });
+        await occupation.update({ IsActive: false });
         res.status(200).json({ message: "Occupation disabled successfully.", occupation });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -112,14 +111,13 @@ exports.disableOccupation = async (req, res) => {
 exports.enableOccupation = async (req, res) => {
 
     const { id } = req.params;
-    const isActive = true;
   
     try {
         const occupation = await Occupation.findByPk(id);
         if (!occupation) {
             return res.status(404).json({ error: "Occupation not found." });
         }
-        await occupation.update({ IsActive: isActive });
+        await occupation.update({ IsActive: true });
         res.status(200).json({ message: "Occupation enabled successfully.", occupation });
     } catch (error) {
         res.status(500).json({ error: error.message });

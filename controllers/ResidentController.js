@@ -11,52 +11,52 @@ exports.getAllResidents = async (req, res) => {
                     where: {
                         IsResident: true
                     },
-                    attributes: ['Id', 'Firstname', 'Middlename', 'Lastname', 'Suffix']
+                    attributes: ['Firstname', 'Middlename', 'Lastname', 'Suffix']
                 },
                 {
                     model: ResidentCategory,
                     as: 'residentCategory',
-                    attributes: ['Id', 'Name', 'Alias']
+                    attributes: ['Name']
                 },
                 {
                     model: Zone,
                     as: 'zone',
-                    attributes: ['Id', 'Name']
+                    attributes: ['Name']
                 },
                 {
                     model: Sex,
                     as: 'sex',
-                    attributes: ['Id', 'Name']
+                    attributes: ['Name']
                 },
                 {
                     model: Religion,
                     as: 'religion',
-                    attributes: ['Id', 'Name']
+                    attributes: ['Name']
                 },
                 {
                     model: CivilStatus,
                     as: 'civilStatus',
-                    attributes: ['Id', 'Name']
+                    attributes: ['Name']
                 },
                 {
                     model: BloodType,
                     as: 'bloodType',
-                    attributes: ['Id', 'Name']
+                    attributes: ['Name']
                 },
                 {
                     model: EducationalAttainment,
                     as: 'educationalAttainment',
-                    attributes: ['Id', 'Name']
+                    attributes: ['Name']
                 },
                 {
                     model: Occupation,
                     as: 'occupation',
-                    attributes: ['Id', 'Name']
+                    attributes: ['Name']
                 },
                 {
                     model: Nationality,
                     as: 'nationality',
-                    attributes: ['Id', 'Name']
+                    attributes: ['Name']
                 }
             ]
         });
@@ -72,7 +72,6 @@ exports.createResident = async (req, res) => {
         Middlename, 
         Lastname, 
         Suffix, 
-        IsResident, 
         ResidentCategoryId, 
         ZoneId, 
         SexId, 
@@ -81,12 +80,28 @@ exports.createResident = async (req, res) => {
         BloodTypeId, 
         EducationalAttainmentId, 
         OccupationId, 
-        NationalityId
-     } = req.body;
+        NationalityId,
+        Birthdate,
+        Income,
+        ContactNo,
+        Email,
+        PhilsysNo,
+        PrecintNo,
+        SSSNo,
+        GSISNo,
+        PagibigNo,
+        Tin,
+        PhilhealthNo,
+        IsPWD,
+        IsIndigent,
+        is4Ps,
+        isSoloParent,
+        isDeceased,
+    } = req.body;
     try {
         const residentExist = await Resident.findOne({
             where: { 
-                [Op.or]: [{ Firstname, Lastname, Middlename, Suffix }] 
+                [Op.or]: [{ Firstname, Lastname, Middlename, Suffix}] 
             }
         });
         if (residentExist) {
@@ -129,7 +144,7 @@ exports.createResident = async (req, res) => {
             IsResident: true
         });
         // create resident information
-        const residentInformation = await ResidentInformation.create({
+        const residentInfo = await ResidentInformation.create({
             ResidentId: resident.Id,
             ResidentNo: residentNo,
             ResidentCategoryId,
@@ -140,11 +155,173 @@ exports.createResident = async (req, res) => {
             BloodTypeId,
             EducationalAttainmentId,
             OccupationId,
-            NationalityId
+            NationalityId,
+            Birthdate,
+            Income,
+            ContactNo,
+            Email,
+            PhilsysNo,
+            PrecintNo,
+            SSSNo,
+            GSISNo,
+            PagibigNo,
+            Tin,
+            PhilhealthNo,
+            IsPWD,
+            IsIndigent,
+            is4Ps,
+            isSoloParent,
+            isDeceased,
         });
 
-        res.status(201).json({ message: "Resident created successfully.", sex });
+        res.status(201).json({ message: "Resident created successfully.", resident, residentInfo });
     } catch (error) {
         res.status(400).json({ error: error.message });
+    }
+};
+
+exports.updateResident = async (req, res) => {
+
+    const { id } = req.params;
+    const { 
+        ResidentId,
+        Firstname, 
+        Middlename, 
+        Lastname, 
+        Suffix, 
+        ResidentCategoryId, 
+        ZoneId, 
+        SexId, 
+        ReligionId, 
+        CivilStatusId, 
+        BloodTypeId, 
+        EducationalAttainmentId, 
+        OccupationId, 
+        NationalityId,
+        Birthdate,
+        Income,
+        ContactNo,
+        Email,
+        PhilsysNo,
+        PrecintNo,
+        SSSNo,
+        GSISNo,
+        PagibigNo,
+        Tin,
+        PhilhealthNo,
+        IsPWD,
+        IsIndigent,
+        is4Ps,
+        isSoloParent,
+        isDeceased,
+    } = req.body;
+  
+    try {
+        const resident = await Resident.findByPk(ResidentId);
+        if (!resident) {
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "Resident not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
+        }
+        const residentInfo = await ResidentInformation.findByPk(id);
+        if (!residentInfo) {
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "Resident information not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
+        }
+        // update resident
+        await resident.update({
+            Firstname,
+            Middlename,
+            Lastname,
+            Suffix,
+        });
+        // update resident information
+        await residentInfo.update({
+            ZoneId,
+            SexId,
+            ReligionId,
+            CivilStatusId,
+            BloodTypeId,
+            EducationalAttainmentId,
+            OccupationId,
+            NationalityId,
+            Birthdate,
+            Income,
+            ContactNo,
+            Email,
+            PhilsysNo,
+            PrecintNo,
+            SSSNo,
+            GSISNo,
+            PagibigNo,
+            Tin,
+            PhilhealthNo,
+            IsPWD,
+            IsIndigent,
+            is4Ps,
+            isSoloParent,
+            isDeceased
+        });
+
+        res.status(200).json({ message: "Resident updated successfully.", resident, residentInfo });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.disableResident = async (req, res) => {
+
+    const { id } = req.params;
+  
+    try {
+        const r = await ResidentInformation.findByPk(id);
+        if (!r) {
+            return res.status(404).json({ error: "Resident information not found." });
+        }
+        await r.update({ IsActive: false });
+
+        //get resident
+        const resident = await Resident.findByPk(r.ResidentId);
+        //get resident information
+        const residentInfo = await ResidentInformation.findByPk(id);
+
+        res.status(200).json({ message: "Resident disabled successfully.", resident, residentInfo });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.enableResident = async (req, res) => {
+
+    const { id } = req.params;
+  
+    try {
+        const r = await ResidentInformation.findByPk(id);
+        if (!r) {
+            return res.status(404).json({ error: "Resident information not found." });
+        }
+        await r.update({ IsActive: true });
+
+        //get resident
+        const resident = await Resident.findByPk(r.ResidentId);
+        //get resident information
+        const residentInfo = await ResidentInformation.findByPk(id);
+
+        res.status(200).json({ message: "Resident enabled successfully.", resident, residentInfo });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 };

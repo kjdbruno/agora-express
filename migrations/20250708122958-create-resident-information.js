@@ -29,11 +29,11 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false
       },
-      sexId: {
+      SexId: {
         type: Sequelize.INTEGER,
         allowNull: false
       },
-      religionId: {
+      ReligionId: {
         type: Sequelize.INTEGER,
         allowNull: false
       },

@@ -95,14 +95,13 @@ exports.updateCivilStatus = async (req, res) => {
 exports.disableCivilStatus = async (req, res) => {
 
     const { id } = req.params;
-    const isActive = false;
   
     try {
         const status = await CivilStatus.findByPk(id);
         if (!status) {
             return res.status(404).json({ error: "Civil Status not found." });
         }
-        await status.update({ IsActive: isActive });
+        await status.update({ IsActive: false });
         res.status(200).json({ message: "Civil Status disabled successfully.", status });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -112,14 +111,13 @@ exports.disableCivilStatus = async (req, res) => {
 exports.enableCivilStatus = async (req, res) => {
 
     const { id } = req.params;
-    const isActive = true;
   
     try {
         const status = await CivilStatus.findByPk(id);
         if (!status) {
             return res.status(404).json({ error: "Civil Status not found." });
         }
-        await status.update({ IsActive: isActive });
+        await status.update({ IsActive: true });
         res.status(200).json({ message: "Civil Status enabled successfully.", status });
     } catch (error) {
         res.status(500).json({ error: error.message });

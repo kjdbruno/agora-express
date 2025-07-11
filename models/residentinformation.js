@@ -127,7 +127,7 @@ module.exports = (sequelize, DataTypes) => {
       omDelete: 'SET NULL',
       onUpdate: 'SET NULL'
     },
-    sexId: {
+    SexId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -137,7 +137,7 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: 'SET NULL',
       onUpdate: 'SET NULL'
     },
-    religionId: {
+    ReligionId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {

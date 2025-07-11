@@ -95,14 +95,13 @@ exports.updateZone = async (req, res) => {
 exports.disableZone = async (req, res) => {
 
     const { id } = req.params;
-    const isActive = false;
   
     try {
         const zone = await Zone.findByPk(id);
         if (!zone) {
             return res.status(404).json({ error: "Zone not found." });
         }
-        await zone.update({ IsActive: isActive });
+        await zone.update({ IsActive: false });
         res.status(200).json({ message: "Zone disabled successfully.", zone });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -112,14 +111,13 @@ exports.disableZone = async (req, res) => {
 exports.enableZone = async (req, res) => {
 
     const { id } = req.params;
-    const isActive = true;
   
     try {
         const zone = await Zone.findByPk(id);
         if (!zone) {
             return res.status(404).json({ error: "Zone not found." });
         }
-        await zone.update({ IsActive: isActive });
+        await zone.update({ IsActive: true });
         res.status(200).json({ message: "Zone enabled successfully.", zone });
     } catch (error) {
         res.status(500).json({ error: error.message });

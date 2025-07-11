@@ -95,14 +95,13 @@ exports.updateEducationalAttainment = async (req, res) => {
 exports.disableEducationalAttainment = async (req, res) => {
 
     const { id } = req.params;
-    const isActive = false;
   
     try {
         const ea = await EducationalAttainment.findByPk(id);
         if (!ea) {
             return res.status(404).json({ error: "Educational attainment not found." });
         }
-        await ea.update({ IsActive: isActive });
+        await ea.update({ IsActive: false });
         res.status(200).json({ message: "Educational attainment disabled successfully.", ea });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -112,14 +111,13 @@ exports.disableEducationalAttainment = async (req, res) => {
 exports.enableEducationalAttainment = async (req, res) => {
 
     const { id } = req.params;
-    const isActive = true;
   
     try {
         const ea = await EducationalAttainment.findByPk(id);
         if (!ea) {
             return res.status(404).json({ error: "Educational attainment not found." });
         }
-        await ea.update({ IsActive: isActive });
+        await ea.update({ IsActive: true });
         res.status(200).json({ message: "Educational attainment enabled successfully.", ea });
     } catch (error) {
         res.status(500).json({ error: error.message });

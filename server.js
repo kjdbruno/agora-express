@@ -61,6 +61,9 @@ app.use('/api/occupation', require('./routes/OccupationRoutes'));
 app.use('/api/nationality', require('./routes/NationalityRoutes'));
 app.use('/api/residentcategory', require('./routes/ResidentCategoryRoutes'));
 app.use('/api/resident', require('./routes/ResidentRoutes'));
+app.use('/api/barangaysetting', require('./routes/BarangaySettingRoutes'));
+app.use('/api/position', require('./routes/PositionRoutes'));
+app.use('/api/officialsetting', require('./routes/OfficialSettingRoutes'));
 
 require('./sockets')(io);
 

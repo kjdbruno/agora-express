@@ -95,14 +95,13 @@ exports.updateBloodType = async (req, res) => {
 exports.disableBloodType = async (req, res) => {
 
     const { id } = req.params;
-    const isActive = false;
   
     try {
         const type = await BloodType.findByPk(id);
         if (!type) {
             return res.status(404).json({ error: "Blood type not found." });
         }
-        await type.update({ IsActive: isActive });
+        await type.update({ IsActive: false });
         res.status(200).json({ message: "Blood type disabled successfully.", type });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -112,14 +111,13 @@ exports.disableBloodType = async (req, res) => {
 exports.enableBloodType = async (req, res) => {
 
     const { id } = req.params;
-    const isActive = true;
   
     try {
         const type = await BloodType.findByPk(id);
         if (!type) {
             return res.status(404).json({ error: "Blood type not found." });
         }
-        await type.update({ IsActive: isActive });
+        await type.update({ IsActive: true });
         res.status(200).json({ message: "Blood type enabled successfully.", type });
     } catch (error) {
         res.status(500).json({ error: error.message });

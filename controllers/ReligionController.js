@@ -95,14 +95,13 @@ exports.updateReligion = async (req, res) => {
 exports.disableReligion = async (req, res) => {
 
     const { id } = req.params;
-    const isActive = false;
   
     try {
         const religion = await Religion.findByPk(id);
         if (!religion) {
             return res.status(404).json({ error: "Religion not found." });
         }
-        await religion.update({ IsActive: isActive });
+        await religion.update({ IsActive: false });
         res.status(200).json({ message: "Religion disabled successfully.", religion });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -112,14 +111,13 @@ exports.disableReligion = async (req, res) => {
 exports.enableReligion = async (req, res) => {
 
     const { id } = req.params;
-    const isActive = true;
   
     try {
         const religion = await Religion.findByPk(id);
         if (!religion) {
             return res.status(404).json({ error: "Religion not found." });
         }
-        await religion.update({ IsActive: isActive });
+        await religion.update({ IsActive: true });
         res.status(200).json({ message: "Religion enabled successfully.", religion });
     } catch (error) {
         res.status(500).json({ error: error.message });

@@ -95,14 +95,13 @@ exports.updateSex = async (req, res) => {
 exports.disableSex = async (req, res) => {
 
     const { id } = req.params;
-    const isActive = false;
   
     try {
         const sex = await Sex.findByPk(id);
         if (!sex) {
             return res.status(404).json({ error: "Sex not found." });
         }
-        await sex.update({ IsActive: isActive });
+        await sex.update({ IsActive: false });
         res.status(200).json({ message: "Sex disabled successfully.", sex });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -112,14 +111,13 @@ exports.disableSex = async (req, res) => {
 exports.enableSex = async (req, res) => {
 
     const { id } = req.params;
-    const isActive = true;
   
     try {
         const sex = await Sex.findByPk(id);
         if (!sex) {
             return res.status(404).json({ error: "Sex not found." });
         }
-        await sex.update({ IsActive: isActive });
+        await sex.update({ IsActive: true });
         res.status(200).json({ message: "Sex enabled successfully.", sex });
     } catch (error) {
         res.status(500).json({ error: error.message });

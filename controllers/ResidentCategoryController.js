@@ -95,14 +95,13 @@ exports.updateResidentCategory = async (req, res) => {
 exports.disableResidentCategory = async (req, res) => {
 
     const { id } = req.params;
-    const isActive = false;
   
     try {
         const rc = await ResidentCategory.findByPk(id);
         if (!rc) {
             return res.status(404).json({ error: "Resident category not found." });
         }
-        await rc.update({ IsActive: isActive });
+        await rc.update({ IsActive: false });
         res.status(200).json({ message: "Resident category disabled successfully.", rc });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -112,14 +111,13 @@ exports.disableResidentCategory = async (req, res) => {
 exports.enableResidentCategory = async (req, res) => {
 
     const { id } = req.params;
-    const isActive = true;
   
     try {
         const rc = await ResidentCategory.findByPk(id);
         if (!rc) {
             return res.status(404).json({ error: "Resident category not found." });
         }
-        await rc.update({ IsActive: isActive });
+        await rc.update({ IsActive: true });
         res.status(200).json({ message: "Resident category enabled successfully.", rc });
     } catch (error) {
         res.status(500).json({ error: error.message });
