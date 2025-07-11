@@ -38,6 +38,9 @@ db.ResidentPhoto = require('./residentphoto')(sequelize, Sequelize.DataTypes);
 db.Position = require('./position')(sequelize, Sequelize.DataTypes);
 db.OfficialSetting = require('./officialsetting')(sequelize, Sequelize.DataTypes);
 db.BarangaySetting = require('./barangaysetting')(sequelize, Sequelize.DataTypes);
+db.BusinessNature = require('./businessnature')(sequelize, Sequelize.DataTypes);
+db.BusinessType = require('./businesstype')(sequelize, Sequelize.DataTypes);
+db.Business = require('./business')(sequelize, Sequelize.DataTypes);
 
 // Associate all models
 Object.keys(db).forEach(modelName => {

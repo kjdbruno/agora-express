@@ -64,6 +64,9 @@ app.use('/api/resident', require('./routes/ResidentRoutes'));
 app.use('/api/barangaysetting', require('./routes/BarangaySettingRoutes'));
 app.use('/api/position', require('./routes/PositionRoutes'));
 app.use('/api/officialsetting', require('./routes/OfficialSettingRoutes'));
+app.use('/api/businessnature', require('./routes/BusinessNatureRoutes'));
+app.use('/api/businesstype', require('./routes/BusinessTypeRoutes'));
+app.use('/api/business', require('./routes/BusinessRoutes'));
 
 require('./sockets')(io);
 
