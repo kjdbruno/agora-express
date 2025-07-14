@@ -28,7 +28,7 @@ exports.createCertificationSetting = async (req, res) => {
     try {
         const csExist = await CertificationSetting.findOne({
             where: { 
-                [Op.or]: [{ CertificationTypeId }, { Month }] 
+                [Op.or]: [{ CertificationTypeId, Month }] 
             }
         });
         if (csExist) {
@@ -69,7 +69,7 @@ exports.updateCertificationSetting = async (req, res) => {
         }
         const csExist = await CertificationSetting.findOne({
             where: {
-                [Op.or]: [{ CertificationTypeId }, { Month } ],
+                [Op.or]: [{ CertificationTypeId, Month } ],
                 Id: { [Op.ne]: id }
             },
         });
