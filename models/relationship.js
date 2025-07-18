@@ -11,6 +11,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+
+      // Association with FamilyMember
+      Relationship.hasMany(models.FamilyMember, {
+        foreignKey: 'RelationshipId',
+        as: 'familyMembers'
+      });
+      
     }
   }
   Relationship.init({
@@ -23,18 +30,16 @@ module.exports = (sequelize, DataTypes) => {
     Name: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true, // Ensure Name is unique
     },
     IsActive: {
       type: DataTypes.BOOLEAN,
-      defaultValue: true, // Default value for IsActive
-      allowNull: false,
-    },
+      defaultValue: true
+    }
   }, {
     sequelize,
     modelName: 'Relationship',
-    tableName: 'Relationships', // Specify the table name
-    timestamps: true, // Enable timestamps if needed
+    tableName: 'Relationships',
+    timestamps: true,
   });
   return Relationship;
 };

@@ -69,6 +69,7 @@ app.use('/api/businesstype', require('./routes/BusinessTypeRoutes'));
 app.use('/api/business', require('./routes/BusinessRoutes'));
 app.use('/api/certificationtype', require('./routes/CertificationTypeRoutes'));
 app.use('/api/certificationsetting', require('./routes/CertificationSettingRoutes'));
+app.use('/api/relationship', require('./routes/RelationshipRoutes'));
 
 require('./sockets')(io);
 

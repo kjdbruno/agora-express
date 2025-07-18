@@ -11,14 +11,36 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+
+      // Association with HouseholdMember
+      Household.hasMany(models.HouseholdMember, {
+        foreignKey: 'HouseholdId',
+        as: 'householdMembers'
+      });
+
+      
     }
   }
   Household.init({
-    Code: DataTypes.STRING,
-    IsActive: DataTypes.BOOLEAN
+    Id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true
+    },
+    Code: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    IsActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    },
   }, {
     sequelize,
     modelName: 'Household',
+    tableName: 'Households',
+    timestamps: true,
   });
   return Household;
 };

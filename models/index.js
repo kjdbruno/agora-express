@@ -43,6 +43,10 @@ db.BusinessType = require('./businesstype')(sequelize, Sequelize.DataTypes);
 db.Business = require('./business')(sequelize, Sequelize.DataTypes);
 db.CertificationType = require('./certificationtype')(sequelize, Sequelize.DataTypes);
 db.CertificationSetting = require('./certificationsetting')(sequelize, Sequelize.DataTypes);
+db.Household = require('./household')(sequelize, Sequelize.DataTypes);
+db.Family = require('./family')(sequelize, Sequelize.DataTypes);
+db.HouseholdMember = require('./householdmember')(sequelize, Sequelize.DataTypes);
+db.FamilyMember = require('./familymember')(sequelize, Sequelize.DataTypes);
 
 // Associate all models
 Object.keys(db).forEach(modelName => {

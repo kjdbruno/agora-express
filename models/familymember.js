@@ -11,16 +11,73 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+
+      // Association with Family
+      FamilyMember.belongsTo(models.Family, {
+        foreignKey: 'FamilyId',
+        as: 'family'
+      });
+
+      // Association with Resident
+      FamilyMember.belongsTo(models.HouseholdMember, {
+        foreignKey: 'ResidentId',
+        as: 'resident'
+      });
+
+      // Association with Relationship
+      FamilyMember.belongsTo(models.Relationship, {
+        foreignKey: 'RelationshipId',
+        as: 'relationship'
+      });
+      
     }
   }
   FamilyMember.init({
-    FamilyId: DataTypes.INTEGER,
-    ResidentId: DataTypes.INTEGER,
-    RelationshipId: DataTypes.INTEGER,
-    IsActive: DataTypes.BOOLEAN
+    Id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true
+    },
+    FamilyId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Families',
+        key: 'Id'
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
+    },
+    ResidentId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'HouseholdMembers',
+        key: 'Id'
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
+    },
+    RelationshipId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Relationships',
+        key: 'Id'
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
+    },
+    IsActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    }
   }, {
     sequelize,
     modelName: 'FamilyMember',
+    tableName: 'FamilyMembers',
+    timestamps: true,
   });
   return FamilyMember;
 };

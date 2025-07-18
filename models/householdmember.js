@@ -11,15 +11,57 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+
+      // Association with Household
+      HouseholdMember.belongsTo(models.Household, {
+        foreignKey: 'HouseholdId',
+        as: 'household'
+      });
+
+      // Association with Family
+      HouseholdMember.belongsTo(models.Family, {
+        foreignKey: 'FamilyId',
+        as: 'family'
+      });
+      
     }
   }
   HouseholdMember.init({
-    HouseholdId: DataTypes.INTEGER,
-    FamilyId: DataTypes.INTEGER,
-    IsActive: DataTypes.BOOLEAN
+    Id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true
+    },
+    HouseholdId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Households',
+        key: 'Id'
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
+    },
+    FamilyId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Families',
+        key: 'Id'
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
+    },
+    IsActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    },
   }, {
     sequelize,
     modelName: 'HouseholdMember',
+    tableName: 'HouseholdMembers',
+    timestamps: true,
   });
   return HouseholdMember;
 };
