@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       // Association with Resident
-      FamilyMember.belongsTo(models.HouseholdMember, {
+      FamilyMember.belongsTo(models.Resident, {
         foreignKey: 'ResidentId',
         as: 'resident'
       });
@@ -68,6 +68,10 @@ module.exports = (sequelize, DataTypes) => {
       },
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
+    },
+    IsHead: { 
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     },
     IsActive: {
       type: DataTypes.BOOLEAN,

@@ -53,6 +53,10 @@ module.exports = (sequelize, DataTypes) => {
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
     },
+    IsHead: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
     IsActive: {
       type: DataTypes.BOOLEAN,
       defaultValue: true

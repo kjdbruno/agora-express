@@ -29,6 +29,10 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
+      IsHead: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
       IsActive: {
         type: Sequelize.BOOLEAN,
         defaultValue: true
