@@ -29,6 +29,13 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'BarangaySettingId',
         as: 'barangaySetting',
       });
+
+      // Association with BlotterHandler
+      OfficialSetting.hasMany(models.BlotterHandler, {
+        foreignKey: 'OfficialId',
+        as: 'blotterHandlers',
+      });
+      
     }
   }
   OfficialSetting.init({

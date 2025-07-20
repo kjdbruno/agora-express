@@ -29,6 +29,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'ResidentId',
         as: 'familyMembers'
       });
+
+      // Association with BlotterParty
+      Resident.hasMany(models.BlotterParty, {
+        foreignKey: 'ResidentId',
+        as: 'blotterParties'
+      });
       
     }
   }

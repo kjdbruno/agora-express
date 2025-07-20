@@ -47,6 +47,13 @@ db.Household = require('./household')(sequelize, Sequelize.DataTypes);
 db.Family = require('./family')(sequelize, Sequelize.DataTypes);
 db.HouseholdMember = require('./householdmember')(sequelize, Sequelize.DataTypes);
 db.FamilyMember = require('./familymember')(sequelize, Sequelize.DataTypes);
+db.BlotterType = require('./blottertype')(sequelize, Sequelize.DataTypes);
+db.Blotter = require('./blotter')(sequelize, Sequelize.DataTypes);
+db.BlotterParty = require('./blotterparty')(sequelize, Sequelize.DataTypes);
+db.BlotterAction = require('./blotteraction')(sequelize, Sequelize.DataTypes);
+db.BlotterHandler = require('./blotterhandler')(sequelize, Sequelize.DataTypes);
+db.BlotterAttachment = require('./blotterattachment')(sequelize, Sequelize.DataTypes);
+db.BlotterActionAttachment = require('./blotteractionattachment')(sequelize, Sequelize.DataTypes);
 
 // Associate all models
 Object.keys(db).forEach(modelName => {
