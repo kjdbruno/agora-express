@@ -7,7 +7,9 @@ const {
     BlotterAction, 
     BlotterAttachment, 
     BlotterActionAttachment,
-    Resident
+    Resident,
+    OfficialSetting,
+    Position
 } = require('../models');
 
 const fs = require('fs');
@@ -82,8 +84,6 @@ exports.updateBlotter = async (req, res) => {
         Location, 
         Description 
     } = req.body;
-    const files = req.files; // From Multer
-  
     try {
         const blotter = await Blotter.findByPk(id);
         if (!blotter) {
@@ -144,7 +144,7 @@ exports.enableBlotter = async (req, res) => {
 
 exports.getAllBlotterParties = async (req, res) => {
 
-    const { id } = req.params;
+    const { id } = req.query;
 
     try {
         const blotters = await BlotterParty.findAll({
@@ -176,13 +176,62 @@ exports.createBlotterParty = async (req, res) => {
         Statement
     } = req.body;
     try {
-        let residentId = ResidentId;
-        // check Firstname, Middlename, and Lastname has value
-        if (Firstname && Middlename && Lastname) {
-
-            // check fullname if exist
-
-
+        if (ResidentId) {
+            const partyExists = await BlotterParty.findOne({
+                where: {
+                    BlotterId,
+                    ResidentId
+                }
+            });
+            if (partyExists) {
+                return res.status(403).json({
+                    errors: [{
+                        type: "manual",
+                        value: "",
+                        msg: "This party already exist!",
+                        path: "name",
+                        location: "body",
+                    }],
+                });
+            }
+            const blotter = await BlotterParty.create({
+                BlotterId,
+                ResidentId,
+                Role,
+                Statement
+            });
+            res.status(201).json({ message: "Blotter party created successfully.", blotter });
+        } else {
+            const rExist = await Resident.findOne({
+                where: { 
+                    Firstname,
+                    Middlename,
+                    Lastname
+                }
+            });
+            if (rExist) {
+                if (rExist.IsResident) {
+                    return res.status(403).json({
+                        errors: [{
+                            type: "manual",
+                            value: "",
+                            msg: "Resident already exist!",
+                            path: "name",
+                            location: "body",
+                        }],
+                    });
+                } else {
+                    return res.status(403).json({
+                        errors: [{
+                            type: "manual",
+                            value: "",
+                            msg: "Person already exists!",
+                            path: "name",
+                            location: "body",
+                        }],
+                    });
+                }
+            }
             const resident = await Resident.create({
                 Firstname,
                 Middlename,
@@ -190,19 +239,14 @@ exports.createBlotterParty = async (req, res) => {
                 Suffix,
                 IsResident: false
             });
-            residentId = resident.Id;
+            const blotter = await BlotterParty.create({
+                BlotterId,
+                ResidentId: resident.Id,
+                Role,
+                Statement
+            });
+            res.status(201).json({ message: "Blotter party created successfully.", blotter });
         }
-
-        // check if party exist
-        
-        const blotter = await BlotterParty.create({
-            BlotterId,
-            ResidentId: residentId,
-            Role,
-            Statement
-        });
-
-        res.status(201).json({ message: "Blotter party created successfully.", blotter });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -242,7 +286,7 @@ exports.enableBlotterParty = async (req, res) => {
 
 exports.getAllBlotterHandlers = async (req, res) => {
 
-    const { id } = req.params;
+    const { id } = req.query;
 
     try {
         const blotters = await BlotterHandler.findAll({
@@ -251,8 +295,18 @@ exports.getAllBlotterHandlers = async (req, res) => {
             },
             include: [
                 {
-                    model: Resident,
-                    as: 'resident'
+                    model: OfficialSetting,
+                    as: 'official',
+                    include: [
+                        {
+                            model: Resident,
+                            as: 'resident'
+                        },
+                        {
+                            model: Position,
+                            as: 'position'
+                        }
+                    ]
                 }
             ]
         });
@@ -269,8 +323,23 @@ exports.createBlotterHandler = async (req, res) => {
         Role
     } = req.body;
     try {
-        // check if handler exist
-
+        const bhExist = await BlotterHandler.findOne({
+            where: { 
+                BlotterId,
+                OfficialId
+            }
+        });
+        if (bhExist) {
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "Handler already exists!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
+        }
 
         const blotter = await BlotterHandler.create({
             BlotterId,
@@ -318,7 +387,7 @@ exports.enableBlotterHandler = async (req, res) => {
 
 exports.getAllBlotterActions = async (req, res) => {
 
-    const { id } = req.params;
+    const { id } = req.query;
 
     try {
         const blotters = await BlotterAction.findAll({
@@ -387,7 +456,7 @@ exports.enableBlotterAction = async (req, res) => {
 
 exports.getAllBlotterAttachments = async (req, res) => {
 
-    const { id } = req.params;
+    const { id } = req.query;
 
     try {
         const blotters = await BlotterAttachment.findAll({
@@ -410,8 +479,8 @@ exports.createBlotterAttachment = async (req, res) => {
         if (files && files.length > 0) {
 
             for (const file of files) {
-                const filename = `${BlotterId}-${Date.now()}-${Math.floor(Math.random() * 10000)}${path.extname(file.originalname)}`;
-                const uploadPath = path.join(__dirname, '../public/uploads/attachments', filename);
+                const filename = `attachment-${BlotterId}-${Date.now()}-${Math.floor(Math.random() * 10000)}${path.extname(file.originalname)}`;
+                const uploadPath = path.join(__dirname, '../public/uploads', filename);
 
                 await sharp(file.buffer)
                     .resize({ width: 800 })
@@ -421,12 +490,17 @@ exports.createBlotterAttachment = async (req, res) => {
                 // Save each to DB or just collect for later use
                 await BlotterAttachment.create({
                     BlotterId,
-                    Filename: filename,
+                    File: filename,
                 });
             }
         }
+        const attachments = await BlotterAttachment.findAll({
+            where: {
+                BlotterId
+            }
+        })
 
-        res.status(201).json({ message: "Blotter attachment created successfully."});
+        res.status(201).json({ message: "Blotter attachment created successfully.", attachments});
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -442,7 +516,7 @@ exports.deleteBlotterAttachment = async (req, res) => {
             return res.status(404).json({ message: 'Attachment not found.' });
         }
         
-        const filePath = path.join(__dirname, '../public/uploads/attachments', attachment.Filename);
+        const filePath = path.join(__dirname, '../public/uploads', attachment.File);
 
         if (fs.existsSync(filePath)) {
             fs.unlinkSync(filePath);
@@ -457,7 +531,7 @@ exports.deleteBlotterAttachment = async (req, res) => {
 
 exports.getAllBlotterActionAttachments = async (req, res) => {
 
-    const { id } = req.params;
+    const { id } = req.query;
 
     try {
         const blotters = await BlotterActionAttachment.findAll({
@@ -480,8 +554,8 @@ exports.createBlotterActionAttachment = async (req, res) => {
         if (files && files.length > 0) {
 
             for (const file of files) {
-                const filename = `${BlotterActionId}-${Date.now()}-${Math.floor(Math.random() * 10000)}${path.extname(file.originalname)}`;
-                const uploadPath = path.join(__dirname, '../public/uploads/attachments', filename);
+                const filename = `attachment-${BlotterActionId}-${Date.now()}-${Math.floor(Math.random() * 10000)}${path.extname(file.originalname)}`;
+                const uploadPath = path.join(__dirname, '../public/uploads', filename);
 
                 await sharp(file.buffer)
                     .resize({ width: 800 })
@@ -491,12 +565,16 @@ exports.createBlotterActionAttachment = async (req, res) => {
                 // Save each to DB or just collect for later use
                 await BlotterActionAttachment.create({
                     BlotterActionId,
-                    Filename: filename,
+                    File: filename,
                 });
             }
         }
-
-        res.status(201).json({ message: "Blotter attachment created successfully."});
+        const attachments = await BlotterActionAttachment.findAll({
+            where: {
+                BlotterActionId
+            }
+        })
+        res.status(201).json({ message: "Blotter attachment created successfully.", attachments});
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -512,7 +590,7 @@ exports.deleteBlotterActionAttachment = async (req, res) => {
             return res.status(404).json({ message: 'Attachment not found.' });
         }
         
-        const filePath = path.join(__dirname, '../public/uploads/attachments', attachment.Filename);
+        const filePath = path.join(__dirname, '../public/uploads', attachment.File);
 
         if (fs.existsSync(filePath)) {
             fs.unlinkSync(filePath);

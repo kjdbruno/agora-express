@@ -24,7 +24,6 @@ module.exports = (sequelize, DataTypes) => {
         as: 'official'
       });
 
-
     }
   }
   BlotterHandler.init({
