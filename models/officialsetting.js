@@ -35,6 +35,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'OfficialId',
         as: 'blotterHandlers',
       });
+
+      // Association with HealthVaccination
+      OfficialSetting.hasMany(models.HealthVaccination, {
+        foreignKey: 'OfficialId',
+        as: 'healthvaccination',
+      });
       
     }
   }

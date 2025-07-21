@@ -35,6 +35,30 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'ResidentId',
         as: 'blotterParties'
       });
+
+      // Association with HealthRecord
+      Resident.hasMany(models.HealthRecord, {
+        foreignKey: 'ResidentId',
+        as: 'healthrecord'
+      });
+
+      // Association with HealthIlness
+      Resident.hasMany(models.HealthIllness, {
+        foreignKey: 'ResidentId',
+        as: 'healthillness'
+      });
+
+      // Association with HealthVaccination
+      Resident.hasMany(models.HealthVaccination, {
+        foreignKey: 'ResidentId',
+        as: 'healthvaccination'
+      });
+
+      // Association with HealthDisease
+      Resident.hasMany(models.HealthDisease, {
+        foreignKey: 'ResidentId',
+        as: 'healthdisease'
+      });
       
     }
   }
@@ -45,7 +69,6 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       allowNull: false,
     },
-
     Firstname: {
       type: DataTypes.STRING,
       allowNull: false
