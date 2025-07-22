@@ -16,11 +16,11 @@ module.exports = (sequelize, DataTypes) => {
       // Association with DiseaseSymptom
       Disease.hasMany(models.DiseaseSymptom, {
         foreignKey: 'DiseaseId',
-        as: 'diseasesymptom'
+        as: 'symptoms'
       });
 
       // Association with HealthDisease
-      Disease.belongsTo(models.HealthDisease, {
+      Disease.hasMany(models.HealthDisease, {
         foreignKey: 'DiseaseId',
         as: 'healthdisease'
       });

@@ -72,6 +72,11 @@ app.use('/api/certificationsetting', require('./routes/CertificationSettingRoute
 app.use('/api/relationship', require('./routes/RelationshipRoutes'));
 app.use('/api/blottertype', require('./routes/BlotterTypeRoutes'));
 app.use('/api/blotter', require('./routes/BlotterRoutes'));
+app.use('/api/illness', require('./routes/IllnessRoutes'));
+app.use('/api/medication', require('./routes/MedicationRoutes'));
+app.use('/api/vaccine', require('./routes/VaccineRoutes'));
+app.use('/api/disease', require('./routes/DiseaseRoutes'));
+app.use('/api/symptom', require('./routes/SymptomRoutes'));
 
 require('./sockets')(io);
 

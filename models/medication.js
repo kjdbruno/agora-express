@@ -13,28 +13,28 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
 
       // Association with HealthIllness
-      Medication.belongsTo(models.HealthIllness, {
+      Medication.hasMany(models.HealthIllness, {
         foreignKey: 'MedicationId',
-        as: 'healthmedication'
+        as: 'healthillness'
       });
 
       // Association with HealthDiseaseMedication
-      Medication.belongsTo(models.HealthDiseaseMedication, {
+      Medication.hasMany(models.HealthDiseaseMedication, {
         foreignKey: 'MedicationId',
-        as: 'healthdiseasemedication'
+        as: 'healthDiseasemedication'
       });
 
       // Association with HealthPrenatalMedication
-      Medication.belongsTo(models.HealthPrenatalMedication, {
-        foreignKey: 'MedicationId',
-        as: 'healthprenatalmedication'
-      });
-
-      // Association with HealthPostnatalMedication
-      Medication.belongsTo(models.HealthPostnatalMedication, {
+      Medication.hasMany(models.HealthPostnatalMedication, {
         foreignKey: 'MedicationId',
         as: 'healthpostnatalmedication'
       });
+
+      // Association with HealthPostnatalMedication
+      Medication.hasMany(models.HealthPrenatalMedication, {
+        foreignKey: 'MedicationId',
+        as: 'healthprenatalmedication'
+      })
 
     }
   }

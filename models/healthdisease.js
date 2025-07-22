@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       // Association with Disease
-      HealthDisease.hasMany(models.Disease, {
+      HealthDisease.belongsTo(models.Disease, {
         foreignKey: 'DiseaseId',
         as: 'disease'
       });

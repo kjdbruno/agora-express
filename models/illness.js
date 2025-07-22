@@ -13,9 +13,9 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
 
       // Association with HealthIlness
-      Illness.belongsTo(models.HealthIllness, {
+      Illness.hasMany(models.HealthIllness, {
         foreignKey: 'IllnessId',
-        as: 'healthillness'
+        as: 'healthRecords'
       });
       
     }

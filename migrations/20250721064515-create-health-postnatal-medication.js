@@ -46,7 +46,7 @@ module.exports = {
         allowNull: false
       },
       Notes: {
-        type: Sequelize.TExT('long')
+        type: Sequelize.TEXT('long')
       },
       IsActive: {
         type: Sequelize.BOOLEAN,

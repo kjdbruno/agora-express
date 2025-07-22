@@ -19,10 +19,11 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       // Association with Medication
-      HealthPrenatalMedication.hasMany(models.Medication, {
+      HealthPrenatalMedication.belongsTo(models.Medication, {
         foreignKey: 'MedicationId',
         as: 'medication'
       });
+      
     }
   }
   HealthPrenatalMedication.init({
