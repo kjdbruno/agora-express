@@ -11,21 +11,69 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+
+      // Association with HealthMaternalRecord
+      HealthDeliveryRecord.belongsTo(models.HealthMaternalRecord, {
+        foreignKey: 'MaternalRecordId',
+        as: 'healthmaternalrecord'
+      });
+
     }
   }
   HealthDeliveryRecord.init({
-    MaternalRecordId: DataTypes.INTEGER,
-    DeliveryDate: DataTypes.DATE,
-    DeliveryPlace: DataTypes.STRING,
-    DeliveryType: DataTypes.STRING,
-    BirthWeight: DataTypes.FLOAT,
-    BirthLength: DataTypes.FLOAT,
-    ApgarScore: DataTypes.STRING,
-    Notes: DataTypes.STRING,
-    IsActive: DataTypes.BOOLEAN
+    Id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
+    },
+    MaternalRecordId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'HealthMaternalRecords',
+        key: 'Id'
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
+    },
+    DeliveryDate: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    DeliveryPlace: {
+      type: DataTypes.TEXT('long'),
+      allowNull: false
+    },
+    DeliveryType: {
+      type: DataTypes.ENUM('Normal Spontaneous', 'Caesarian', 'Assisted'),
+      allowNull: false
+    },
+    BirthWeight: {
+      type: DataTypes.FLOAT,
+      allowNull: false
+    },
+    BirthLength: {
+      type: DataTypes.FLOAT,
+      allowNull: false
+    },
+    ApgarScore: {
+      type: DataTypes.TEXT('long'),
+      allowNull: false
+    },
+    Notes: {
+      type: DataTypes.TEXT('long'),
+      allowNull: true
+    },
+    IsActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    }
   }, {
     sequelize,
     modelName: 'HealthDeliveryRecord',
+    tableName: 'HealthDeliveryRecords',
+    timestamps: true
   });
   return HealthDeliveryRecord;
 };

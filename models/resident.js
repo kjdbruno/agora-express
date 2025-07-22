@@ -59,6 +59,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'ResidentId',
         as: 'healthdisease'
       });
+
+      // Association with HealthMaternalRecord
+      Resident.hasMany(models.HealthMaternalRecord, {
+        foreignKey: 'ResidentId',
+        as: 'healthmaternalrecord'
+      });
       
     }
   }

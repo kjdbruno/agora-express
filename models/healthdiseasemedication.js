@@ -11,20 +11,77 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+
+      // Association with HealthDiseaseIntervention
+      HealthDiseaseMedication.belongsTo(models.HealthDiseaseIntervention, {
+        foreignKey: 'HealthDiseaseInterventionId',
+        as: 'healthdiseaseintervention'
+      });
+
+      // Assoction with Medication
+      HealthDiseaseMedication.hasMany(models.Medication, {
+        foreignKey: 'MedicationId',
+        as: 'medication'
+      });
+
     }
   }
   HealthDiseaseMedication.init({
-    HealthDiseaseInterventionId: DataTypes.INTEGER,
-    MedicationId: DataTypes.INTEGER,
-    Dosage: DataTypes.FLOAT,
-    Frequency: DataTypes.FLOAT,
-    StartDate: DataTypes.DATE,
-    EndDate: DataTypes.DATE,
-    Notes: DataTypes.STRING,
-    IsActive: DataTypes.BOOLEAN
+    Id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
+    },
+    HealthDiseaseInterventionId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'HealthDiseaseInterventions',
+        key: 'Id'
+      },
+      onUpdate: 'CASCADE',
+      onDelete:'CASCADE'
+    },
+    MedicationId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Medications',
+        key: 'Id'
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
+    },
+    Dosage: {
+      type: DataTypes.FLOAT,
+      allowNull: false
+    },
+    Frequency: {
+      type: DataTypes.TEXT('long'),
+      allowNull: false
+    },
+    StartDate: {
+      type: DataTypes.DATEONLY,
+      allowNull: false
+    },
+    EndDate: {
+      type: DataTypes.DATEONLY,
+      allowNull: false
+    },
+    Notes: {
+      type: DataTypes.TEXT('long'),
+      allowNull: true
+    },
+    IsActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    }
   }, {
     sequelize,
     modelName: 'HealthDiseaseMedication',
+    tableName: 'HealthDiseaseMedications',
+    timestamps: true
   });
   return HealthDiseaseMedication;
 };

@@ -9,16 +9,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      HealthRecordId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'HealthRecords',
-          key: 'Id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
-      },
       MaternalRecordId: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -43,7 +33,7 @@ module.exports = {
       },
       Complaints: { // Symptoms the mother reported (e.g., back pain, bleeding).
         type: Sequelize.TEXT('long'),
-        allowNull: false
+        allowNull: true
       },
       Intervention: { // Advice given by health worker (e.g., rest, meds).
         type: Sequelize.TEXT('long'),

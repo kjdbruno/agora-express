@@ -9,16 +9,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      HealthRecordId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'HealthRecords',
-          key: 'Id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
-      },
       MaternalRecordId: {
         type: Sequelize.INTEGER,
         allowNull: false,

@@ -30,7 +30,7 @@ module.exports = {
       IsHighRisk: {
         type: Sequelize.BOOLEAN
       },
-      ReskFactors: {
+      RiskFactors: {
         type: Sequelize.TEXT('long')
       },
       Status: {

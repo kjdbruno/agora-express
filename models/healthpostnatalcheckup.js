@@ -11,17 +11,59 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+
+      // Association with HealthMaternalRecord
+      HealthPostnatalCheckup.belongsTo(models.HealthMaternalRecord, {
+        foreignKey: 'MaternalRecordId',
+        as: 'healthmaternalrecord'
+      });
+
+      // Association with HealthPostnatalMedication
+      HealthPostnatalCheckup.hasMany(models.HealthPostnatalMedication, {
+        foreignKey: 'HealthPostnatalChackupId',
+        as: 'healthpostnatalmedication'
+      });
+
     }
   }
   HealthPostnatalCheckup.init({
-    MaternalRecordId: DataTypes.INTEGER,
-    Purpose: DataTypes.STRING,
-    Findings: DataTypes.STRING,
-    Intervention: DataTypes.STRING,
-    IsActive: DataTypes.BOOLEAN
+    Id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true
+    },
+    MaternalRecordId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'HealthMaternalRecords',
+        key: 'Id'
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
+    },
+    Purpose: {
+      type: DataTypes.TEXT('long'),
+      allowNull: true
+    },
+    Findings: {
+      type: DataTypes.TEXT('long'),
+      allowNull: true
+    },
+    Intervention: {
+      type: DataTypes.TEXT('long'),
+      allowNull: true
+    },
+    IsActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    }
   }, {
     sequelize,
     modelName: 'HealthPostnatalCheckup',
+    tableName: 'HealthPostnatalCheckups',
+    timestamps: true
   });
   return HealthPostnatalCheckup;
 };

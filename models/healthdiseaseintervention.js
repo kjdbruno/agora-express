@@ -18,6 +18,12 @@ module.exports = (sequelize, DataTypes) => {
         as: 'healthdisease'
       });
 
+      // Association with HealthDiseaseMedication
+      HealthDiseaseIntervention.hasMany(models.HealthDiseaseMedication, {
+        foreignKey: 'HealthDiseaseInterventionId',
+        as: 'healthdiseasemedication'
+      });
+
     }
   }
   HealthDiseaseIntervention.init({
