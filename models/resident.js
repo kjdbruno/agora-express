@@ -36,36 +36,18 @@ module.exports = (sequelize, DataTypes) => {
         as: 'blotterParties'
       });
 
-      // Association with HealthRecord
-      Resident.hasMany(models.HealthRecord, {
+      // Association with HealthServiceAvailment
+      Resident.hasMany(models.HealthServiceAvailment, {
         foreignKey: 'ResidentId',
-        as: 'healthrecord'
+        as: 'healthserviceavailment'
       });
 
-      // Association with HealthIlness
-      Resident.hasMany(models.HealthIllness, {
+      // Association with HealthDelivery
+      Resident.hasMany(models.HealthDelivery, {
         foreignKey: 'ResidentId',
-        as: 'healthillness'
+        as: 'healthdelivery'
       });
 
-      // Association with HealthVaccination
-      Resident.hasMany(models.HealthVaccination, {
-        foreignKey: 'ResidentId',
-        as: 'healthvaccination'
-      });
-
-      // Association with HealthDisease
-      Resident.hasMany(models.HealthDisease, {
-        foreignKey: 'ResidentId',
-        as: 'healthdisease'
-      });
-
-      // Association with HealthMaternalRecord
-      Resident.hasMany(models.HealthMaternalRecord, {
-        foreignKey: 'ResidentId',
-        as: 'healthmaternalrecord'
-      });
-      
     }
   }
   Resident.init({

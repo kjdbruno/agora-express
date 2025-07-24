@@ -2,42 +2,56 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('HealthPrenatalCheckups', {
-      id: {
+    await queryInterface.createTable('HealthInterventions', {
+      Id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      MaternalRecordId: {
+      ServiceAvailmentId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'HealthMaternalRecords',
+          model: 'HealthServiceAvailments',
           key: 'Id'
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      GestationAge: { // Weeks of pregnancy during the visit.
+      Type: {
+        type: Sequelize.ENUM('Medication', 'Quarantine', 'Home Visit', 'Information Drive'),
+        allowNull: false
+      },
+      MedicationId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: 'Medications',
+          key: 'Id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
+      },
+      Dosage: {
         type: Sequelize.FLOAT,
-        allowNull: false
-      },
-      FundicHeight: { // Uterine size in cm (helps monitor fetal growth).
-        type: Sequelize.FLOAT,
-        allowNull: false
-      },
-      HasHeartbeat: { // Was fetal heartbeat heard?
-        type: Sequelize.BOOLEAN,
-        allowNull: false
-      },
-      Complaints: { // Symptoms the mother reported (e.g., back pain, bleeding).
-        type: Sequelize.TEXT('long'),
         allowNull: true
       },
-      Intervention: { // Advice given by health worker (e.g., rest, meds).
+      Frequency: {
+        type: Sequelize.TEXT('text'),
+        allowNull: true
+      },
+      StartDate: {
+        type: Sequelize.DATEONLY,
+        allowNull: true
+      },
+      EndDate: {
+        type: Sequelize.DATEONLY,
+        allowNull: true
+      },
+      Notes: {
         type: Sequelize.TEXT('long'),
-        allowNull: false
+        allowNull: true
       },
       IsActive: {
         type: Sequelize.BOOLEAN,
@@ -54,6 +68,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('HealthPrenatalCheckups');
+    await queryInterface.dropTable('HealthInterventions');
   }
 };

@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       // Association with HealthIlness
       Illness.hasMany(models.HealthIllness, {
         foreignKey: 'IllnessId',
-        as: 'healthRecords'
+        as: 'healthillness'
       });
       
     }

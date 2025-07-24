@@ -2,39 +2,26 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('HealthMaternalRecords', {
-      Id: {
+    await queryInterface.createTable('HealthPrenatals', {
+      id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      ResidentId: {
+      MaternalRecordId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Residents',
+          model: 'HealthMaternalRecords',
           key: 'Id'
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      LMP: { // last menstrual period
-        type: Sequelize.DATEONLY,
-        allowNull: false
-      },
-      EDD: { // expected date of delivery
-        type: Sequelize.DATEONLY,
-        allowNull: false
-      },
-      IsHighRisk: {
-        type: Sequelize.BOOLEAN
-      },
-      RiskFactors: {
-        type: Sequelize.TEXT('long')
-      },
-      Status: {
-        type: Sequelize.ENUM('Ongoing', 'Delivered', 'Aborted')
+      Purpose: {
+        type: Sequelize.TEXT('long'),
+        allowNull: true
       },
       IsActive: {
         type: Sequelize.BOOLEAN,
@@ -51,6 +38,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('HealthMaternalRecords');
+    await queryInterface.dropTable('HealthPrenatals');
   }
 };

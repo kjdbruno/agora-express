@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Vaccine extends Model {
+  class HealthService extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -12,21 +12,20 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
 
-      // Association with HealthImmunization
-      Vaccine.hasMany(models.HealthImmunization, {
-        foreignKey: 'VaccineId',
-        as: 'healthimmunization'
+      // Association with HealthServiceAvailment
+      HealthService.hasMany(models.HealthServiceAvailment, {
+        foreignKey: 'ServiceId',
+        as: 'healthserviceavailment'
       });
-      
-      
+
     }
   }
-  Vaccine.init({
+  HealthService.init({
     Id: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
       allowNull: false,
+      autoIncrement: true,
+      primaryKey: true
     },
     Name: {
       type: DataTypes.STRING,
@@ -39,9 +38,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'Vaccine',
-    tableName: 'Vaccines',
+    modelName: 'HealthService',
+    tableName: 'HealthServices',
     timestamps: true
   });
-  return Vaccine;
+  return HealthService;
 };

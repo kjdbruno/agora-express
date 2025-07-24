@@ -59,19 +59,17 @@ db.Medication = require('./medication')(sequelize, Sequelize.DataTypes);
 db.Vaccine = require('./vaccine')(sequelize, Sequelize.DataTypes);
 db.Disease = require('./disease')(sequelize, Sequelize.DataTypes);
 db.DiseaseSymptom = require('./diseasesymptom')(sequelize, Sequelize.DataTypes);
+db.HealthService = require('./healthservice')(sequelize, Sequelize.DataTypes);
+db.HealthServiceAvailment = require('./healthserviceavailment')(sequelize, Sequelize.DataTypes);
 db.HealthRecord = require('./healthrecord')(sequelize, Sequelize.DataTypes);
-db.HealthRecord = require('./healthrecord')(sequelize, Sequelize.DataTypes);
-db.HealthVaccination = require('./healthvaccination')(sequelize, Sequelize.DataTypes);
+db.HealthImmunization = require('./healthimmunization')(sequelize, Sequelize.DataTypes);
 db.HealthIllness = require('./healthillness')(sequelize, Sequelize.DataTypes);
-db.HealthDisease = require('./healthdisease')(sequelize, Sequelize.DataTypes);
-db.HealthDiseaseIntervention = require('./healthdiseaseintervention')(sequelize, Sequelize.DataTypes);
-db.HealthDiseaseMedication = require('./healthdiseasemedication')(sequelize, Sequelize.DataTypes);
 db.HealthMaternalRecord = require('./healthmaternalrecord')(sequelize, Sequelize.DataTypes);
-db.HealthPrenatalCheckup = require('./healthprenatalcheckup')(sequelize, Sequelize.DataTypes);
-db.HealthPrenatalMedication = require('./healthprenatalmedication')(sequelize, Sequelize.DataTypes);
-db.HealthDeliveryRecord = require('./healthdeliveryrecord')(sequelize, Sequelize.DataTypes);
-db.HealthPostnatalCheckup = require('./healthpostnatalcheckup')(sequelize, Sequelize.DataTypes);
-db.HealthPostnatalMedication = require('./healthpostnatalmedication')(sequelize, Sequelize.DataTypes);
+db.HealthPrenatal = require('./healthprenatal')(sequelize, Sequelize.DataTypes);
+db.HealthDelivery = require('./healthdelivery')(sequelize, Sequelize.DataTypes);
+db.HealthPostnatal = require('./healthpostnatal')(sequelize, Sequelize.DataTypes);
+db.HealthDisease = require('./healthdisease')(sequelize, Sequelize.DataTypes);
+db.HealthIntervention = require('./healthintervention')(sequelize, Sequelize.DataTypes);
 
 // Associate all models
 Object.keys(db).forEach(modelName => {

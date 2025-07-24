@@ -12,22 +12,16 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
 
-      // Association with Resident
-      HealthDisease.belongsTo(models.Resident, {
-        foreignKey: 'ResidentId',
-        as: 'resident'
+      // Association with HealthServiceAvailment
+      HealthDisease.belongsTo(models.HealthServiceAvailment, {
+        foreignKey: 'ServiceAvailmentId',
+        as: 'healthserviceavailment'
       });
 
       // Association with Disease
       HealthDisease.belongsTo(models.Disease, {
         foreignKey: 'DiseaseId',
         as: 'disease'
-      });
-
-      // Association with HealthDiseaseIntervention
-      HealthDisease.hasMany(models.HealthDiseaseIntervention, {
-        foreignKey: 'HealthDiseaseId',
-        as: 'healthdiseaseintervention'
       });
 
     }
@@ -39,11 +33,11 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       allowNull: false,
     },
-    ResidentId: {
+    ServiceAvailmentId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Residents',
+        model: 'HealthServiceAvailments',
         key: 'Id'
       },
       onUpdate: 'CASCADE',

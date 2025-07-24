@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class HealthDiseaseMedication extends Model {
+  class HealthIntervention extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -12,40 +12,43 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
 
-      // Association with HealthDiseaseIntervention
-      HealthDiseaseMedication.belongsTo(models.HealthDiseaseIntervention, {
-        foreignKey: 'HealthDiseaseInterventionId',
-        as: 'healthdiseaseintervention'
+      // Assocition with HealthServiceAvailment
+      HealthIntervention.belongsTo(models.HealthServiceAvailment, {
+        foreignKey: 'ServiceAvailmentId',
+        as: 'healthserviceavailment'
       });
 
-      // Assoction with Medication
-      HealthDiseaseMedication.belongsTo(models.Medication, {
+      // Assocition with Mediaction
+      HealthIntervention.belongsTo(models.Medication, {
         foreignKey: 'MedicationId',
         as: 'medication'
       });
-
     }
   }
-  HealthDiseaseMedication.init({
+  HealthIntervention.init({
     Id: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
       allowNull: false,
+      autoIncrement: true,
+      primaryKey: true
     },
-    HealthDiseaseInterventionId: {
+    ServiceAvailmentId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'HealthDiseaseInterventions',
+        model: 'HealthServiceAvailments',
         key: 'Id'
       },
       onUpdate: 'CASCADE',
-      onDelete:'CASCADE'
+      onDelete: 'CASCADE'
+    },
+    Type: {
+      type: DataTypes.ENUM('Medication', 'Quarantine', 'Home Visit', 'Information Drive'),
+      allowNull: false
     },
     MedicationId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'Medications',
         key: 'Id'
@@ -55,19 +58,19 @@ module.exports = (sequelize, DataTypes) => {
     },
     Dosage: {
       type: DataTypes.FLOAT,
-      allowNull: false
+      allowNull: true
     },
     Frequency: {
       type: DataTypes.TEXT('long'),
-      allowNull: false
+      allowNull: true
     },
     StartDate: {
       type: DataTypes.DATEONLY,
-      allowNull: false
+      allowNull: true
     },
     EndDate: {
       type: DataTypes.DATEONLY,
-      allowNull: false
+      allowNull: true
     },
     Notes: {
       type: DataTypes.TEXT('long'),
@@ -79,9 +82,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'HealthDiseaseMedication',
-    tableName: 'HealthDiseaseMedications',
+    modelName: 'HealthIntervention',
+    tableName: 'HealthInterventions',
     timestamps: true
   });
-  return HealthDiseaseMedication;
+  return HealthIntervention;
 };

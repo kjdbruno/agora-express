@@ -2,28 +2,28 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('HealthDiseaseMedications', {
+    await queryInterface.createTable('HealthImmunizations', {
       Id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      HealthDiseaseInterventionId: {
+      ServiceAvailmentId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'HealthDiseaseInterventions',
+          model: 'HealthServiceAvailments',
           key: 'Id'
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      MedicationId: {
+      VaccineId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Medications',
+          model: 'Vaccines',
           key: 'Id'
         },
         onUpdate: 'CASCADE',
@@ -33,18 +33,27 @@ module.exports = {
         type: Sequelize.FLOAT,
         allowNull: false
       },
-      Frequency: {
-        type: Sequelize.TEXT('long'),
+      ScheduleDate: {
+        type: Sequelize.DATEONLY,
+        allowNull: true
+      },
+      GivenDate: {
+        type: Sequelize.DATEONLY,
+        allowNull: true
+      },
+      Status: {
+        type: Sequelize.ENUM('Pending', 'Given', 'Missed', 'Rescheduled'),
         allowNull: false
       },
-      StartDate: {
-        type: Sequelize.DATEONLY
-      },
-      EndDate: {
-        type: Sequelize.DATEONLY
-      },
-      Notes: {
-        type: Sequelize.TEXT('long')
+      OfficialId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'OfficialSettings',
+          key: 'Id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       IsActive: {
         type: Sequelize.BOOLEAN,
@@ -61,6 +70,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('HealthDiseaseMedications');
+    await queryInterface.dropTable('HealthImmunizations');
   }
 };

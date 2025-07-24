@@ -9,19 +9,15 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      ResidentId: {
+      ServiceAvailmentId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Residents',
+          model: 'HealthServiceAvailments',
           key: 'Id'
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
-      },
-      VisitType: {
-        type: Sequelize.ENUM('Consultation', 'Pre-Natal', 'Post-Natal', 'Immunization'),
-        allowNull: false
       },
       Height: {
         type: Sequelize.FLOAT

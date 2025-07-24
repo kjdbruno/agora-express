@@ -12,22 +12,16 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
 
-      // Association with Resident
-      HealthIllness.belongsTo(models.Resident, {
-        foreignKey: 'ResidentId',
-        as: 'resident'
+      // Association with HealthServiceAvailment
+      HealthIllness.belongsTo(models.HealthServiceAvailment, {
+        foreignKey: 'ServiceAvailmentId',
+        as: 'healthserviceavailment'
       });
 
       // Association with Illness
       HealthIllness.belongsTo(models.Illness, {
         foreignKey: 'IllnessId',
         as: 'illness'
-      });
-
-      // Association with Medication
-      HealthIllness.belongsTo(models.Medication, {
-        foreignKey: 'MedicationId',
-        as: 'medication'
       });
 
     }
@@ -39,11 +33,11 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       primaryKey: true
     },
-    ResidentId: {
+    ServiceAvailmentId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Residents',
+        model: 'HealthServiceAvailments',
         key: 'Id'
       },
       onUpdate: 'CASCADE',
@@ -58,32 +52,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
-    },
-    MedicationId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'Medications',
-        key: 'Id'
-      },
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE'
-    },
-    Dosage: {
-      type: DataTypes.FLOAT,
-      allowNull: false
-    },
-    Frequency: {
-      type: DataTypes.TEXT('long'),
-      allowNull: false
-    },
-    StartDate: {
-      type: DataTypes.DATEONLY,
-      allowNull: false
-    },
-    EndDate: {
-      type: DataTypes.DATEONLY,
-      allowNull: false
     },
     Notes: {
       type: DataTypes.TEXT('long'),

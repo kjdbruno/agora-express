@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class HealthPostnatalMedication extends Model {
+  class HealthDelivery extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -12,61 +12,69 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
 
-      // Association with HealthPostnatalCheckup
-      HealthPostnatalMedication.belongsTo(models.HealthPostnatalCheckup, {
-        foreignKey: 'HealthPostnatalCheckupId',
-        as: 'healthpostnatalmedication'
+      // Association with HealthMaternalRecord
+      HealthDelivery.belongsTo(models.HealthMaternalRecord, {
+        foreignKey: 'MaternalRecordId',
+        as: 'healthmaternalrecord'
       });
 
-      // Association with Medication
-      HealthPostnatalMedication.belongsTo(models.Medication, {
-        foreignKey: 'MedicationId',
-        as: 'medication'
+      // Association with Resident
+      HealthDelivery.belongsTo(models.Resident, {
+        foreignKey: 'ResidentId',
+        as: 'resident'
       });
-
+      
     }
   }
-  HealthPostnatalMedication.init({
+  HealthDelivery.init({
     Id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
       allowNull: false,
     },
-    HealthPostnatalCheckupId: {
+    ResidentId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'HealthPostnatalCheckups',
+        model: 'Residents',
         key: 'Id'
       },
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
     },
-    MedicationId: {
+    MaternalRecordId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Medications',
+        model: 'HealthMaternalRecords',
         key: 'Id'
       },
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
     },
-    Dosage: {
-      type: DataTypes.FLOAT,
+    DeliveryDate: {
+      type: DataTypes.DATE,
       allowNull: false
     },
-    Frequency: {
+    DeliveryPlace: {
       type: DataTypes.TEXT('long'),
       allowNull: false
     },
-    StartDate: {
-      type: DataTypes.DATEONLY,
+    DeliveryType: {
+      type: DataTypes.ENUM('Normal Spontaneous', 'Caesarian', 'Assisted'),
       allowNull: false
     },
-    EndDate: {
-      type: DataTypes.DATEONLY,
+    BirthWeight: {
+      type: DataTypes.FLOAT,
+      allowNull: false
+    },
+    BirthLength: {
+      type: DataTypes.FLOAT,
+      allowNull: false
+    },
+    ApgarScore: {
+      type: DataTypes.TEXT('long'),
       allowNull: false
     },
     Notes: {
@@ -79,9 +87,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'HealthPostnatalMedication',
-    tableName: 'HealthPostnatalMedications',
+    modelName: 'HealthDelivery',
+    tableName: 'HealthDeliveries',
     timestamps: true
   });
-  return HealthPostnatalMedication;
+  return HealthDelivery;
 };

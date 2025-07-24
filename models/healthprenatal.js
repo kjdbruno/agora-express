@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class HealthPostnatalCheckup extends Model {
+  class HealthPrenatal extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,25 +13,19 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
 
       // Association with HealthMaternalRecord
-      HealthPostnatalCheckup.belongsTo(models.HealthMaternalRecord, {
+      HealthPrenatal.belongsTo(models.HealthMaternalRecord, {
         foreignKey: 'MaternalRecordId',
         as: 'healthmaternalrecord'
       });
 
-      // Association with HealthPostnatalMedication
-      HealthPostnatalCheckup.hasMany(models.HealthPostnatalMedication, {
-        foreignKey: 'HealthPostnatalChackupId',
-        as: 'healthpostnatalmedication'
-      });
-
     }
   }
-  HealthPostnatalCheckup.init({
+  HealthPrenatal.init({
     Id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      primaryKey: true,
       autoIncrement: true,
-      primaryKey: true
+      allowNull: false,
     },
     MaternalRecordId: {
       type: DataTypes.INTEGER,
@@ -47,23 +41,15 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT('long'),
       allowNull: true
     },
-    Findings: {
-      type: DataTypes.TEXT('long'),
-      allowNull: true
-    },
-    Intervention: {
-      type: DataTypes.TEXT('long'),
-      allowNull: true
-    },
     IsActive: {
       type: DataTypes.BOOLEAN,
       defaultValue: true
     }
   }, {
     sequelize,
-    modelName: 'HealthPostnatalCheckup',
-    tableName: 'HealthPostnatalCheckups',
+    modelName: 'HealthPrenatal',
+    tableName: 'HealthPrenatals',
     timestamps: true
   });
-  return HealthPostnatalCheckup;
-};
+  return HealthPrenatal;
+};  

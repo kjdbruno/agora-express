@@ -12,29 +12,11 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
 
-      // Association with HealthIllness
-      Medication.hasMany(models.HealthIllness, {
+      // Association with HealthIntervention
+      Medication.hasMany(models.HealthIntervention, {
         foreignKey: 'MedicationId',
-        as: 'healthillness'
+        as: 'healthintervention'
       });
-
-      // Association with HealthDiseaseMedication
-      Medication.hasMany(models.HealthDiseaseMedication, {
-        foreignKey: 'MedicationId',
-        as: 'healthDiseasemedication'
-      });
-
-      // Association with HealthPrenatalMedication
-      Medication.hasMany(models.HealthPostnatalMedication, {
-        foreignKey: 'MedicationId',
-        as: 'healthpostnatalmedication'
-      });
-
-      // Association with HealthPostnatalMedication
-      Medication.hasMany(models.HealthPrenatalMedication, {
-        foreignKey: 'MedicationId',
-        as: 'healthprenatalmedication'
-      })
 
     }
   }

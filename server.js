@@ -77,6 +77,8 @@ app.use('/api/medication', require('./routes/MedicationRoutes'));
 app.use('/api/vaccine', require('./routes/VaccineRoutes'));
 app.use('/api/disease', require('./routes/DiseaseRoutes'));
 app.use('/api/symptom', require('./routes/SymptomRoutes'));
+app.use('/api/health/record', require('./routes/HealthRecordRoutes'));
+app.use('/api/health/service/availment', require('./routes/HealthServiceAvailmentRoutes'));
 
 require('./sockets')(io);
 

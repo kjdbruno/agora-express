@@ -36,12 +36,12 @@ module.exports = (sequelize, DataTypes) => {
         as: 'blotterHandlers',
       });
 
-      // Association with HealthVaccination
-      OfficialSetting.hasMany(models.HealthVaccination, {
+      // Association with HealthImmunization
+      OfficialSetting.hasMany(models.HealthImmunization, {
         foreignKey: 'OfficialId',
-        as: 'healthvaccination',
+        as: 'immunization'
       });
-      
+
     }
   }
   OfficialSetting.init({

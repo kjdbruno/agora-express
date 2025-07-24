@@ -9,11 +9,11 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      HealthRecordId: {
+      ServiceAvailmentId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'HealthRecords',
+          model: 'HealthServiceAvailments',
           key: 'Id'
         },
         onUpdate: 'CASCADE',
@@ -31,16 +31,20 @@ module.exports = {
         onDelete: 'CASCADE'
       },
       DiagnosisDate: {
-        type: Sequelize.DATEONLY // The date the disease was confirmed or diagnosed.
+        type: Sequelize.DATEONLY, // The date the disease was confirmed or diagnosed.
+        allowNull: false
       },
       OnsetDate: {
-        type: Sequelize.DATEONLY // When symptoms first appeared (optional but helps in tracking spread).
+        type: Sequelize.DATEONLY, // When symptoms first appeared (optional but helps in tracking spread).
+        allowNull: false
       },
       Status: {
-        type: Sequelize.ENUM('Ongoing', 'Recovered', 'Deceased')
+        type: Sequelize.ENUM('Ongoing', 'Recovered', 'Deceased'),
+        allowNull: false
       },
       Notes: {
-        type: Sequelize.TEXT('long')
+        type: Sequelize.TEXT('long'),
+        allowNull: true
       },
       IsActive: {
         type: Sequelize.BOOLEAN,

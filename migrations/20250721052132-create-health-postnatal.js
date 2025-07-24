@@ -2,31 +2,25 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('HealthDiseaseInterventions', {
-      Id: {
+    await queryInterface.createTable('HealthPostnatals', {
+      id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      HealthDiseaseId: {
+      MaternalRecordId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'HealthDiseases',
+          model: 'HealthMaternalRecords',
           key: 'Id'
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      Type: {
-        type: Sequelize.ENUM('Medication', 'Quarantine', 'Home Visit', 'Information Drive')
-      },
-      Description: {
+      Purpose: {
         type: Sequelize.TEXT('long')
-      },
-      DateImplemented: {
-        type: Sequelize.DATEONLY
       },
       IsActive: {
         type: Sequelize.BOOLEAN,
@@ -43,6 +37,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('HealthDiseaseInterventions');
+    await queryInterface.dropTable('HealthPostnatals');
   }
 };

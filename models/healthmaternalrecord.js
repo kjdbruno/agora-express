@@ -12,28 +12,28 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
 
-      // Association with Resident
-      HealthMaternalRecord.belongsTo(models.Resident, {
-        foreignKey: 'ResidentId',
-        as: 'resident'
+      // Association with HealthServiceAvailment
+      HealthMaternalRecord.belongsTo(models.HealthServiceAvailment, {
+        foreignKey: 'ServiceAvailmentId',
+        as: 'healthserviceavailment'
       });
 
-      // Assocition with HealthPrenatalCheckup
-      HealthMaternalRecord.hasMany(models.HealthPrenatalCheckup, {
+      // Assocition with HealthPrenatal
+      HealthMaternalRecord.hasMany(models.HealthPrenatal, {
         foreignKey: 'MaternalRecordId',
-        as: 'healthprenatalcheckup'
+        as: 'healthprenatal'
       });
 
-      // Association with HealthDeliveryRecord
-      HealthMaternalRecord.hasMany(models.HealthDeliveryRecord, {
+      // Assocition with HealthDelivery
+      HealthMaternalRecord.hasMany(models.HealthDelivery, {
         foreignKey: 'MaternalRecordId',
-        as: 'healthdeliveryrecord'
+        as: 'healthdelivery'
       });
 
-      //Association with HealthPostnatalCheckup
-      HealthMaternalRecord.hasMany(models.HealthPostnatalCheckup, {
+      // Assocition with HealthPostnatal
+      HealthMaternalRecord.hasMany(models.HealthPostnatal, {
         foreignKey: 'MaternalRecordId',
-        as: 'healthpostnatalcheckup'
+        as: 'healthpostnatal'
       });
 
     }
@@ -45,11 +45,11 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       primaryKey: true
     },
-    ResidentId: {
+    ServiceAvailmentId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Resident',
+        model: 'HealthServiceAvailments',
         key: 'Id'
       },
       onUpdate: 'CASCADE',

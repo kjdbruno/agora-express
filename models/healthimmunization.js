@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class HealthVaccination extends Model {
+  class HealthImmunization extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -12,38 +12,37 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
 
-      // Association with Resident
-      HealthVaccination.belongsTo(models.Resident, {
-        foreignKey: 'ResidentId',
-        as: 'resident'
+      // Association with HealthServiceAvailment
+      HealthImmunization.belongsTo(models.HealthServiceAvailment, {
+        foreignKey: 'ServiceAvailmentId',
+        as: 'healthserviceavailment'
       });
 
       // Assocition with Vaccine
-      HealthVaccination.belongsTo(models.Vaccine, {
+      HealthImmunization.belongsTo(models.Vaccine, {
         foreignKey: 'VaccineId',
         as: 'vaccine'
       });
 
-      // Association with OfficialSetting
-      HealthVaccination.belongsTo(models.OfficialSetting, {
+      // Assocition with OfficeSetting
+      HealthImmunization.belongsTo(models.OfficialSetting, {
         foreignKey: 'OfficialId',
         as: 'official'
       });
-
     }
   }
-  HealthVaccination.init({
+  HealthImmunization.init({
     Id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       autoIncrement: true,
       primaryKey: true
     },
-    ResidentId: {
+    ServiceAvailmentId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Residents',
+        model: 'HealthServiceAvailments',
         key: 'Id'
       },
       onUpdate: 'CASCADE',
@@ -59,15 +58,15 @@ module.exports = (sequelize, DataTypes) => {
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
     },
-    Dose: {
+    Dosage: {
       type: DataTypes.FLOAT,
       allowNull: false
     },
-    DateScheduled: {
+    ScheduleDate: {
       type: DataTypes.DATEONLY,
       allowNull: true
     },
-    DateGiven: {
+    GivenDate: {
       type: DataTypes.DATEONLY,
       allowNull: false
     },
@@ -91,9 +90,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'HealthVaccination',
-    tableName: 'HealthVaccinations',
+    modelName: 'HealthImmunization',
+    tableName: 'HealthImmunizations',
     timestamps: true
   });
-  return HealthVaccination;
+  return HealthImmunization;
 };

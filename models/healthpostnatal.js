@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class HealthPrenatalCheckup extends Model {
+  class HealthPostnatal extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,25 +13,19 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
 
       // Association with HealthMaternalRecord
-      HealthPrenatalCheckup.belongsTo(models.HealthMaternalRecord, {
+      HealthPostnatal.belongsTo(models.HealthMaternalRecord, {
         foreignKey: 'MaternalRecordId',
         as: 'healthmaternalrecord'
       });
 
-      // Association with HealthPrenatalMedication
-      HealthPrenatalCheckup.hasMany(models.HealthPrenatalMedication, {
-        foreignKey: 'HealthPrenatalChackupId',
-        as: 'healthprenatalmedication'
-      });
-
     }
   }
-  HealthPrenatalCheckup.init({
+  HealthPostnatal.init({
     Id: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
       allowNull: false,
+      autoIncrement: true,
+      primaryKey: true
     },
     MaternalRecordId: {
       type: DataTypes.INTEGER,
@@ -43,19 +37,11 @@ module.exports = (sequelize, DataTypes) => {
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
     },
-    GestationAge: {
-      type: DataTypes.FLOAT,
-      allowNull: false
+    Purpose: {
+      type: DataTypes.TEXT('long'),
+      allowNull: true
     },
-    FundicHeight: {
-      type: DataTypes.FLOAT,
-      allowNull: false
-    },
-    HasHeartbeat: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false
-    },
-    Complaints: {
+    Findings: {
       type: DataTypes.TEXT('long'),
       allowNull: true
     },
@@ -69,9 +55,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'HealthPrenatalCheckup',
-    tableName: 'HealthPrenatalCheckups',
+    modelName: 'HealthPostnatal',
+    tableName: 'HealthPostnatals',
     timestamps: true
   });
-  return HealthPrenatalCheckup;
+  return HealthPostnatal;
 };

@@ -2,14 +2,14 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('HealthDeliveryRecords', {
+    await queryInterface.createTable('HealthDeliveries', {
       Id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      ResidentId: {
+      ResidentId: { // Record of Baby
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -19,7 +19,7 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      HealthMaternalRecordId: {
+      MaternalRecordId: { // Record of Mother
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -70,6 +70,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('HealthDeliveryRecords');
+    await queryInterface.dropTable('HealthDeliveries');
   }
 };

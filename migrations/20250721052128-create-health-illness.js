@@ -9,11 +9,11 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      HealthRecordId: {
+      ServiceAvailmentId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'HealthRecords',
+          model: 'HealthServiceAvailments',
           key: 'Id'
         },
         onUpdate: 'CASCADE',
@@ -28,32 +28,6 @@ module.exports = {
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
-      },
-      MedicationId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'Medications',
-          key: 'Id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
-      },
-      Dosage: {
-        type: Sequelize.FLOAT,
-        allowNull: false
-      },
-      Frequency: {
-        type: Sequelize.TEXT('long'),
-        allowNull: false
-      },
-      StartDate: {
-        type: Sequelize.DATEONLY,
-        allowNull: false,
-      },
-      EndDate: {
-        type: Sequelize.DATE,
-        allowNull: false
       },
       Notes: {
         type: Sequelize.TEXT('long')

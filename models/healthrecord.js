@@ -12,11 +12,12 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
 
-      // Association with Residents
-      HealthRecord.belongsTo(models.Resident, {
-        foreignKey: 'ResidentId',
-        as: 'resident'
+      // Association with HealthServiceAvailment
+      HealthRecord.belongsTo(models.HealthServiceAvailment, {
+        foreignKey: 'ServiceAvailmentId',
+        as: 'healthserviceavailment'
       });
+
     }
   }
   HealthRecord.init({
@@ -26,11 +27,11 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       primaryKey: true
     },
-    ResidentId: {
+    ServiceAvailmentId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Residents',
+        model: 'HealthServiceAvailments',
         key: 'Id'
       },
       onUpdate: 'CASCADE',
