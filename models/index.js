@@ -70,6 +70,16 @@ db.HealthDelivery = require('./healthdelivery')(sequelize, Sequelize.DataTypes);
 db.HealthPostnatal = require('./healthpostnatal')(sequelize, Sequelize.DataTypes);
 db.HealthDisease = require('./healthdisease')(sequelize, Sequelize.DataTypes);
 db.HealthIntervention = require('./healthintervention')(sequelize, Sequelize.DataTypes);
+db.CalamityType = require('./calamitytype')(sequelize, Sequelize.DataTypes);
+db.Calamity = require('./calamity')(sequelize, Sequelize.DataTypes);
+db.CalamityAssistanceType = require('./calamityassistancetype')(sequelize, Sequelize.DataTypes);
+db.CalamityAssistanceProvider = require('./calamityassistanceprovider')(sequelize, Sequelize.DataTypes);
+db.EvacuationCenter = require('./evacuationcenter')(sequelize, Sequelize.DataTypes);
+db.CalamityAffected = require('./calamityaffected')(sequelize, Sequelize.DataTypes);
+db.CalamityEvacuation = require('./calamityevacuation')(sequelize, Sequelize.DataTypes);
+db.CalamityDamageType = require('./calamitydamagetype')(sequelize, Sequelize.DataTypes);
+db.CalamityDamage = require('./calamitydamage')(sequelize, Sequelize.DataTypes);
+db.CalamityAssistance = require('./calamityassistance')(sequelize, Sequelize.DataTypes);
 
 // Associate all models
 Object.keys(db).forEach(modelName => {
