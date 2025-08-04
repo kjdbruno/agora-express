@@ -3,38 +3,63 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Revenues', {
-      id: {
+      Id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
       RevenueId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'RevenueItems',
+          key: 'Id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       ResidentId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Residents',
+          key: 'Id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       TransactionId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'FinancialTransactions',
+          key: 'Id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       Amount: {
-        type: Sequelize.FLOAT
+        type: Sequelize.DECIMAL(10, 2),
+        allowNull: false
       },
       ReceiptNo: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
       Notes: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT('long'),
+        allowNull: true
       },
       IsVoid: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       },
-      createdAt: {
+      CreatedAt: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      UpdatedAt: {
         allowNull: false,
         type: Sequelize.DATE
       }

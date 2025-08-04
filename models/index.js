@@ -41,8 +41,6 @@ db.BarangaySetting = require('./barangaysetting')(sequelize, Sequelize.DataTypes
 db.BusinessNature = require('./businessnature')(sequelize, Sequelize.DataTypes);
 db.BusinessType = require('./businesstype')(sequelize, Sequelize.DataTypes);
 db.Business = require('./business')(sequelize, Sequelize.DataTypes);
-db.CertificationType = require('./certificationtype')(sequelize, Sequelize.DataTypes);
-db.CertificationSetting = require('./certificationsetting')(sequelize, Sequelize.DataTypes);
 db.Household = require('./household')(sequelize, Sequelize.DataTypes);
 db.Family = require('./family')(sequelize, Sequelize.DataTypes);
 db.HouseholdMember = require('./householdmember')(sequelize, Sequelize.DataTypes);
@@ -80,7 +78,14 @@ db.CalamityEvacuation = require('./calamityevacuation')(sequelize, Sequelize.Dat
 db.CalamityDamageType = require('./calamitydamagetype')(sequelize, Sequelize.DataTypes);
 db.CalamityDamage = require('./calamitydamage')(sequelize, Sequelize.DataTypes);
 db.CalamityAssistance = require('./calamityassistance')(sequelize, Sequelize.DataTypes);
-
+db.AccountChart = require('./accountchart')(sequelize, Sequelize.DataTypes);
+db.BudgetAllocation = require('./budgetallocation')(sequelize, Sequelize.DataTypes);
+db.RevenueItem = require('./revenueitem')(sequelize, Sequelize.DataTypes);
+db.RevenueSetting = require('./revenuesetting')(sequelize, Sequelize.DataTypes);
+db.RevenueCost = require('./revenuecost')(sequelize, Sequelize.DataTypes);
+db.FinancialTransaction = require('./financialtransaction')(sequelize, Sequelize.DataTypes);
+db.Revenue = require('./revenue')(sequelize, Sequelize.DataTypes);
+db.Expenditure = require('./expenditure')(sequelize, Sequelize.DataTypes);
 // Associate all models
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {

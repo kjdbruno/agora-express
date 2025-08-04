@@ -11,18 +11,40 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+
+      // Association with RevenueItem
+      RevenueSetting.belongsTo(models.RevenueItem, {
+        foreignKey: 'RevenueId',
+        as: 'RevenueItem'
+      });
     }
   }
   RevenueSetting.init({
-    RevenueId: DataTypes.INTEGER,
-    Cost: DataTypes.FLOAT,
-    Surcharge: DataTypes.INTEGER,
-    Interest: DataTypes.INTEGER,
-    Month: DataTypes.STRING,
-    IsActive: DataTypes.BOOLEAN
+    Id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
+    },
+    RevenueId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'RevenueItems',
+        key: 'Id'
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
+    },
+    IsActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    }
   }, {
     sequelize,
     modelName: 'RevenueSetting',
+    tableName: 'RevenueSettings',
+    timestamps: true
   });
   return RevenueSetting;
 };

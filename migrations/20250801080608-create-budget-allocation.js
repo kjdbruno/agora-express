@@ -3,32 +3,43 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('BudgetAllocations', {
-      id: {
+      Id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
       FiscalYear: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
       AccountId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'AccountCharts',
+          key: 'Id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       Amount: {
-        type: Sequelize.FLOAT
+        type: Sequelize.DECIMAL(10, 2),
+        allowNull: false
       },
       Notes: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT('long'),
+        allowNull: true
       },
       IsActive: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: true
       },
-      createdAt: {
+      CreatedAt: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      UpdatedAt: {
         allowNull: false,
         type: Sequelize.DATE
       }

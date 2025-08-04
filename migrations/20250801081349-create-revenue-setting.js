@@ -3,26 +3,41 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('RevenueSettings', {
-      id: {
+      Id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
       AccountId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'AccountCharts',
+          key: 'Id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       RevenueId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'RevenueItems',
+          key: 'Id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       IsActive: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: true
       },
-      createdAt: {
+      CreatedAt: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      UpdatedAt: {
         allowNull: false,
         type: Sequelize.DATE
       }

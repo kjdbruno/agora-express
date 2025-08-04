@@ -3,32 +3,37 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('AccountCharts', {
-      id: {
+      Id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
       Code: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       Name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       AccountType: {
-        type: Sequelize.ENUM('Asset', 'Liability', 'Equity', 'Revenue', 'Expense')
+        type: Sequelize.ENUM('Asset', 'Liability', 'Equity', 'Revenue', 'Expense'),
+        allowNull: false
       },
       Type: {
-        type: Sequelize.ENUM('Debit', 'Credit')
+        type: Sequelize.ENUM('Debit', 'Credit'),
+        allowNull: false
       },
       IsActive: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: true
       },
-      createdAt: {
+      CreatedAt: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      UpdatedAt: {
         allowNull: false,
         type: Sequelize.DATE
       }

@@ -48,6 +48,12 @@ module.exports = (sequelize, DataTypes) => {
         as: 'healthdelivery'
       });
 
+      // Association with Revenue
+      Resident.hasMany(models.Revenue, {
+        foreignKey: 'ResidentId',
+        as: 'Revenue'
+      });
+
     }
   }
   Resident.init({

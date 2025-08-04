@@ -11,14 +11,46 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+
+      // Associatyion with Revenue
+      RevenueItem.hasMany(models.Revenue, {
+        foreignKey: 'RevenueId',
+        as: 'Revenues'
+      });
+
+      // Association with RevenueCost
+      RevenueItem.hasMany(models.RevenueCost, {
+        foreignKey: 'RevenueId',
+        as: 'Costs'
+      });
+
+      // Association with RevenueSetting
+      RevenueItem.hasOne(models.RevenueSetting, {
+        foreignKey: 'RevenueId',
+        as: 'Setting'
+      });
     }
   }
   RevenueItem.init({
-    Name: DataTypes.STRING,
-    IsActive: DataTypes.BOOLEAN
+    Id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
+    },
+    Name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    IsActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    }
   }, {
     sequelize,
     modelName: 'RevenueItem',
+    tableName: 'RevenueItems',
+    timestamps: true
   });
   return RevenueItem;
 };

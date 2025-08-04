@@ -3,26 +3,29 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('FinancialTransactions', {
-      id: {
+      Id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
       Date: {
-        type: Sequelize.DATE
+        type: Sequelize.DATEONLY,
+        allowNull: false
       },
       Amount: {
-        type: Sequelize.FLOAT
+        type: Sequelize.DECIMAL(10, 2),
+        allowNull: false
       },
       IsActive: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: true
       },
-      createdAt: {
+      CreatedAt: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      UpdatedAt: {
         allowNull: false,
         type: Sequelize.DATE
       }

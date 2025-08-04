@@ -11,15 +11,44 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+
+      // Association with Revenue
+      FinancialTransaction.belongsTo(models.Revenue, {
+        foreignKey: 'RevenueId',
+        as: 'Revenue'
+      });
+
+      // Association with Expenditure
+      FinancialTransaction.belongsTo(models.Expenditure, {
+        foreignKey: 'ExpenditureId',
+        as: 'Expenditure'
+      });
     }
   }
   FinancialTransaction.init({
-    Date: DataTypes.DATE,
-    Amount: DataTypes.FLOAT,
-    IsActive: DataTypes.BOOLEAN
+    Id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
+    },
+    Date: {
+      type: DataTypes.DATEONLY,
+      allowNull: false
+    },
+    Amount: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false
+    },
+    IsActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    }
   }, {
     sequelize,
     modelName: 'FinancialTransaction',
+    tableName: 'FinancialTransactions',
+    timestamps: true
   });
   return FinancialTransaction;
 };
