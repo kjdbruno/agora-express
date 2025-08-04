@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
 const { Medication } = require('../models');
 
-exports.getAllMedications = async (req, res) => {
+exports.GetAllMedications = async (req, res) => {
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
@@ -26,7 +26,7 @@ exports.getAllMedications = async (req, res) => {
     }
 };
 
-exports.getMedication = async (req, res) => {
+exports.GetMedication = async (req, res) => {
     try {
         const medications = await Medication.findAll({
             where: {
@@ -42,8 +42,10 @@ exports.getMedication = async (req, res) => {
     }
 };
 
-exports.createMedication = async (req, res) => {
-    const { Name } = req.body;
+exports.CreateMedication = async (req, res) => {
+    const {
+        Name
+    } = req.body;
     try {
         const mExist = await Medication.findOne({
             where: { 
@@ -55,7 +57,7 @@ exports.createMedication = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Medication already exists!",
+                    msg: "record already exists!",
                     path: "name",
                     location: "body",
                 }],
@@ -75,19 +77,23 @@ exports.createMedication = async (req, res) => {
     }
 };
 
-exports.updateMedication = async (req, res) => {
+exports.UpdateMedication = async (req, res) => {
 
-    const { id } = req.params;
-    const { Name } = req.body;
+    const { 
+        Id
+    } = req.params;
+    const { 
+        Name
+    } = req.body;
   
     try {
-        const medication = await Medication.findByPk(id);
+        const medication = await Medication.findByPk(Id);
         if (!medication) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Medication not found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -96,7 +102,7 @@ exports.updateMedication = async (req, res) => {
         const mExist = await Medication.findOne({
             where: {
                 Name,
-                Id: { [Op.ne]: id }
+                Id: { [Op.ne]: Id }
             },
         });
         if (mExist) {
@@ -104,7 +110,7 @@ exports.updateMedication = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Medication is already in use!",
+                    msg: "record already exist!",
                     path: "name",
                     location: "body",
                 }],
@@ -114,7 +120,7 @@ exports.updateMedication = async (req, res) => {
             Name
          });
         res.status(200).json({ 
-            message: "Medication updated successfully.", 
+            message: "record modified.", 
             medication 
         });
     } catch (error) {
@@ -124,18 +130,20 @@ exports.updateMedication = async (req, res) => {
     }
 };
 
-exports.disableMedication = async (req, res) => {
+exports.DisableMedication = async (req, res) => {
 
-    const { id } = req.params;
+    const { 
+        Id
+    } = req.params;
   
     try {
-        const medication = await Medication.findByPk(id);
+        const medication = await Medication.findByPk(Id);
         if (!medication) {
            return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Medication not found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -145,7 +153,7 @@ exports.disableMedication = async (req, res) => {
             IsActive: false 
         });
         res.status(200).json({ 
-            message: "Medication disabled successfully.", 
+            message: "record disabled.", 
             medication 
         });
     } catch (error) {
@@ -155,18 +163,20 @@ exports.disableMedication = async (req, res) => {
     }
 };
 
-exports.enableMedication = async (req, res) => {
+exports.EnableMedication = async (req, res) => {
 
-    const { id } = req.params;
+    const { 
+        Id
+    } = req.params;
   
     try {
-        const medication = await Medication.findByPk(id);
+        const medication = await Medication.findByPk(Id);
         if (!medication) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Medication not found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -176,7 +186,7 @@ exports.enableMedication = async (req, res) => {
             IsActive: true 
         });
         res.status(200).json({ 
-            message: "Medication enabled successfully.", 
+            message: "record enabled.", 
             medication 
         });
     } catch (error) {

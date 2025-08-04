@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
 const { Position } = require('../models');
 
-exports.getAllPositions = async (req, res) => {
+exports.GetAllPositions = async (req, res) => {
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
@@ -20,11 +20,13 @@ exports.getAllPositions = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.getPosition = async (req, res) => {
+exports.GetPosition = async (req, res) => {
     try {
         const positions = await Position.findAll({
             where: {
@@ -34,16 +36,20 @@ exports.getPosition = async (req, res) => {
         });
         res.json(positions);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.createPosition = async (req, res) => {
-    const { Name } = req.body;
+exports.CreatePosition = async (req, res) => {
+    const {
+        Name
+    } = req.body;
     try {
         const positionExist = await Position.findOne({
             where: { 
-                [Op.or]: [{ Name }] 
+                Name
             }
         });
         if (positionExist) {
@@ -51,32 +57,43 @@ exports.createPosition = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Position already exists!",
+                    msg: "record already exists!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        const position = await Position.create({ Name });
-        res.status(201).json({ message: "Position created successfully.", position });
+        const position = await Position.create({
+            Name
+        });
+        res.status(201).json({ 
+            message: "record created.", 
+            position 
+        });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.updatePosition = async (req, res) => {
+exports.UpdatePosition = async (req, res) => {
 
-    const { id } = req.params;
-    const { Name } = req.body;
+    const {
+        Id
+    } = req.params;
+    const {
+        Name
+    } = req.body;
   
     try {
-        const position = await Position.findByPk(id);
+        const position = await Position.findByPk(Id);
         if (!position) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Position not found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -84,8 +101,8 @@ exports.updatePosition = async (req, res) => {
         }
         const positionExist = await Position.findOne({
             where: {
-                [Op.or]: [{ Name } ],
-                Id: { [Op.ne]: id }
+                Name,
+                Id: { [Op.ne]: Id }
             },
         });
         if (positionExist) {
@@ -93,47 +110,76 @@ exports.updatePosition = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Position is already in use!",
+                    msg: "record already exist!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        await position.update({ Name });
-        res.status(200).json({ message: "Position updated successfully.", position });
+        await position.update({
+            Name
+        });
+        res.status(200).json({ 
+            message: "record modified.", 
+            position 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.disablePosition = async (req, res) => {
+exports.DisablePosition = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const position = await Position.findByPk(id);
+        const position = await Position.findByPk(Id);
         if (!position) {
-            return res.status(404).json({ error: "Position not found." });
+            return res.status(404).json({ 
+                error: "record not found." 
+            });
         }
-        await position.update({ IsActive: false });
-        res.status(200).json({ message: "Position disabled successfully.", position });
+        await position.update({ 
+            IsActive: false 
+        });
+        res.status(200).json({ 
+            message: "record disabled.", 
+            position 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.enablePosition = async (req, res) => {
+exports.EnablePosition = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const position = await Position.findByPk(id);
+        const position = await Position.findByPk(Id);
         if (!position) {
-            return res.status(404).json({ error: "Position not found." });
+            return res.status(404).json({ 
+                error: "record not found." 
+            });
         }
-        await position.update({ IsActive: true });
-        res.status(200).json({ message: "Position enabled successfully.", position });
+        await position.update({ 
+            IsActive: true 
+        });
+        res.status(200).json({ 
+            message: "record enabled.", 
+            position 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };

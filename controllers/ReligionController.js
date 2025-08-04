@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
 const { Religion } = require('../models');
 
-exports.getAllReligions = async (req, res) => {
+exports.GetAllReligions = async (req, res) => {
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
@@ -20,11 +20,13 @@ exports.getAllReligions = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.getReligion = async (req, res) => {
+exports.GetReligion = async (req, res) => {
     try {
         const religions = await Religion.findAll({
             where: {
@@ -34,16 +36,20 @@ exports.getReligion = async (req, res) => {
         });
         res.json(religions);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.createReligion = async (req, res) => {
-    const { name } = req.body;
+exports.CreateReligion = async (req, res) => {
+    const {
+        Name
+    } = req.body;
     try {
         const religionExist = await Religion.findOne({
             where: { 
-                [Op.or]: [{ Name: name }] 
+                Name
             }
         });
         if (religionExist) {
@@ -51,32 +57,43 @@ exports.createReligion = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Religion already exists!",
+                    msg: "record already exists!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        const religion = await Religion.create({ Name: name });
-        res.status(201).json({ message: "Religion created successfully.", religion });
+        const religion = await Religion.create({
+            Name
+        });
+        res.status(201).json({ 
+            message: "record created.", 
+            religion 
+        });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.updateReligion = async (req, res) => {
+exports.UpdateReligion = async (req, res) => {
 
-    const { id } = req.params;
-    const { name } = req.body;
+    const {
+        Id
+    } = req.params;
+    const {
+        Name
+    } = req.body;
   
     try {
-        const religion = await Religion.findByPk(id);
+        const religion = await Religion.findByPk(Id);
         if (!religion) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Religion not found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -84,8 +101,8 @@ exports.updateReligion = async (req, res) => {
         }
         const religionExist = await Religion.findOne({
             where: {
-                [Op.or]: [{ Name: name } ],
-                Id: { [Op.ne]: id }
+                Name,
+                Id: { [Op.ne]: Id }
             },
         });
         if (religionExist) {
@@ -93,47 +110,76 @@ exports.updateReligion = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Religion is already in use!",
+                    msg: "record already exist!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        await religion.update({ Name: name });
-        res.status(200).json({ message: "Religion updated successfully.", religion });
+        await religion.update({
+            Name
+        });
+        res.status(200).json({ 
+            message: "record modified.", 
+            religion 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.disableReligion = async (req, res) => {
+exports.DisableReligion = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const religion = await Religion.findByPk(id);
+        const religion = await Religion.findByPk(Id);
         if (!religion) {
-            return res.status(404).json({ error: "Religion not found." });
+            return res.status(404).json({ 
+                error: "record not found." 
+            });
         }
-        await religion.update({ IsActive: false });
-        res.status(200).json({ message: "Religion disabled successfully.", religion });
+        await religion.update({ 
+            IsActive: false 
+        });
+        res.status(200).json({ 
+            message: "record disabled.", 
+            religion 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.enableReligion = async (req, res) => {
+exports.EnableReligion = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const religion = await Religion.findByPk(id);
+        const religion = await Religion.findByPk(Id);
         if (!religion) {
-            return res.status(404).json({ error: "Religion not found." });
+            return res.status(404).json({ 
+                error: "record not found."
+            });
         }
-        await religion.update({ IsActive: true });
-        res.status(200).json({ message: "Religion enabled successfully.", religion });
+        await religion.update({ 
+            IsActive: true 
+        });
+        res.status(200).json({ 
+            message: "record enabled.", 
+            religion 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };

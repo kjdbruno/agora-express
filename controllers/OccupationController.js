@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
 const { Occupation } = require('../models');
 
-exports.getAllOccupations = async (req, res) => {
+exports.GetAllOccupations = async (req, res) => {
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
@@ -20,11 +20,13 @@ exports.getAllOccupations = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.getOccupation = async (req, res) => {
+exports.GetOccupation = async (req, res) => {
     try {
         const occupations = await Occupation.findAll({
             where: {
@@ -34,16 +36,20 @@ exports.getOccupation = async (req, res) => {
         });
         res.json(occupations);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.createOccupation = async (req, res) => {
-    const { name } = req.body;
+exports.CreateOccupation = async (req, res) => {
+    const {
+        Name
+    } = req.body;
     try {
         const occupationExist = await Occupation.findOne({
             where: { 
-                [Op.or]: [{ Name: name }] 
+                Name
             }
         });
         if (occupationExist) {
@@ -51,32 +57,43 @@ exports.createOccupation = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Occupation already exists!",
+                    msg: "record already exists!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        const occupation = await Occupation.create({ Name: name });
-        res.status(201).json({ message: "Occupation created successfully.", occupation });
+        const occupation = await Occupation.create({
+            Name
+        });
+        res.status(201).json({ 
+            message: "record created.", 
+            occupation 
+        });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.updateOccupation = async (req, res) => {
+exports.UpdateOccupation = async (req, res) => {
 
-    const { id } = req.params;
-    const { name } = req.body;
+    const {
+        Id
+    } = req.params;
+    const {
+        Name
+    } = req.body;
   
     try {
-        const occupation = await Occupation.findByPk(id);
+        const occupation = await Occupation.findByPk(Id);
         if (!occupation) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Occupation not found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -84,8 +101,8 @@ exports.updateOccupation = async (req, res) => {
         }
         const occupationExist = await Occupation.findOne({
             where: {
-                [Op.or]: [{ Name: name } ],
-                Id: { [Op.ne]: id }
+                Name,
+                Id: { [Op.ne]: Id }
             },
         });
         if (occupationExist) {
@@ -93,47 +110,76 @@ exports.updateOccupation = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Occupation is already in use!",
+                    msg: "record already exist!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        await occupation.update({ Name: name });
-        res.status(200).json({ message: "Occupation updated successfully.", occupation });
+        await occupation.update({ 
+            Name
+        });
+        res.status(200).json({ 
+            message: "record modified.", 
+            occupation 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.disableOccupation = async (req, res) => {
+exports.DisableOccupation = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const occupation = await Occupation.findByPk(id);
+        const occupation = await Occupation.findByPk(Id);
         if (!occupation) {
-            return res.status(404).json({ error: "Occupation not found." });
+            return res.status(404).json({ 
+                error: "record not found." 
+            });
         }
-        await occupation.update({ IsActive: false });
-        res.status(200).json({ message: "Occupation disabled successfully.", occupation });
+        await occupation.update({ 
+            IsActive: false 
+        });
+        res.status(200).json({ 
+            message: "record disbaled.", 
+            occupation 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.enableOccupation = async (req, res) => {
+exports.EnableOccupation = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const occupation = await Occupation.findByPk(id);
+        const occupation = await Occupation.findByPk(Id);
         if (!occupation) {
-            return res.status(404).json({ error: "Occupation not found." });
+            return res.status(404).json({ 
+                error: "record not found." 
+            });
         }
-        await occupation.update({ IsActive: true });
-        res.status(200).json({ message: "Occupation enabled successfully.", occupation });
+        await occupation.update({ 
+            IsActive: true 
+        });
+        res.status(200).json({ 
+            message: "record enabled.", 
+            occupation 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };

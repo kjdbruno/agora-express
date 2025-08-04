@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
 const { Household, HouseholdMember, Family, FamilyMember, Resident } = require('../models');
 
-exports.getAllHouseholds = async (req, res) => {
+exports.GetAllHouseholds = async (req, res) => {
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
@@ -20,11 +20,13 @@ exports.getAllHouseholds = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.getHousehold = async (req, res) => {
+exports.GetHousehold = async (req, res) => {
     try {
         const households = await Household.findAll({
             where: {
@@ -33,11 +35,13 @@ exports.getHousehold = async (req, res) => {
         });
         res.json(households);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.getAllFamilies = async (req, res) => {
+exports.GetAllFamilies = async (req, res) => {
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
@@ -70,11 +74,13 @@ exports.getAllFamilies = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.getFamily = async (req, res) => {
+exports.GetFamily = async (req, res) => {
     try {
         const families = await Family.findAll({
             where: {
@@ -97,11 +103,13 @@ exports.getFamily = async (req, res) => {
         });
         res.json(families);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.getAllHouseholdMembers = async (req, res) => {
+exports.GetAllHouseholdMembers = async (req, res) => {
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
@@ -149,11 +157,13 @@ exports.getAllHouseholdMembers = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.getAllFamilyMembers = async (req, res) => {
+exports.GetAllFamilyMembers = async (req, res) => {
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
@@ -182,11 +192,13 @@ exports.getAllFamilyMembers = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.createHousehold = async (req, res) => {
+exports.CreateHousehold = async (req, res) => {
     try {
         // get the last household code
         const lastHousehold = await Household.findOne({
@@ -200,14 +212,21 @@ exports.createHousehold = async (req, res) => {
             const lastNo = parseInt(lastHousehold.Code.split('-')[1]);
             householdCode = `HH-${String(lastNo + 1).padStart(5, '0')}`;
         }
-        const household = await Household.create({ Code: householdCode });
-        res.status(201).json({ message: "Household created successfully.", household });
+        const household = await Household.create({ 
+            Code: householdCode 
+        });
+        res.status(201).json({ 
+            message: "record created.", 
+            household 
+        });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.createFamily = async (req, res) => {
+exports.CreateFamily = async (req, res) => {
     try {
         // get the last family code
         const lastFamily = await Family.findOne({
@@ -221,15 +240,26 @@ exports.createFamily = async (req, res) => {
             const lastNo = parseInt(lastFamily.Code.split('-')[1]);
             familyCode = `FF-${String(lastNo + 1).padStart(5, '0')}`;
         }
-        const family = await Family.create({ Code: familyCode });
-        res.status(201).json({ message: "Family created successfully.", family });
+        const family = await Family.create({ 
+            Code: familyCode
+         });
+        res.status(201).json({ 
+            message: "record created.", 
+            family 
+        });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.createHouseholdMember = async (req, res) => {
-    const { HouseholdId, FamilyId, IsHead } = req.body;
+exports.CreateHouseholdMember = async (req, res) => {
+    const {
+        HouseholdId,
+        FamilyId, 
+        IsHead 
+    } = req.body;
     try {
         const hmExist = await HouseholdMember.findOne({
             where: { 
@@ -242,7 +272,7 @@ exports.createHouseholdMember = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Member already exists!",
+                    msg: "record already exists!",
                     path: "name",
                     location: "body",
                 }],
@@ -259,22 +289,36 @@ exports.createHouseholdMember = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Member already assigned!",
+                    msg: "record already assigned!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
         
-        const member = await HouseholdMember.create({ HouseholdId, FamilyId, IsHead });
-        res.status(201).json({ message: "Member created successfully.", member });
+        const member = await HouseholdMember.create({ 
+            HouseholdId, 
+            FamilyId, 
+            IsHead 
+        });
+        res.status(201).json({ 
+            message: "record created.", 
+            member 
+        });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.createFamilyMember = async (req, res) => {
-    const { FamilyId, ResidentId, RelationshipId, IsHead } = req.body;
+exports.CreateFamilyMember = async (req, res) => {
+    const { 
+        FamilyId, 
+        ResidentId, 
+        RelationshipId, 
+        IsHead 
+    } = req.body;
     try {
         const fmExist = await FamilyMember.findOne({
             where: { 
@@ -287,7 +331,7 @@ exports.createFamilyMember = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Member already exists!",
+                    msg: "record already exists!",
                     path: "name",
                     location: "body",
                 }],
@@ -304,144 +348,290 @@ exports.createFamilyMember = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Member already assigned!",
+                    msg: "record already assigned!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
         
-        const member = await FamilyMember.create({ FamilyId, ResidentId, RelationshipId, IsHead });
-        res.status(201).json({ message: "Member created successfully.", member });
+        const member = await FamilyMember.create({ 
+            FamilyId, 
+            ResidentId, 
+            RelationshipId, 
+            IsHead 
+        });
+        res.status(201).json({ 
+            message: "record created.", 
+            member 
+        });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.disableHousehold = async (req, res) => {
+exports.DisableHousehold = async (req, res) => {
 
-    const { id } = req.params;
+    const { 
+        Id
+    } = req.params;
   
     try {
-        const household = await Household.findByPk(id);
+        const household = await Household.findByPk(Id);
         if (!household) {
-            return res.status(404).json({ error: "household not found." });
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
         }
-        await household.update({ IsActive: false });
-        res.status(200).json({ message: "household disabled successfully.", household });
+        await household.update({ 
+            IsActive: false 
+        });
+        res.status(200).json({ 
+            message: "record disabled.", 
+            household 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.enableHousehold = async (req, res) => {
+exports.EnableHousehold = async (req, res) => {
 
-    const { id } = req.params;
+    const { 
+        Id
+    } = req.params;
   
     try {
-        const household = await Household.findByPk(id);
+        const household = await Household.findByPk(Id);
         if (!household) {
-            return res.status(404).json({ error: "Household not found." });
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
         }
-        await household.update({ IsActive: true });
-        res.status(200).json({ message: "Household enabled successfully.", household });
+        await household.update({ 
+            IsActive: true 
+        });
+        res.status(200).json({ 
+            message: "record enabled.", 
+            household 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.disableHouseholdMember = async (req, res) => {
+exports.DisableHouseholdMember = async (req, res) => {
 
-    const { id } = req.params;
+    const { 
+        Id
+    } = req.params;
   
     try {
-        const member = await HouseholdMember.findByPk(id);
+        const member = await HouseholdMember.findByPk(Id);
         if (!member) {
-            return res.status(404).json({ error: "Member not found." });
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
         }
-        await member.update({ IsActive: false });
-        res.status(200).json({ message: "Member disabled successfully.", member });
+        await member.update({ 
+            IsActive: false 
+        });
+        res.status(200).json({ 
+            message: "record disbaled.", 
+            member 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.enableHouseholdMember = async (req, res) => {
+exports.EnableHouseholdMember = async (req, res) => {
 
-    const { id } = req.params;
+    const { 
+        Id
+    } = req.params;
   
     try {
-        const member = await HouseholdMember.findByPk(id);
+        const member = await HouseholdMember.findByPk(Id);
         if (!member) {
-            return res.status(404).json({ error: "Member not found." });
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
         }
-        await member.update({ IsActive: true });
-        res.status(200).json({ message: "Member enabled successfully.", member });
+        await member.update({ 
+            IsActive: true 
+        });
+        res.status(200).json({ 
+            message: "record enabled.", 
+            member 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.disableFamily = async (req, res) => {
+exports.DisableFamily = async (req, res) => {
 
-    const { id } = req.params;
+    const { 
+        Id
+    } = req.params;
   
     try {
-        const family = await Family.findByPk(id);
+        const family = await Family.findByPk(Id);
         if (!family) {
-            return res.status(404).json({ error: "Family not found." });
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
         }
-        await family.update({ IsActive: false });
-        res.status(200).json({ message: "Family disabled successfully.", family });
+        await family.update({ 
+            IsActive: false 
+        });
+        res.status(200).json({ 
+            message: "record disabled.", 
+            family 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.enableFamily = async (req, res) => {
+exports.EnableFamily = async (req, res) => {
 
-    const { id } = req.params;
+    const { 
+        Id
+    } = req.params;
   
     try {
-        const family = await Family.findByPk(id);
+        const family = await Family.findByPk(Id);
         if (!family) {
-            return res.status(404).json({ error: "Family not found." });
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
         }
-        await family.update({ IsActive: true });
-        res.status(200).json({ message: "Family enabled successfully.", family });
+        await family.update({ 
+            IsActive: true 
+        });
+        res.status(200).json({ 
+            message: "record enabled.", 
+            family 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.disableFamilyMember = async (req, res) => {
+exports.DisableFamilyMember = async (req, res) => {
 
-    const { id } = req.params;
+    const { 
+        Id
+    } = req.params;
   
     try {
-        const member = await FamilyMember.findByPk(id);
+        const member = await FamilyMember.findByPk(Id);
         if (!member) {
-            return res.status(404).json({ error: "Member not found." });
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
         }
-        await member.update({ IsActive: false });
-        res.status(200).json({ message: "Member disabled successfully.", member });
+        await member.update({ 
+            IsActive: false 
+        });
+        res.status(200).json({ 
+            message: "record disabled.", 
+            member 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.enableFamilyMember = async (req, res) => {
+exports.EnableFamilyMember = async (req, res) => {
 
-    const { id } = req.params;
+    const { 
+        Id
+    } = req.params;
   
     try {
-        const member = await FamilyMember.findByPk(id);
+        const member = await FamilyMember.findByPk(Id);
         if (!member) {
-            return res.status(404).json({ error: "Member not found." });
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
         }
-        await member.update({ IsActive: true });
-        res.status(200).json({ message: "Member enabled successfully.", member });
+        await member.update({ 
+            IsActive: true 
+        });
+        res.status(200).json({ 
+            message: "record enabled.", 
+            member 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };

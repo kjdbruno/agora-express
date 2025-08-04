@@ -6,7 +6,7 @@ const path = require('path');
 const multer = require('multer');
 const sharp = require('sharp');
 
-exports.getAllOfficialSetting = async (req, res) => {
+exports.GetAllOfficialSetting = async (req, res) => {
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
@@ -37,17 +37,24 @@ exports.getAllOfficialSetting = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.createOfficialSetting = async (req, res) => {
-    const { ResidentId, PositionId, IsSignatory } = req.body;
+exports.CreateOfficialSetting = async (req, res) => {
+    const { 
+        ResidentId, 
+        PositionId, 
+        IsSignatory 
+    } = req.body;
     const file = req.file;
     try {
         const osExist = await OfficialSetting.findOne({
             where: { 
-                [Op.or]: [{ ResidentId }, { PositionId }] 
+                ResidentId,
+                PositionId
             }
         });
         if (osExist) {
@@ -55,7 +62,7 @@ exports.createOfficialSetting = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Setting already exists!",
+                    msg: "record already exists!",
                     path: "name",
                     location: "body",
                 }],
@@ -76,29 +83,46 @@ exports.createOfficialSetting = async (req, res) => {
                 .jpeg({ quality: 80 })
                 .toFile(uploadPath);
 
-            const os = await OfficialSetting.create({ ResidentId, PositionId, IsSignatory, Signature: filename, BarangaySettingId: barangaySetting.Id });
-            return res.status(201).json({ message: "Official Setting created successfully.", os });
+            const os = await OfficialSetting.create({ 
+                ResidentId, 
+                PositionId, 
+                IsSignatory, 
+                Signature: filename, 
+                BarangaySettingId: barangaySetting.Id 
+            });
+            return res.status(201).json({ 
+                message: "Officrecord created.", 
+                os 
+            });
         }
         
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.updateOfficialSetting = async (req, res) => {
+exports.UpdateOfficialSetting = async (req, res) => {
 
-    const { id } = req.params;
-    const { ResidentId, PositionId, IsSignatory } = req.body;
+    const {
+        Id
+    } = req.params;
+    const { 
+        ResidentId, 
+        PositionId, 
+        IsSignatory 
+    } = req.body;
     const file = req.file;
   
     try {
-        const os = await OfficialSetting.findByPk(id);
+        const os = await OfficialSetting.findByPk(Id);
         if (!os) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Setting not found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -106,8 +130,9 @@ exports.updateOfficialSetting = async (req, res) => {
         }
         const osExist = await OfficialSetting.findOne({
             where: {
-                [Op.or]: [{ ResidentId }, { PositionId } ],
-                Id: { [Op.ne]: id }
+                ResidentId,
+                PositionId,
+                Id: { [Op.ne]: Id }
             },
         });
         if (osExist) {
@@ -115,7 +140,7 @@ exports.updateOfficialSetting = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Setting is already in use!",
+                    msg: "record already exist!",
                     path: "name",
                     location: "body",
                 }],
@@ -135,42 +160,75 @@ exports.updateOfficialSetting = async (req, res) => {
                 .jpeg({ quality: 80 })
                 .toFile(uploadPath);
 
-            await os.update({ ResidentId, PositionId, IsSignatory, Signature: filename, BarangaySettingId: barangaySetting.Id });
-            return res.status(200).json({ message: "Official Setting updated successfully.", os });
+            await os.update({ 
+                ResidentId, 
+                PositionId, 
+                IsSignatory, 
+                Signature: filename, 
+                BarangaySettingId: barangaySetting.Id 
+            });
+            return res.status(200).json({ 
+                message: "record modified.", 
+                os 
+            });
         }
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.disableOfficialSetting = async (req, res) => {
+exports.DisableOfficialSetting = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const os = await OfficialSetting.findByPk(id);
+        const os = await OfficialSetting.findByPk(Id);
         if (!os) {
-            return res.status(404).json({ error: "Official Setting not found." });
+            return res.status(404).json({ 
+                error: "record not found." 
+            });
         }
-        await os.update({ IsActive: false });
-        res.status(200).json({ message: "Official Setting disabled successfully.", os });
+        await os.update({ 
+            IsActive: false 
+        });
+        res.status(200).json({ 
+            message: "record disabled.", 
+            os 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.enableOfficialSetting = async (req, res) => {
+exports.EnableOfficialSetting = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const os = await OfficialSetting.findByPk(id);
+        const os = await OfficialSetting.findByPk(Id);
         if (!os) {
-            return res.status(404).json({ error: "Official Setting not found." });
+            return res.status(404).json({ 
+                error: "record not found." 
+            });
         }
-        await os.update({ IsActive: true });
-        res.status(200).json({ message: "Official Setting enabled successfully.", os });
+        await os.update({ 
+            IsActive: true 
+        });
+        res.status(200).json({ 
+            message: "record enabled.",
+            os 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };

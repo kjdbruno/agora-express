@@ -1,8 +1,7 @@
 const { Op } = require("sequelize");
 const { Nationality } = require('../models');
-const nationality = require("../models/nationality");
 
-exports.getAllNationalities = async (req, res) => {
+exports.GetAllNationalities = async (req, res) => {
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
@@ -21,11 +20,13 @@ exports.getAllNationalities = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.getNationality = async (req, res) => {
+exports.GetNationality = async (req, res) => {
     try {
         const nationalities = await Nationality.findAll({
             where: {
@@ -35,16 +36,20 @@ exports.getNationality = async (req, res) => {
         });
         res.json(nationalities);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.createNationality = async (req, res) => {
-    const { name } = req.body;
+exports.CreateNationality = async (req, res) => {
+    const {
+        Name
+    } = req.body;
     try {
         const nationalityExist = await Nationality.findOne({
             where: { 
-                [Op.or]: [{ Name: name }] 
+                Name 
             }
         });
         if (nationalityExist) {
@@ -52,32 +57,43 @@ exports.createNationality = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Nationality already exists!",
+                    msg: "record already exists!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        const nationality = await Nationality.create({ Name: name });
-        res.status(201).json({ message: "Nationality created successfully.", nationality });
+        const nationality = await Nationality.create({
+            Name
+        });
+        res.status(201).json({ 
+            message: "record created.", 
+            nationality 
+        });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.updateNationality = async (req, res) => {
+exports.UpdateNationality = async (req, res) => {
 
-    const { id } = req.params;
-    const { name } = req.body;
+    const {
+        Id
+    } = req.params;
+    const {
+        Name
+    } = req.body;
   
     try {
-        const nationality = await Nationality.findByPk(id);
+        const nationality = await Nationality.findByPk(Id);
         if (!nationality) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Nationality not found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -85,8 +101,8 @@ exports.updateNationality = async (req, res) => {
         }
         const nationalityExist = await Nationality.findOne({
             where: {
-                [Op.or]: [{ Name: name } ],
-                Id: { [Op.ne]: id }
+                Name,
+                Id: { [Op.ne]: Id }
             },
         });
         if (nationalityExist) {
@@ -94,47 +110,76 @@ exports.updateNationality = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Nationality is already in use!",
+                    msg: "record already exist!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        await nationality.update({ Name: name });
-        res.status(200).json({ message: "Nationality updated successfully.", nationality });
+        await nationality.update({
+            Name
+        });
+        res.status(200).json({ 
+            message: "record modified.", 
+            nationality 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.disableNationality = async (req, res) => {
+exports.DisableNationality = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const nationality = await Nationality.findByPk(id);
+        const nationality = await Nationality.findByPk(Id);
         if (!nationality) {
-            return res.status(404).json({ error: "Nationality not found." });
+            return res.status(404).json({ 
+                error: "record not found." 
+            });
         }
-        await nationality.update({ IsActive: false });
-        res.status(200).json({ message: "Nationality disabled successfully.", nationality });
+        await nationality.update({ 
+            IsActive: false 
+        });
+        res.status(200).json({ 
+            message: "record disabled.", 
+            nationality 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.enableNationality = async (req, res) => {
+exports.EnableNationality = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const nationality = await Nationality.findByPk(id);
+        const nationality = await Nationality.findByPk(Id);
         if (!nationality) {
-            return res.status(404).json({ error: "Nationality not found." });
+            return res.status(404).json({ 
+                error: "record not found." 
+            });
         }
-        await nationality.update({ IsActive: true });
-        res.status(200).json({ message: "Nationality enabled successfully.", nationality });
+        await nationality.update({ 
+            IsActive: true 
+        });
+        res.status(200).json({ 
+            message: "record enabled.", 
+            nationality 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };

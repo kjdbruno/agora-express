@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
 const { Illness } = require('../models');
 
-exports.getAllIllnesses = async (req, res) => {
+exports.GetAllIllnesses = async (req, res) => {
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
@@ -26,7 +26,7 @@ exports.getAllIllnesses = async (req, res) => {
     }
 };
 
-exports.getIllness = async (req, res) => {
+exports.GetIllness = async (req, res) => {
     try {
         const illnesses = await Illness.findAll({
             where: {
@@ -42,8 +42,10 @@ exports.getIllness = async (req, res) => {
     }
 };
 
-exports.createIllness = async (req, res) => {
-    const { Name } = req.body;
+exports.CreateIllness = async (req, res) => {
+    const { 
+        Name
+    } = req.body;
     try {
         const illnessExist = await Illness.findOne({
             where: { 
@@ -55,7 +57,7 @@ exports.createIllness = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Illness already exists!",
+                    msg: "record already exists!",
                     path: "name",
                     location: "body",
                 }],
@@ -65,7 +67,7 @@ exports.createIllness = async (req, res) => {
             Name 
         });
         res.status(201).json({
-            message: "Illness created successfully.", 
+            message: "record created.", 
             illness 
         });
     } catch (error) {
@@ -75,10 +77,14 @@ exports.createIllness = async (req, res) => {
     }
 };
 
-exports.updateIllness = async (req, res) => {
+exports.UpdateIllness = async (req, res) => {
 
-    const { id } = req.params;
-    const { Name } = req.body;
+    const { 
+        Id
+    } = req.params;
+    const { 
+        Name
+    } = req.body;
   
     try {
         const illness = await Illness.findByPk(id);
@@ -87,7 +93,7 @@ exports.updateIllness = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Illness not found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -96,7 +102,7 @@ exports.updateIllness = async (req, res) => {
         const illnessExist = await Illness.findOne({
             where: {
                 Name,
-                Id: { [Op.ne]: id }
+                Id: { [Op.ne]: Id }
             },
         });
         if (illnessExist) {
@@ -104,7 +110,7 @@ exports.updateIllness = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Illness is already in use!",
+                    msg: "record already exist!",
                     path: "name",
                     location: "body",
                 }],
@@ -114,7 +120,7 @@ exports.updateIllness = async (req, res) => {
             Name
          });
         res.status(200).json({ 
-            message: "Illness updated successfully.", 
+            message: "record modified.", 
             illness 
         });
     } catch (error) {
@@ -124,18 +130,20 @@ exports.updateIllness = async (req, res) => {
     }
 };
 
-exports.disableIllness = async (req, res) => {
+exports.DisableIllness = async (req, res) => {
 
-    const { id } = req.params;
+    const { 
+        Id
+    } = req.params;
   
     try {
-        const illness = await Illness.findByPk(id);
+        const illness = await Illness.findByPk(Id);
         if (!illness) {
            return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Illness not found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -145,7 +153,7 @@ exports.disableIllness = async (req, res) => {
             IsActive: false 
         });
         res.status(200).json({ 
-            message: "Illness disabled successfully.", 
+            message: "record disabled.", 
             illness 
         });
     } catch (error) {
@@ -155,18 +163,20 @@ exports.disableIllness = async (req, res) => {
     }
 };
 
-exports.enableIllness = async (req, res) => {
+exports.EnableIllness = async (req, res) => {
 
-    const { id } = req.params;
+    const { 
+        Id
+    } = req.params;
   
     try {
-        const illness = await Illness.findByPk(id);
+        const illness = await Illness.findByPk(Id);
         if (!illness) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Illness not found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -176,7 +186,7 @@ exports.enableIllness = async (req, res) => {
             IsActive: true 
         });
         res.status(200).json({ 
-            message: "Illness enabled successfully.", 
+            message: "record enabled.", 
             illness 
         });
     } catch (error) {
