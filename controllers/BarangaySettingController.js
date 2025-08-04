@@ -7,8 +7,16 @@ const multer = require('multer');
 const sharp = require('sharp');
 
 exports.getAllBarangaySettings = async (req, res) => {
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
     try {
-        const bs = await BarangaySetting.findAll(
+        const { count, rows } = await BarangaySetting.findAndCountAll(
+            {
+                Limit,
+                Offset,
+                order: [['Id', 'ASC']]
+            },
             {
                 include: [
                     {
@@ -29,7 +37,14 @@ exports.getAllBarangaySettings = async (req, res) => {
                 ]
             }
         );
-        res.json(bs);
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
+            }
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

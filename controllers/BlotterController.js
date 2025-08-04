@@ -18,8 +18,14 @@ const multer = require('multer');
 const sharp = require('sharp');
 
 exports.getAllBlotters = async (req, res) => {
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
     try {
-        const blotters = await Blotter.findAll({
+        const { count, rows } = await Blotter.findAndCountAll({
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']],
             include: [
                 {
                     model: BlotterType,
@@ -27,7 +33,14 @@ exports.getAllBlotters = async (req, res) => {
                 }
             ]
         });
-        res.json(blotters);
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
+            }
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -145,9 +158,15 @@ exports.enableBlotter = async (req, res) => {
 exports.getAllBlotterParties = async (req, res) => {
 
     const { id } = req.query;
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
 
     try {
-        const blotters = await BlotterParty.findAll({
+        const { count, rows } = await BlotterParty.findAndCountAll({
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']],
             where: {
                 BlotterId: id
             },
@@ -158,7 +177,14 @@ exports.getAllBlotterParties = async (req, res) => {
                 }
             ]
         })
-        res.json(blotters);
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
+            }
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -287,9 +313,15 @@ exports.enableBlotterParty = async (req, res) => {
 exports.getAllBlotterHandlers = async (req, res) => {
 
     const { id } = req.query;
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
 
     try {
-        const blotters = await BlotterHandler.findAll({
+        const { count, rows } = await BlotterHandler.findAndCountAll({
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']],
             where: {
                 BlotterId: id
             },
@@ -310,7 +342,14 @@ exports.getAllBlotterHandlers = async (req, res) => {
                 }
             ]
         });
-        res.json(blotters);
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
+            }
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -388,14 +427,27 @@ exports.enableBlotterHandler = async (req, res) => {
 exports.getAllBlotterActions = async (req, res) => {
 
     const { id } = req.query;
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
 
     try {
-        const blotters = await BlotterAction.findAll({
+        const { count, rows } = await BlotterAction.findAndCountAll({
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']],
             where: {
                 BlotterId: id
             }
         });
-        res.json(blotters);
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
+            }
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

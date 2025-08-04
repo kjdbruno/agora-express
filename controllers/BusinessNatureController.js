@@ -2,9 +2,23 @@ const { Op } = require("sequelize");
 const { BusinessNature } = require('../models');
 
 exports.getAllBusinessNatures = async (req, res) => {
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
     try {
-        const bn = await BusinessNature.findAll();
-        res.json(bn);
+        const { count, rows } = await BusinessNature.findAll({
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']],
+        });
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
+            }
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

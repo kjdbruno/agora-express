@@ -1,16 +1,32 @@
 const { Op } = require("sequelize");
 const { Zone } = require('../models');
 
-exports.getAllZones = async (req, res) => {
+exports.GetAllZones = async (req, res) => {
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
     try {
-        const zones = await Zone.findAll();
-        res.json(zones);
+        const { count, rows } = await Zone.findAll({
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']]
+        });
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
+            }
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.getZone = async (req, res) => {
+exports.GetZone = async (req, res) => {
     try {
         const zones = await Zone.findAll({
             where: {
@@ -20,16 +36,18 @@ exports.getZone = async (req, res) => {
         });
         res.json(zones);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.createZone = async (req, res) => {
-    const { name } = req.body;
+exports.CreateZone = async (req, res) => {
+    const { Name } = req.body;
     try {
         const zoneExist = await Zone.findOne({
             where: { 
-                [Op.or]: [{ Name: name }] 
+                Name
             }
         });
         if (zoneExist) {
@@ -37,32 +55,43 @@ exports.createZone = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Zone already exists!",
+                    msg: "record already exists!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        const zone = await Zone.create({ Name: name });
-        res.status(201).json({ message: "Zone created successfully.", zone });
+        const zone = await Zone.create({
+            Name
+        });
+        res.status(201).json({ 
+            message: "record created.", 
+            zone 
+        });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.updateZone = async (req, res) => {
+exports.UpdateZone = async (req, res) => {
 
-    const { id } = req.params;
-    const { name } = req.body;
+    const {
+        Id
+    } = req.params;
+    const {
+        Name
+    } = req.body;
   
     try {
-        const zone = await Zone.findByPk(id);
+        const zone = await Zone.findByPk(Id);
         if (!zone) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Zone not found!",
+                    msg: "no record found!",
                     path: "name",
                     location: "body",
                 }],
@@ -70,8 +99,8 @@ exports.updateZone = async (req, res) => {
         }
         const zoneExist = await Zone.findOne({
             where: {
-                [Op.or]: [{ Name: name } ],
-                Id: { [Op.ne]: id }
+                Name,
+                Id: { [Op.ne]: Id }
             },
         });
         if (zoneExist) {
@@ -79,46 +108,73 @@ exports.updateZone = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Zone is already in use!",
+                    msg: "record already exist!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        await zone.update({ Name: name });
-        res.status(200).json({ message: "Zone updated successfully.", zone });
+        await zone.update({
+            Name
+        });
+        res.status(200).json({ 
+            message: "record modified.", 
+            zone 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.disableZone = async (req, res) => {
+exports.DisableZone = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const zone = await Zone.findByPk(id);
+        const zone = await Zone.findByPk(Id);
         if (!zone) {
-            return res.status(404).json({ error: "Zone not found." });
+            return res.status(404).json({ 
+                error: "no record found." 
+            });
         }
-        await zone.update({ IsActive: false });
-        res.status(200).json({ message: "Zone disabled successfully.", zone });
+        await zone.update({ 
+            IsActive: false 
+        });
+        res.status(200).json({ 
+            message: "record disabled.", 
+            zone 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.enableZone = async (req, res) => {
+exports.EnableZone = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const zone = await Zone.findByPk(id);
+        const zone = await Zone.findByPk(Id);
         if (!zone) {
-            return res.status(404).json({ error: "Zone not found." });
+            return res.status(404).json({ 
+                error: "record not found." 
+            });
         }
-        await zone.update({ IsActive: true });
-        res.status(200).json({ message: "Zone enabled successfully.", zone });
+        await zone.update({ 
+            IsActive: true 
+        });
+        res.status(200).json({ 
+            message: "record enabled.", 
+            zone 
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

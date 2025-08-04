@@ -1,10 +1,24 @@
 const { Op } = require("sequelize");
 const { Vaccine } = require('../models');
 
-exports.getAllVaccines = async (req, res) => {
+exports.GetAllVaccines = async (req, res) => {
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
     try {
-        const vaccines = await Vaccine.findAll();
-        res.json(vaccines);
+        const { count, rows } = await Vaccine.findAndCountAll({
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']]
+        });
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
+            }
+        });
     } catch (error) {
         res.status(500).json({ 
             error: error.message 
@@ -12,7 +26,7 @@ exports.getAllVaccines = async (req, res) => {
     }
 };
 
-exports.getVaccine = async (req, res) => {
+exports.GetVaccine = async (req, res) => {
     try {
         const vaccines = await Vaccine.findAll({
             where: {
@@ -28,7 +42,7 @@ exports.getVaccine = async (req, res) => {
     }
 };
 
-exports.createVaccine = async (req, res) => {
+exports.CreateVaccine = async (req, res) => {
     const { Name } = req.body;
     try {
         const vaccineExist = await Vaccine.findOne({
@@ -41,7 +55,7 @@ exports.createVaccine = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Vaccine already exists!",
+                    msg: "record already exists!",
                     path: "name",
                     location: "body",
                 }],
@@ -51,7 +65,7 @@ exports.createVaccine = async (req, res) => {
             Name 
         });
         res.status(201).json({
-            message: "Vaccine created successfully.", 
+            message: "record created.", 
             vaccine 
         });
     } catch (error) {
@@ -61,19 +75,23 @@ exports.createVaccine = async (req, res) => {
     }
 };
 
-exports.updateVaccine = async (req, res) => {
+exports.UpdateVaccine = async (req, res) => {
 
-    const { id } = req.params;
-    const { Name } = req.body;
+    const { 
+        Id 
+    } = req.params;
+    const { 
+        Name 
+    } = req.body;
   
     try {
-        const vaccine = await Vaccine.findByPk(id);
+        const vaccine = await Vaccine.findByPk(Id);
         if (!vaccine) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Vaccine not found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -82,7 +100,7 @@ exports.updateVaccine = async (req, res) => {
         const vExist = await Vaccine.findOne({
             where: {
                 Name,
-                Id: { [Op.ne]: id }
+                Id: { [Op.ne]: Id }
             },
         });
         if (vExist) {
@@ -90,7 +108,7 @@ exports.updateVaccine = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Vaccine is already in use!",
+                    msg: "record already exist!",
                     path: "name",
                     location: "body",
                 }],
@@ -100,7 +118,7 @@ exports.updateVaccine = async (req, res) => {
             Name
          });
         res.status(200).json({ 
-            message: "Vaccine updated successfully.", 
+            message: "record modified.", 
             vaccine 
         });
     } catch (error) {
@@ -110,18 +128,20 @@ exports.updateVaccine = async (req, res) => {
     }
 };
 
-exports.disableVaccine = async (req, res) => {
+exports.DisableVaccine = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const vaccine = await Vaccine.findByPk(id);
+        const vaccine = await Vaccine.findByPk(Id);
         if (!vaccine) {
            return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Vaccine not found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -131,7 +151,7 @@ exports.disableVaccine = async (req, res) => {
             IsActive: false 
         });
         res.status(200).json({ 
-            message: "Vaccine disabled successfully.", 
+            message: "record disabled.", 
             vaccine 
         });
     } catch (error) {
@@ -141,18 +161,20 @@ exports.disableVaccine = async (req, res) => {
     }
 };
 
-exports.enableVaccine = async (req, res) => {
+exports.EnableVaccine = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const vaccine = await Vaccine.findByPk(id);
+        const vaccine = await Vaccine.findByPk(Id);
         if (!vaccine) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Vaccine not found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -162,7 +184,7 @@ exports.enableVaccine = async (req, res) => {
             IsActive: true 
         });
         res.status(200).json({ 
-            message: "Vaccine enabled successfully.", 
+            message: "record enabled.", 
             vaccine 
         });
     } catch (error) {

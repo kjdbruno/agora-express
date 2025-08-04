@@ -1,16 +1,32 @@
 const { Op } = require("sequelize");
 const { Sex } = require('../models');
 
-exports.getAllSexes = async (req, res) => {
+exports.GetAllSexes = async (req, res) => {
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
     try {
-        const sexes = await Sex.findAll();
-        res.json(sexes);
+        const { count, rows } = await Sex.findAndCountAll({
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']]
+        });
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
+            }
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.getSex = async (req, res) => {
+exports.GetSex = async (req, res) => {
     try {
         const sexes = await Sex.findAll({
             where: {
@@ -20,16 +36,18 @@ exports.getSex = async (req, res) => {
         });
         res.json(sexes);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.createSex = async (req, res) => {
-    const { name } = req.body;
+exports.CreateSex = async (req, res) => {
+    const { Name } = req.body;
     try {
         const sexExist = await Sex.findOne({
             where: { 
-                [Op.or]: [{ Name: name }] 
+                Name
             }
         });
         if (sexExist) {
@@ -37,32 +55,43 @@ exports.createSex = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Sex already exists!",
+                    msg: "record already exists!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        const sex = await Sex.create({ Name: name });
-        res.status(201).json({ message: "Sex created successfully.", sex });
+        const sex = await Sex.create({
+            Name
+        });
+        res.status(201).json({ 
+            message: "record saved.", 
+            sex 
+        });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.updateSex = async (req, res) => {
+exports.UpdateSex = async (req, res) => {
 
-    const { id } = req.params;
-    const { name } = req.body;
+    const { 
+        Id 
+    } = req.params;
+    const { 
+        Name 
+    } = req.body;
   
     try {
-        const sex = await Sex.findByPk(id);
+        const sex = await Sex.findByPk(Id);
         if (!sex) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Sex not found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -70,8 +99,8 @@ exports.updateSex = async (req, res) => {
         }
         const sexExist = await Sex.findOne({
             where: {
-                [Op.or]: [{ Name: name } ],
-                Id: { [Op.ne]: id }
+                Name,
+                Id: { [Op.ne]: Id }
             },
         });
         if (sexExist) {
@@ -79,47 +108,76 @@ exports.updateSex = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Sex is already in use!",
+                    msg: "record already exist!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        await sex.update({ Name: name });
-        res.status(200).json({ message: "Sex updated successfully.", sex });
+        await sex.update({
+            Name
+        });
+        res.status(200).json({ 
+            message: "record modified.",
+            sex 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.disableSex = async (req, res) => {
+exports.DisableSex = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const sex = await Sex.findByPk(id);
+        const sex = await Sex.findByPk(Id);
         if (!sex) {
-            return res.status(404).json({ error: "Sex not found." });
+            return res.status(404).json({ 
+                error: "record not found." 
+            });
         }
-        await sex.update({ IsActive: false });
-        res.status(200).json({ message: "Sex disabled successfully.", sex });
+        await sex.update({ 
+            IsActive: false 
+        });
+        res.status(200).json({ 
+            message: "record disabled.", 
+            sex 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.enableSex = async (req, res) => {
+exports.EnableSex = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const sex = await Sex.findByPk(id);
+        const sex = await Sex.findByPk(Id);
         if (!sex) {
-            return res.status(404).json({ error: "Sex not found." });
+            return res.status(404).json({ 
+                error: "record not found." 
+            });
         }
-        await sex.update({ IsActive: true });
-        res.status(200).json({ message: "Sex enabled successfully.", sex });
+        await sex.update({ 
+            IsActive: true 
+        });
+        res.status(200).json({ 
+            message: "record enabled.", 
+            sex 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };

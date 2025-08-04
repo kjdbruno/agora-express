@@ -5,8 +5,14 @@ exports.getAllSymptoms = async (req, res) => {
     const {
         id
     } = req.query;
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
     try {
-        const symptoms = await DiseaseSymptom.findAll({
+        const { count, rows } = await DiseaseSymptom.findAndCountAll({
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']],
             where: {
                 DiseaseId: id
             },
@@ -17,7 +23,14 @@ exports.getAllSymptoms = async (req, res) => {
                 }
             ]
         });
-        res.json(symptoms);
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
+            }
+        });
     } catch (error) {
         res.status(500).json({ 
             error: error.message 

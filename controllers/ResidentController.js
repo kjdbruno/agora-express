@@ -1,9 +1,12 @@
 const { Op } = require("sequelize");
 const { Resident, ResidentInformation, ResidentCategory, ResidentPhoto, Sex, Zone, Religion, CivilStatus, BloodType, EducationalAttainment, Occupation, Nationality } = require('../models');
 
-exports.getAllResidents = async (req, res) => {
+exports.GetAllResidents = async (req, res) => {
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
     try {
-        const residents = await ResidentInformation.findAll({
+        const { count, rows } = await ResidentInformation.findAndCountAll({
             include: [
                 {
                     model: Resident,
@@ -58,15 +61,27 @@ exports.getAllResidents = async (req, res) => {
                     as: 'nationality',
                     attributes: ['Name']
                 }
-            ]
+            ],
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']]
         });
-        res.json(residents);
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
+            }
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.createResident = async (req, res) => {
+exports.CreateResident = async (req, res) => {
     const { 
         Firstname, 
         Middlename, 
@@ -101,7 +116,7 @@ exports.createResident = async (req, res) => {
     try {
         const residentExist = await Resident.findOne({
             where: { 
-                [Op.or]: [{ Firstname, Lastname, Middlename, Suffix}] 
+                Firstname, Lastname, Middlename, Suffix
             }
         });
         if (residentExist) {
@@ -109,7 +124,7 @@ exports.createResident = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Resident already exists!",
+                    msg: "record already exists!",
                     path: "name",
                     location: "body",
                 }],
@@ -174,15 +189,23 @@ exports.createResident = async (req, res) => {
             isDeceased,
         });
 
-        res.status(201).json({ message: "Resident created successfully.", resident, residentInfo });
+        res.status(201).json({ 
+            message: "record created.", 
+            resident, 
+            residentInfo 
+        });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.updateResident = async (req, res) => {
+exports.UpdateResident = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
     const { 
         ResidentId,
         Firstname, 
@@ -229,7 +252,7 @@ exports.updateResident = async (req, res) => {
                 }],
             });
         }
-        const residentInfo = await ResidentInformation.findByPk(id);
+        const residentInfo = await ResidentInformation.findByPk(Id);
         if (!residentInfo) {
             return res.status(403).json({
                 errors: [{
@@ -276,52 +299,82 @@ exports.updateResident = async (req, res) => {
             isDeceased
         });
 
-        res.status(200).json({ message: "Resident updated successfully.", resident, residentInfo });
+        res.status(200).json({ 
+            message: "record modified.", 
+            resident, 
+            residentInfo 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.disableResident = async (req, res) => {
+exports.DisableResident = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const r = await ResidentInformation.findByPk(id);
+        const r = await ResidentInformation.findByPk(Id);
         if (!r) {
-            return res.status(404).json({ error: "Resident information not found." });
+            return res.status(404).json({ 
+                error: "record not found." 
+            });
         }
-        await r.update({ IsActive: false });
+        await r.update({ 
+            IsActive: false 
+        });
 
         //get resident
         const resident = await Resident.findByPk(r.ResidentId);
         //get resident information
-        const residentInfo = await ResidentInformation.findByPk(id);
+        const residentInfo = await ResidentInformation.findByPk(Id);
 
-        res.status(200).json({ message: "Resident disabled successfully.", resident, residentInfo });
+        res.status(200).json({ 
+            message: "record disabled.", 
+            resident, 
+            residentInfo 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.enableResident = async (req, res) => {
+exports.EnableResident = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const r = await ResidentInformation.findByPk(id);
+        const r = await ResidentInformation.findByPk(Id);
         if (!r) {
-            return res.status(404).json({ error: "Resident information not found." });
+            return res.status(404).json({ 
+                error: "record not found." 
+            });
         }
-        await r.update({ IsActive: true });
+        await r.update({ 
+            IsActive: true 
+        });
 
         //get resident
         const resident = await Resident.findByPk(r.ResidentId);
         //get resident information
-        const residentInfo = await ResidentInformation.findByPk(id);
+        const residentInfo = await ResidentInformation.findByPk(Id);
 
-        res.status(200).json({ message: "Resident enabled successfully.", resident, residentInfo });
+        res.status(200).json({ 
+            message: "record enabled.", 
+            resident, 
+            residentInfo 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };

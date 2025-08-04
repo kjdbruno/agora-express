@@ -20,7 +20,7 @@ module.exports = {
         onDelete: 'CASCADE'
       },
       Cost: {
-        type: Sequelize.DECIMA(10, 2),
+        type: Sequelize.DECIMAL(10, 2),
         allowNull: false
       },
       Surcharge: {

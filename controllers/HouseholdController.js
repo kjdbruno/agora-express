@@ -2,9 +2,23 @@ const { Op } = require("sequelize");
 const { Household, HouseholdMember, Family, FamilyMember, Resident } = require('../models');
 
 exports.getAllHouseholds = async (req, res) => {
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
     try {
-        const households = await Household.findAll();
-        res.json(households);
+        const { count, rows } = await Household.findAndCountAll({
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']]
+        });
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
+            }
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -24,8 +38,11 @@ exports.getHousehold = async (req, res) => {
 };
 
 exports.getAllFamilies = async (req, res) => {
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
     try {
-        const families = await Family.findAll({
+        const { count, rows } = await Family.findAndCountAll({
             include: [
                 {
                     model: FamilyMember,
@@ -39,9 +56,19 @@ exports.getAllFamilies = async (req, res) => {
                         }
                     ]
                 }
-            ]
+            ],
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']]
         });
-        res.json(families);
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
+            }
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -75,8 +102,11 @@ exports.getFamily = async (req, res) => {
 };
 
 exports.getAllHouseholdMembers = async (req, res) => {
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
     try {
-        const members = await HouseholdMember.findAll({
+        const { count, rows } = await HouseholdMember.findAndCountAll({
             where: {
                 IsActive: true
             },
@@ -105,17 +135,30 @@ exports.getAllHouseholdMembers = async (req, res) => {
                         }
                     ]
                 }
-            ]
+            ],
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']]
         });
-        res.json(members);
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
+            }
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
 exports.getAllFamilyMembers = async (req, res) => {
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
     try {
-        const members = await FamilyMember.findAll({
+        const { count, rows } = await FamilyMember.findAndCountAll({
             where: {
                 IsActive: true
             },
@@ -125,9 +168,19 @@ exports.getAllFamilyMembers = async (req, res) => {
                     as: 'resident',
                     attributes: ['Id', 'Firstname', 'Middlename', 'Lastname', 'Suffix']
                 }
-            ]
+            ],
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']]
         });
-        res.json(members);
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
+            }
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

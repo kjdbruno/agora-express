@@ -25,8 +25,11 @@ exports.getAllServiceAvailments = async (req, res) => {
     const {
         Month
     } = req.query;
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
     try {
-        const availmentRecords = await HealthServiceAvailment.findAll({
+        const { count, rows } = await HealthServiceAvailment.findAndCountAll({
             where: Month
                 ? where(fn('MONTH', col('HealthServiceAvailment.createdAt')), Month)
                 : {},
@@ -44,9 +47,18 @@ exports.getAllServiceAvailments = async (req, res) => {
                     as: 'healthservice'
                 }
             ],
-            order: [['createdAt', 'DESC']]
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']]
         });
-        res.json(availmentRecords);
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
+            }
+        });
     } catch (error) {
         res.status(500).json({ 
             error: error.message 
@@ -58,13 +70,26 @@ exports.getAllHealthRecords = async (req, res) => {
     const {
         HealthRecordId
     } = req.params;
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
     try {
-        const healthRecords = await HealthRecord.findOne({
+        const { count, rows } = await HealthRecord.findAndCountAll({
             where: {
                 Id: HealthRecordId
+            },
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']]
+        });
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
             }
         });
-        res.json(healthRecords);
     } catch (error) {
         res.status(500).json({ 
             error: error.message 
@@ -225,14 +250,26 @@ exports.getAllMaternalRecords = async (req, res) => {
     const {
         id
     } = req.query;
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
     try {
-        const maternalRecords = await HealthMaternalRecord.findAll({
+        const { count, rows } = await HealthMaternalRecord.findAndCountAll({
             where: {
                 ServiceAvailmentId: id
             },
-            order: [['createdAt', 'DESC']]
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']]
         });
-        res.json(maternalRecords);
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
+            }
+        });
     } catch (error) {
         res.status(500).json({ 
             error: error.message 
@@ -469,8 +506,11 @@ exports.getAllImmunizationRecords = async (req, res) => {
     const {
         id
     } = req.query;
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
     try {
-        const immunizationRecords = await HealthImmunization.findAll({
+        const { count, rows } = await HealthImmunization.findAndCountAll({
             where: {
                 ServiceAvailmentId: id
             },
@@ -484,9 +524,18 @@ exports.getAllImmunizationRecords = async (req, res) => {
                     as: 'official'
                 }
             ],
-            order: [['createdAt', 'DESC']]
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']]
         });
-        res.json(immunizationRecords);
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
+            }
+        });
     } catch (error) {
         res.status(500).json({ 
             error: error.message 
@@ -696,14 +745,26 @@ exports.getAllPrenatalRecords = async (req, res) => {
     const {
         id
     } = req.query;
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
     try {
-        const prenatalRecords = await HealthPrenatal.findAll({
+        const { count, rows } = await HealthPrenatal.findAndCountAll({
             where: {
                 MaternalRecordId: id
             },
-            order: [['createdAt', 'DESC']]
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']]
         });
-        res.json(prenatalRecords);
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
+            }
+        });
     } catch (error) {
         res.status(500).json({ 
             error: error.message 
@@ -838,8 +899,11 @@ exports.getAllDeliveryRecords = async (req, res) => {
     const {
         id
     } = req.query;
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
     try {
-        const deliveryRecords = await HealthDelivery.findAll({
+        const { count, rows } = await HealthDelivery.findAndCountAll({
             where: {
                 MaternalRecordId: id
             },
@@ -849,9 +913,18 @@ exports.getAllDeliveryRecords = async (req, res) => {
                     as: 'resident'
                 }
             ],
-            order: [['createdAt', 'DESC']]
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']]
         });
-        res.json(deliveryRecords);
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
+            }
+        });
     } catch (error) {
         res.status(500).json({ 
             error: error.message 
@@ -1044,14 +1117,26 @@ exports.getAllPostnatalRecords = async (req, res) => {
     const {
         id
     } = req.query;
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
     try {
-        const postnatalRecords = await HealthPostnatal.findAll({
+        const { count, rows } = await HealthPostnatal.findAndCountAll({
             where: {
                 MaternalRecordId: id
             },
-            order: [['createdAt', 'DESC']]
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']]
         });
-        res.json(postnatalRecords);
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
+            }
+        });
     } catch (error) {
         res.status(500).json({ 
             error: error.message 
@@ -1186,8 +1271,11 @@ exports.getAllDiseaseRecords = async (req, res) => {
     const {
         id
     } = req.query;
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
     try {
-        const diseaseRecords = await HealthDisease.findAll({
+        const { count, rows } = await HealthDisease.findAndCountAll({
             where: {
                 ServiceAvailmentId: id
             },
@@ -1197,9 +1285,18 @@ exports.getAllDiseaseRecords = async (req, res) => {
                     as: 'disease'
                 }
             ],
-            order: [['createdAt', 'DESC']]
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']]
         });
-        res.json(diseaseRecords);
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
+            }
+        });
     } catch (error) {
         res.status(500).json({ 
             error: error.message 
@@ -1350,8 +1447,11 @@ exports.getAllIllnessRecords = async (req, res) => {
     const {
         id
     } = req.query;
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
     try {
-        const illnessRecord = await HealthIllness.findAll({
+        const { count, rows } = await HealthIllness.findAndCountAll({
             where: {
                 ServiceAvailmentId: id
             },
@@ -1361,9 +1461,18 @@ exports.getAllIllnessRecords = async (req, res) => {
                     as: 'illness'
                 }
             ],
-            order: [['createdAt', 'DESC']]
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']]
         });
-        res.json(illnessRecord);
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
+            }
+        });
     } catch (error) {
         res.status(500).json({ 
             error: error.message 
@@ -1502,8 +1611,11 @@ exports.getAllInterventionRecords = async (req, res) => {
     const {
         id
     } = req.query;
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
     try {
-        const interventionRecords = await HealthIntervention.findAll({
+        const { count, rows } = await HealthIntervention.findAndCountAll({
             where: {
                 ServiceAvailmentId: id
             },
@@ -1513,9 +1625,18 @@ exports.getAllInterventionRecords = async (req, res) => {
                     as: 'medication'
                 }
             ],
-            order: [['createdAt', 'DESC']]
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']]
         });
-        res.json(interventionRecords);
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
+            }
+        });
     } catch (error) {
         res.status(500).json({ 
             error: error.message 

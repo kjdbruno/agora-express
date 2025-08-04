@@ -7,24 +7,35 @@ const multer = require('multer');
 const sharp = require('sharp');
 
 exports.getAllOfficialSetting = async (req, res) => {
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
     try {
-        const os = await OfficialSetting.findAll(
-            {
-                include: [
-                    {
-                        model: Resident,
-                        as: 'resident',
-                        attributes: ['Firstname', 'Middlename', 'Lastname', 'Suffix']
-                    },
-                    {
-                        model: Position,
-                        as: 'position',
-                        attributes: ['Id', 'Name']
-                    }
-                ]
+        const { count, rows } = await OfficialSetting.findAndCountAll({
+            include: [
+                {
+                    model: Resident,
+                    as: 'resident',
+                    attributes: ['Firstname', 'Middlename', 'Lastname', 'Suffix']
+                },
+                {
+                    model: Position,
+                    as: 'position',
+                    attributes: ['Id', 'Name']
+                }
+            ],
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']]
+        });
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
             }
-        );
-        res.json(os);
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

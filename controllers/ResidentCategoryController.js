@@ -2,15 +2,31 @@ const { Op } = require("sequelize");
 const { ResidentCategory } = require('../models');
 
 exports.getAllResidentCategories = async (req, res) => {
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
     try {
-        const rc = await ResidentCategory.findAll();
-        res.json(rc);
+        const { count, rows } = await ResidentCategory.findAndCountAll({
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']]
+        });
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
+            }
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.getResidentcategory = async (req, res) => {
+exports.GetResidentcategory = async (req, res) => {
     try {
         const rc = await ResidentCategory.findAll({
             where: {
@@ -20,16 +36,21 @@ exports.getResidentcategory = async (req, res) => {
         });
         res.json(rc);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.createResidentCategory = async (req, res) => {
-    const { name, alias } = req.body;
+exports.CreateResidentCategory = async (req, res) => {
+    const {
+        Name,
+        Alias
+    } = req.body;
     try {
         const rcExist = await ResidentCategory.findOne({
             where: { 
-                [Op.or]: [{ Name: name }, { Alias: alias }] 
+                [Op.or]: [{ Name }, { Alias }] 
             }
         });
         if (rcExist) {
@@ -37,32 +58,45 @@ exports.createResidentCategory = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Resident category already exists!",
+                    msg: "record already exists!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        const rc = await ResidentCategory.create({ Name: name, Alias: alias });
-        res.status(201).json({ message: "Resident category created successfully.", rc });
+        const rc = await ResidentCategory.create({ 
+            Name, 
+            Alias 
+        });
+        res.status(201).json({ 
+            message: "record created.", 
+            rc 
+        });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.updateResidentCategory = async (req, res) => {
+exports.UpdateResidentCategory = async (req, res) => {
 
-    const { id } = req.params;
-    const { name, alias } = req.body;
+    const {
+        Id
+    } = req.params;
+    const {
+        Name,
+        Alias
+    } = req.body;
   
     try {
-        const rc = await ResidentCategory.findByPk(id);
+        const rc = await ResidentCategory.findByPk(Id);
         if (!rc) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Resident category not found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -70,8 +104,8 @@ exports.updateResidentCategory = async (req, res) => {
         }
         const rcExist = await ResidentCategory.findOne({
             where: {
-                [Op.or]: [{ Name: name }, { Alias: alias } ],
-                Id: { [Op.ne]: id }
+                [Op.or]: [{ Name }, { Alias } ],
+                Id: { [Op.ne]: Id }
             },
         });
         if (rcExist) {
@@ -79,47 +113,77 @@ exports.updateResidentCategory = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Resident category is already in use!",
+                    msg: "record already exist!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        await rc.update({ Name: name, Alias: alias });
-        res.status(200).json({ message: "Resident category updated successfully.", rc });
+        await rc.update({ 
+            Name, 
+            Alias
+        });
+        res.status(200).json({ 
+            message: "record modified.", 
+            rc 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.disableResidentCategory = async (req, res) => {
+exports.DisableResidentCategory = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
+  
+    try {
+        const rc = await ResidentCategory.findByPk(Id);
+        if (!rc) {
+            return res.status(404).json({ 
+                error: "record not found." 
+            });
+        }
+        await rc.update({ 
+            IsActive: false 
+        });
+        res.status(200).json({ 
+            message: "record disabled.", 
+            rc 
+        });
+    } catch (error) {
+        res.status(500).json({ 
+            error: error.message 
+        });
+    }
+};
+
+exports.EnableResidentCategory = async (req, res) => {
+
+    const {
+        Id
+    } = req.params;
   
     try {
         const rc = await ResidentCategory.findByPk(id);
         if (!rc) {
-            return res.status(404).json({ error: "Resident category not found." });
+            return res.status(404).json({ 
+                error: "record not found." 
+            });
         }
-        await rc.update({ IsActive: false });
-        res.status(200).json({ message: "Resident category disabled successfully.", rc });
+        await rc.update({ 
+            IsActive: true 
+        });
+        res.status(200).json({ 
+            message: "record eanbled.", 
+            rc 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
-exports.enableResidentCategory = async (req, res) => {
-
-    const { id } = req.params;
-  
-    try {
-        const rc = await ResidentCategory.findByPk(id);
-        if (!rc) {
-            return res.status(404).json({ error: "Resident category not found." });
-        }
-        await rc.update({ IsActive: true });
-        res.status(200).json({ message: "Resident category enabled successfully.", rc });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };

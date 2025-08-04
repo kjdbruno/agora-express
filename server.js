@@ -67,8 +67,6 @@ app.use('/api/officialsetting', require('./routes/OfficialSettingRoutes'));
 app.use('/api/businessnature', require('./routes/BusinessNatureRoutes'));
 app.use('/api/businesstype', require('./routes/BusinessTypeRoutes'));
 app.use('/api/business', require('./routes/BusinessRoutes'));
-app.use('/api/certificationtype', require('./routes/CertificationTypeRoutes'));
-app.use('/api/certificationsetting', require('./routes/CertificationSettingRoutes'));
 app.use('/api/relationship', require('./routes/RelationshipRoutes'));
 app.use('/api/blottertype', require('./routes/BlotterTypeRoutes'));
 app.use('/api/blotter', require('./routes/BlotterRoutes'));

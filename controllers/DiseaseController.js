@@ -2,9 +2,23 @@ const { Op } = require("sequelize");
 const { Disease } = require('../models');
 
 exports.getAllDiseases = async (req, res) => {
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
     try {
-        const diseases = await Disease.findAll();
-        res.json(diseases);
+        const { count, rows } = await Disease.findAndCountAll({
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']]
+        });
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
+            }
+        });
     } catch (error) {
         res.status(500).json({ 
             error: error.message 

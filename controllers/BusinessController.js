@@ -2,29 +2,40 @@ const { Op } = require("sequelize");
 const { Business, Resident, BusinessNature, BusinessType } = require('../models');
 
 exports.getAllBusinesses = async (req, res) => {
+    const Page = parseInt(req.query.Page) || 1;
+    const Limit = parseInt(req.query.Limit) || 10;
+    const Offset = (Page - 1) * Limit;
     try {
-        const businesses = await Business.findAll(
-            {
-                include: [
-                    {
-                        model: BusinessNature,
-                        as: 'businessNature',
-                        attributes: ['Name']
-                    },
-                    {
-                        model: BusinessType,
-                        as: 'businessType',
-                        attributes: ['Name']
-                    },
-                    {
-                        model: Resident,
-                        as: 'resident',
-                        attributes: ['Firstname', 'Middlename', 'Lastname', 'Suffix']
-                    }
-                ]
+        const { count, rows } = await Business.findAndCountAll({
+            Limit,
+            Offset,
+            order: [['Id', 'ASC']],
+            include: [
+                {
+                    model: BusinessNature,
+                    as: 'businessNature',
+                    attributes: ['Name']
+                },
+                {
+                    model: BusinessType,
+                    as: 'businessType',
+                    attributes: ['Name']
+                },
+                {
+                    model: Resident,
+                    as: 'resident',
+                    attributes: ['Firstname', 'Middlename', 'Lastname', 'Suffix']
+                }
+            ]
+        });
+        res.json({
+            Data: rows,
+            Meta: {
+                TotalItems: count,
+                TotalPages: Math.ceil(count / Limit),
+                CurrentPage: Page
             }
-        );
-        res.json(businesses);
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
