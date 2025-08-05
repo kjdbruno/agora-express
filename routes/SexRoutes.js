@@ -1,13 +1,20 @@
 const express = require('express');
 const router = express.Router();
 
-const { getAllSexes, getSex, createSex, updateSex, disableSex, enableSex } = require('../controllers/SexController');
+const { 
+    GetAllSexes, 
+    GetSex,
+    CreateSex,
+    UpdateSex,
+    DisableSex,
+    EnableSex
+} = require('../controllers/SexController');
 
-router.get('/', getAllSexes);
-router.get('/option', getSex);
-router.post('/', createSex);
-router.post('/:id/update', updateSex);
-router.post('/:id/disable', disableSex);
-router.post('/:id/enable', enableSex);
+router.get('/', GetAllSexes);
+router.get('/option', GetSex);
+router.post('/', CreateSex);
+router.post('/:id/update', UpdateSex);
+router.post('/:id/disable', DisableSex);
+router.post('/:id/enable', EnableSex);
 
 module.exports = router;

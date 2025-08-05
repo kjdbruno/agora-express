@@ -2,62 +2,62 @@ const express = require('express');
 const router = express.Router();
 
 const { 
-    getAllBlotters,
-    createBlotter,
-    updateBlotter,
-    disableBlotter,
-    enableBlotter,
-    getAllBlotterParties,
-    createBlotterParty,
-    disableBlotterParty,
-    enableBlotterParty,
-    getAllBlotterHandlers,
-    createBlotterHandler,
-    disableBlotterHandler,
-    enableBlotterHandler,
-    getAllBlotterActions,
-    createBlotterAction,
-    disableBlotterAction,
-    enableBlotterAction,
-    getAllBlotterAttachments,
-    createBlotterAttachment,
-    deleteBlotterAttachment,
-    getAllBlotterActionAttachments,
-    createBlotterActionAttachment,
-    deleteBlotterActionAttachment
- } = require('../controllers/BlotterController');
+    GetAllBlotters, 
+    CreateBlotter,
+    UpdateBlotter,
+    DisableBlotter,
+    EnableBlotter,
+    GetAllBlotterParties,
+    CreateBlotterParty,
+    DisableBlotterParty,
+    EnableBlotterParty,
+    GetAllBlotterHandlers,
+    CreateBlotterHandler,
+    DisableBlotterHandler,
+    EnableBlotterHandler,
+    GetAllBlotterActions,
+    CreateBlotterAction,
+    DisableBlotterAction,
+    EnableBlotterAction,
+    GetAllBlotterAttachments,
+    CreateBlotterAttachment,
+    DeleteBlotterAttachment,
+    GetAllBlotterActionAttachments,
+    CreateBlotterActionAttachment,
+    DeleteBlotterActionAttachment
+} = require('../controllers/BlotterController');
 
  const multer = require('multer');
  const storage = multer.memoryStorage();
  const upload = multer({ storage });
 
-router.get('/', getAllBlotters);
-router.post('/', createBlotter);
-router.post('/:id/update', updateBlotter);
-router.post('/:id/disable', disableBlotter);
-router.post('/:id/enable', enableBlotter);
+router.get('/', GetAllBlotters);
+router.post('/', CreateBlotter);
+router.post('/:id/update', UpdateBlotter);
+router.post('/:id/disable', DisableBlotter);
+router.post('/:id/enable', EnableBlotter);
 
-router.get('/party', getAllBlotterParties);
-router.post('/party', createBlotterParty);
-router.post('/party/:id/disable', disableBlotterParty);
-router.post('/party/:id/enable', enableBlotterParty);
+router.get('/party', GetAllBlotterParties);
+router.post('/party', CreateBlotterParty);
+router.post('/party/:id/disable', DisableBlotterParty);
+router.post('/party/:id/enable', EnableBlotterParty);
 
-router.get('/handler', getAllBlotterHandlers);
-router.post('/handler', createBlotterHandler);
-router.post('/handler/:id/disable', disableBlotterHandler);
-router.post('/handler/:id/enable', enableBlotterHandler);
+router.get('/handler', GetAllBlotterHandlers);
+router.post('/handler', CreateBlotterHandler);
+router.post('/handler/:id/disable', DisableBlotterHandler);
+router.post('/handler/:id/enable', EnableBlotterHandler);
 
-router.get('/action', getAllBlotterActions);
-router.post('/action', createBlotterAction);
-router.post('/action/:id/disable', disableBlotterAction);
-router.post('/action/:id/enable', enableBlotterAction);
+router.get('/action', GetAllBlotterActions);
+router.post('/action', CreateBlotterAction);
+router.post('/action/:id/disable', DisableBlotterAction);
+router.post('/action/:id/enable', EnableBlotterAction);
 
-router.get('/attachment', getAllBlotterAttachments);
-router.post('/attachment', upload.array('files'), createBlotterAttachment);
-router.post('/attachment/:id/delete', deleteBlotterAttachment);
+router.get('/attachment', GetAllBlotterAttachments);
+router.post('/attachment', upload.array('files'), CreateBlotterAttachment);
+router.post('/attachment/:id/delete', DeleteBlotterAttachment);
 
-router.get('/action/attachment', getAllBlotterActionAttachments);
-router.post('/action/attachment', upload.array('files'), createBlotterActionAttachment);
-router.post('/action/attachment/:id/delete', deleteBlotterActionAttachment);
+router.get('/action/attachment', GetAllBlotterActionAttachments);
+router.post('/action/attachment', upload.array('files'), CreateBlotterActionAttachment);
+router.post('/action/attachment/:id/delete', DeleteBlotterActionAttachment);
 
 module.exports = router;

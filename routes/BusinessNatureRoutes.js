@@ -1,13 +1,20 @@
 const express = require('express');
 const router = express.Router();
 
-const { getAllBusinessNatures, getBusinessNature, createBusinessNature, updateBusinessNature, disableBusinessNature, enableBusinessNature } = require('../controllers/BusinessNatureController');
+const { 
+    GetAllBusinessNatures, 
+    GetBusinessNature,
+    CreateBusinessNature,
+    UpdateBusinessNature,
+    DisableBusinessNature,
+    EnableBusinessNature
+} = require('../controllers/BusinessNatureController');
 
-router.get('/', getAllBusinessNatures);
-router.get('/option', getBusinessNature);
-router.post('/', createBusinessNature);
-router.post('/:id/update', updateBusinessNature);
-router.post('/:id/disable', disableBusinessNature);
-router.post('/:id/enable', enableBusinessNature);
+router.get('/', GetAllBusinessNatures);
+router.get('/option', GetBusinessNature);
+router.post('/', CreateBusinessNature);
+router.post('/:id/update', UpdateBusinessNature);
+router.post('/:id/disable', DisableBusinessNature);
+router.post('/:id/enable', EnableBusinessNature);
 
 module.exports = router;

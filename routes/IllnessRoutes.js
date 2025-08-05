@@ -2,19 +2,19 @@ const express = require('express');
 const router = express.Router();
 
 const { 
-    getAllIllnesses,
-    getIllness,
-    createIllness,
-    updateIllness,
-    disableIllness,
-    enableIllness
+    GetAllIllnesses, 
+    GetIllness,
+    CreateIllness,
+    UpdateIllness,
+    DisableIllness,
+    EnableIllness
 } = require('../controllers/IllnessController');
 
-router.get('/', getAllIllnesses);
-router.get('/option', getIllness);
-router.post('/', createIllness);
-router.post('/:id/update', updateIllness);
-router.post('/:id/disable', disableIllness);
-router.post('/:id/enable', enableIllness);
+router.get('/', GetAllIllnesses);
+router.get('/option', GetIllness);
+router.post('/', CreateIllness);
+router.post('/:id/update', UpdateIllness);
+router.post('/:id/disable', DisableIllness);
+router.post('/:id/enable', EnableIllness);
 
 module.exports = router;

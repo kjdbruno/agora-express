@@ -1,4 +1,6 @@
-const { Op } = require("sequelize");
+const { 
+    Op 
+} = require("sequelize");
 const { 
     BlotterType, 
     Blotter, 
@@ -18,10 +20,13 @@ const multer = require('multer');
 const sharp = require('sharp');
 
 exports.GetAllBlotters = async (req, res) => {
+
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
+
     try {
+
         const { count, rows } = await Blotter.findAndCountAll({
             Limit,
             Offset,
@@ -33,6 +38,7 @@ exports.GetAllBlotters = async (req, res) => {
                 }
             ]
         });
+
         res.json({
             Data: rows,
             Meta: {
@@ -41,10 +47,13 @@ exports.GetAllBlotters = async (req, res) => {
                 CurrentPage: Page
             }
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -60,7 +69,9 @@ exports.CreateBlotter = async (req, res) => {
     try {
         
         const currentYear = new Date().getFullYear();
+
         let CaseNo;
+
         const lastBlotter = await Blotter.findOne({
             where: {
                 CreatedAt: {
@@ -71,6 +82,7 @@ exports.CreateBlotter = async (req, res) => {
             order: [['Id', 'DESC']],
             attributes: ['CaseNo']
         });
+
         if (!lastBlotter) {
             CaseNo = `BLT${currentYear}-0001`;
         } else {
@@ -90,10 +102,13 @@ exports.CreateBlotter = async (req, res) => {
             message: "record created.", 
             blotter 
         });
+
     } catch (error) {
+
         res.status(400).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -102,6 +117,7 @@ exports.UpdateBlotter = async (req, res) => {
     const { 
         Id 
     } = req.params;
+
     const { 
         BlotterTypeId, 
         IncidentDate, 
@@ -110,7 +126,9 @@ exports.UpdateBlotter = async (req, res) => {
     } = req.body;
 
     try {
+
         const blotter = await Blotter.findByPk(Id);
+
         if (!blotter) {
             return res.status(403).json({
                 errors: [{
@@ -122,6 +140,7 @@ exports.UpdateBlotter = async (req, res) => {
                 }],
             });
         }
+
         await blotter.update({
             BlotterTypeId,
             IncidentDate,
@@ -133,21 +152,26 @@ exports.UpdateBlotter = async (req, res) => {
             message: "record modified.", 
             blotter 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
-exports.disableBlotter = async (req, res) => {
+exports.DisableBlotter = async (req, res) => {
 
     const {
         Id
     } = req.params;
   
     try {
+
         const blotter = await Blotter.findByPk(Id);
+
         if (!blotter) {
             return res.status(403).json({
                 errors: [{
@@ -159,17 +183,22 @@ exports.disableBlotter = async (req, res) => {
                 }],
             });
         }
+
         await blotter.update({ 
             IsActive: false 
         });
+
         res.status(200).json({ 
             message: "record disabled.", 
             blotter 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -180,7 +209,9 @@ exports.EnableBlotter = async (req, res) => {
     } = req.params;
   
     try {
+
         const blotter = await Blotter.findByPk(Id);
+
         if (!blotter) {
             return res.status(403).json({
                 errors: [{
@@ -192,17 +223,22 @@ exports.EnableBlotter = async (req, res) => {
                 }],
             });
         }
+
         await blotter.update({ 
             IsActive: true 
         });
+
         res.status(200).json({ 
             message: "record enabled.", 
             blotter 
         });
+
     } catch (error) {
+        
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -211,6 +247,7 @@ exports.GetAllBlotterParties = async (req, res) => {
     const {
         Id
     } = req.query;
+
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
@@ -230,6 +267,7 @@ exports.GetAllBlotterParties = async (req, res) => {
                 }
             ]
         })
+
         res.json({
             Data: rows,
             Meta: {
@@ -238,10 +276,13 @@ exports.GetAllBlotterParties = async (req, res) => {
                 CurrentPage: Page
             }
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -259,13 +300,16 @@ exports.CreateBlotterParty = async (req, res) => {
     } = req.body;
 
     try {
+
         if (ResidentId) {
+
             const partyExists = await BlotterParty.findOne({
                 where: {
                     BlotterId,
                     ResidentId
                 }
             });
+
             if (partyExists) {
                 return res.status(403).json({
                     errors: [{
@@ -277,17 +321,21 @@ exports.CreateBlotterParty = async (req, res) => {
                     }],
                 });
             }
+
             const blotter = await BlotterParty.create({
                 BlotterId,
                 ResidentId,
                 Role,
                 Statement
             });
+
             res.status(201).json({ 
                 message: "Blotter party created successfully.", 
                 blotter 
             });
+
         } else {
+
             const rExist = await Resident.findOne({
                 where: { 
                     Firstname,
@@ -295,8 +343,11 @@ exports.CreateBlotterParty = async (req, res) => {
                     Lastname
                 }
             });
+
             if (rExist) {
+
                 if (rExist.IsResident) {
+
                     return res.status(403).json({
                         errors: [{
                             type: "manual",
@@ -306,7 +357,9 @@ exports.CreateBlotterParty = async (req, res) => {
                             location: "body",
                         }],
                     });
+
                 } else {
+
                     return res.status(403).json({
                         errors: [{
                             type: "manual",
@@ -316,8 +369,10 @@ exports.CreateBlotterParty = async (req, res) => {
                             location: "body",
                         }],
                     });
+
                 }
             }
+
             const resident = await Resident.create({
                 Firstname,
                 Middlename,
@@ -325,21 +380,26 @@ exports.CreateBlotterParty = async (req, res) => {
                 Suffix,
                 IsResident: false
             });
+
             const blotter = await BlotterParty.create({
                 BlotterId,
                 ResidentId: resident.Id,
                 Role,
                 Statement
             });
+
             res.status(201).json({ 
                 message: "record created.", 
                 blotter 
             });
+
         }
     } catch (error) {
+
         res.status(400).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -350,7 +410,9 @@ exports.DisableBlotterParty = async (req, res) => {
     } = req.params;
   
     try {
+
         const blotter = await BlotterParty.findByPk(Id);
+
         if (!blotter) {
             return res.status(403).json({
                 errors: [{
@@ -362,17 +424,22 @@ exports.DisableBlotterParty = async (req, res) => {
                 }],
             });
         }
+
         await blotter.update({ 
             IsActive: false 
         });
+
         res.status(200).json({ 
             message: "record disabled.", 
             blotter 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -383,7 +450,9 @@ exports.EnableBlotterParty = async (req, res) => {
     } = req.params;
   
     try {
+
         const blotter = await BlotterParty.findByPk(Id);
+
         if (!blotter) {
             return res.status(403).json({
                 errors: [{
@@ -395,17 +464,22 @@ exports.EnableBlotterParty = async (req, res) => {
                 }],
             });
         }
+
         await blotter.update({ 
             IsActive: true 
         });
+
         res.status(200).json({ 
             message: "record enabled.", 
             blotter 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -414,11 +488,13 @@ exports.GetAllBlotterHandlers = async (req, res) => {
     const {
         Id
     } = req.query;
+
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
 
     try {
+
         const { count, rows } = await BlotterHandler.findAndCountAll({
             Limit,
             Offset,
@@ -443,6 +519,7 @@ exports.GetAllBlotterHandlers = async (req, res) => {
                 }
             ]
         });
+
         res.json({
             Data: rows,
             Meta: {
@@ -451,10 +528,13 @@ exports.GetAllBlotterHandlers = async (req, res) => {
                 CurrentPage: Page
             }
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -467,12 +547,14 @@ exports.CreateBlotterHandler = async (req, res) => {
     } = req.body;
 
     try {
+
         const bhExist = await BlotterHandler.findOne({
             where: { 
                 BlotterId,
                 OfficialId
             }
         });
+
         if (bhExist) {
             return res.status(403).json({
                 errors: [{
@@ -495,10 +577,13 @@ exports.CreateBlotterHandler = async (req, res) => {
             message: "record created.", 
             blotter 
         });
+
     } catch (error) {
+
         res.status(400).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -509,7 +594,9 @@ exports.DisableBlotterHandler = async (req, res) => {
     } = req.params;
   
     try {
+
         const blotter = await BlotterHandler.findByPk(Id);
+
         if (!blotter) {
             return res.status(403).json({
                 errors: [{
@@ -521,17 +608,22 @@ exports.DisableBlotterHandler = async (req, res) => {
                 }],
             });
         }
+        
         await blotter.update({ 
             IsActive: false 
         });
+
         res.status(200).json({ 
             message: "record disabled.", 
             blotter 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -542,7 +634,9 @@ exports.EnableBlotterHandler = async (req, res) => {
     } = req.params;
   
     try {
-        const blotter = await BlotterHandler.findByPk(id);
+
+        const blotter = await BlotterHandler.findByPk(Id);
+
         if (!blotter) {
             return res.status(403).json({
                 errors: [{
@@ -554,17 +648,22 @@ exports.EnableBlotterHandler = async (req, res) => {
                 }],
             });
         }
+
         await blotter.update({ 
             IsActive: true 
         });
+
         res.status(200).json({ 
             message: "record enabled.", 
             blotter 
         });
+
     } catch (error) {
+
         res.status(500).json({
             error: error.message 
         });
+
     }
 };
 
@@ -573,11 +672,13 @@ exports.GetAllBlotterActions = async (req, res) => {
     const {
         Id
     } = req.query;
+
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
 
     try {
+
         const { count, rows } = await BlotterAction.findAndCountAll({
             Limit,
             Offset,
@@ -586,6 +687,7 @@ exports.GetAllBlotterActions = async (req, res) => {
                 BlotterId: Id
             }
         });
+
         res.json({
             Data: rows,
             Meta: {
@@ -594,10 +696,13 @@ exports.GetAllBlotterActions = async (req, res) => {
                 CurrentPage: Page
             }
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -611,6 +716,7 @@ exports.CreateBlotterAction = async (req, res) => {
     } = req.body;
 
     try {
+
         const blotter = await BlotterAction.create({
             BlotterId,
             Action,
@@ -622,10 +728,13 @@ exports.CreateBlotterAction = async (req, res) => {
             message: "record created.", 
             blotter 
         });
+
     } catch (error) {
+
         res.status(400).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -636,7 +745,9 @@ exports.DisableBlotterAction = async (req, res) => {
     } = req.params;
   
     try {
+
         const blotter = await BlotterAction.findByPk(Id);
+
         if (!blotter) {
             return res.status(403).json({
                 errors: [{
@@ -648,17 +759,22 @@ exports.DisableBlotterAction = async (req, res) => {
                 }],
             });
         }
+        
         await blotter.update({ 
             IsActive: false 
         });
+
         res.status(200).json({ 
             message: "record disabled.", 
             blotter 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -669,7 +785,9 @@ exports.EnableBlotterAction = async (req, res) => {
     } = req.params;
   
     try {
-        const blotter = await BlotterAction.findByPk(id);
+
+        const blotter = await BlotterAction.findByPk(Id);
+
         if (!blotter) {
             return res.status(403).json({
                 errors: [{
@@ -681,17 +799,22 @@ exports.EnableBlotterAction = async (req, res) => {
                 }],
             });
         }
+
         await blotter.update({ 
             IsActive: true 
         });
+
         res.status(200).json({ 
             message: "record enabled.", 
             blotter 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -702,16 +825,21 @@ exports.GetAllBlotterAttachments = async (req, res) => {
     } = req.query;
 
     try {
+
         const blotters = await BlotterAttachment.findAll({
             where: {
                 BlotterId: Id
             }
         });
+
         res.json(blotters);
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -720,9 +848,11 @@ exports.CreateBlotterAttachment = async (req, res) => {
     const { 
         BlotterId
     } = req.body;
+
     const files = req.files; // From Multer
 
     try {
+
         if (files && files.length > 0) {
 
             for (const file of files) {
@@ -734,13 +864,14 @@ exports.CreateBlotterAttachment = async (req, res) => {
                     .jpeg({ quality: 80 })
                     .toFile(uploadPath);
 
-                // Save each to DB or just collect for later use
                 await BlotterAttachment.create({
                     BlotterId,
                     File: filename,
                 });
+
             }
         }
+
         const attachments = await BlotterAttachment.findAll({
             where: {
                 BlotterId
@@ -751,10 +882,13 @@ exports.CreateBlotterAttachment = async (req, res) => {
             message: "record created.", 
             attachments
         });
+
     } catch (error) {
+
         res.status(400).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -765,7 +899,9 @@ exports.DeleteBlotterAttachment = async (req, res) => {
     } = req.params;
   
     try {
+
         const attachment = await BlotterAttachment.findByPk(Id);
+
         if (!attachment) {
             return res.status(403).json({
                 errors: [{
@@ -785,13 +921,17 @@ exports.DeleteBlotterAttachment = async (req, res) => {
         }
 
         await attachment.destroy();
+
         res.status(200).json({ 
             message: "record deleted." 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -802,16 +942,21 @@ exports.GetAllBlotterActionAttachments = async (req, res) => {
     } = req.query;
 
     try {
+
         const blotters = await BlotterActionAttachment.findAll({
             where: {
                 BlotterActionId: Id
             }
         });
+
         res.json(blotters);
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -820,9 +965,11 @@ exports.CreateBlotterActionAttachment = async (req, res) => {
     const { 
         BlotterActionId
     } = req.body;
+
     const files = req.files; // From Multer
 
     try {
+
         if (files && files.length > 0) {
 
             for (const file of files) {
@@ -833,27 +980,32 @@ exports.CreateBlotterActionAttachment = async (req, res) => {
                     .resize({ width: 800 })
                     .jpeg({ quality: 80 })
                     .toFile(uploadPath);
-
-                // Save each to DB or just collect for later use
+                    
                 await BlotterActionAttachment.create({
                     BlotterActionId,
                     File: filename,
                 });
+
             }
         }
+
         const attachments = await BlotterActionAttachment.findAll({
             where: {
                 BlotterActionId
             }
         })
+
         res.status(201).json({ 
             message: "record created.", 
             attachments
         });
+
     } catch (error) {
+
         res.status(400).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -864,7 +1016,9 @@ exports.DeleteBlotterActionAttachment = async (req, res) => {
     } = req.params;
   
     try {
+
         const attachment = await BlotterActionAttachment.findByPk(Id);
+
         if (!attachment) {
             return res.status(403).json({
                 errors: [{
@@ -884,12 +1038,16 @@ exports.DeleteBlotterActionAttachment = async (req, res) => {
         }
 
         await attachment.destroy();
+
         res.status(200).json({ 
             message: "record deleted." 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };

@@ -1,13 +1,20 @@
 const express = require('express');
 const router = express.Router();
 
-const { getAllRelationships, getRelationship, createRelationship, updateRelationship, disableRelationship, enableRelationship } = require('../controllers/RelationshipController');
+const { 
+    GetAllRelationships, 
+    GetRelationship,
+    CreateRelationship,
+    UpdateRelationship,
+    DisableRelationship,
+    EnableRelationship
+} = require('../controllers/RelationshipController');
 
-router.get('/', getAllRelationships);
-router.get('/option', getRelationship);
-router.post('/', createRelationship);
-router.post('/:id/update', updateRelationship);
-router.post('/:id/disable', disableRelationship);
-router.post('/:id/enable', enableRelationship);
+router.get('/', GetAllRelationships);
+router.get('/option', GetRelationship);
+router.post('/', CreateRelationship);
+router.post('/:id/update', UpdateRelationship);
+router.post('/:id/disable', DisableRelationship);
+router.post('/:id/enable', EnableRelationship);
 
 module.exports = router;

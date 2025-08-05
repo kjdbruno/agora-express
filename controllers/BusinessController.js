@@ -1,11 +1,21 @@
-const { Op } = require("sequelize");
-const { Business, Resident, BusinessNature, BusinessType } = require('../models');
+const { 
+    Op 
+} = require("sequelize");
+const { 
+    Business, 
+    Resident, 
+    BusinessNature, 
+    BusinessType 
+} = require('../models');
 
 exports.GetAllBusinesses = async (req, res) => {
+
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
+
     try {
+
         const { count, rows } = await Business.findAndCountAll({
             Limit,
             Offset,
@@ -28,6 +38,7 @@ exports.GetAllBusinesses = async (req, res) => {
                 }
             ]
         });
+
         res.json({
             Data: rows,
             Meta: {
@@ -36,26 +47,35 @@ exports.GetAllBusinesses = async (req, res) => {
                 CurrentPage: Page
             }
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
 exports.GetBusiness = async (req, res) => {
+
     try {
+
         const businesses = await Business.findAll({
             where: {
                 IsActive: true
             },
             attributes: ['Id', 'Name']
         });
+
         res.json(businesses);
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -72,11 +92,13 @@ exports.CreateBusiness = async (req, res) => {
     } = req.body;
 
     try {
+
         const bExist = await Business.findOne({
             where: { 
                 Name
             }
         });
+
         if (bExist) {
             return res.status(403).json({
                 errors: [{
@@ -88,6 +110,7 @@ exports.CreateBusiness = async (req, res) => {
                 }],
             });
         }
+
         const business = await Business.create({ 
             Name, 
             ZoneId, 
@@ -97,14 +120,18 @@ exports.CreateBusiness = async (req, res) => {
             Capitalization, 
             Gross 
         });
+
         res.status(201).json({ 
             message: "record created.", 
             business 
         });
+
     } catch (error) {
+
         res.status(400).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -113,6 +140,7 @@ exports.UpdateBusiness = async (req, res) => {
     const {
         Id
     } = req.params;
+
     const { 
         Name, 
         ZoneId, 
@@ -124,7 +152,9 @@ exports.UpdateBusiness = async (req, res) => {
     } = req.body;
   
     try {
+
         const business = await Business.findByPk(Id);
+
         if (!business) {
             return res.status(403).json({
                 errors: [{
@@ -136,12 +166,14 @@ exports.UpdateBusiness = async (req, res) => {
                 }],
             });
         }
+
         const bExist = await Business.findOne({
             where: {
                 Name,
                 Id: { [Op.ne]: Id }
             },
         });
+
         if (bExist) {
             return res.status(403).json({
                 errors: [{
@@ -153,6 +185,7 @@ exports.UpdateBusiness = async (req, res) => {
                 }],
             });
         }
+
         await business.update({ 
             Name, 
             ZoneId, 
@@ -162,14 +195,18 @@ exports.UpdateBusiness = async (req, res) => {
             Capitalization, 
             Gross 
         });
+
         res.status(200).json({ 
             message: "record modified.", 
             business 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -180,7 +217,9 @@ exports.DisableBusiness = async (req, res) => {
     } = req.params;
   
     try {
+
         const business = await Business.findByPk(Id);
+
         if (!business) {
             return res.status(403).json({
                 errors: [{
@@ -192,17 +231,22 @@ exports.DisableBusiness = async (req, res) => {
                 }],
             });
         }
+
         await business.update({ 
             IsActive: false 
         });
+
         res.status(200).json({ 
             message: "record disabled.", 
             business 
         });
+
     } catch (error) {
+        
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -213,7 +257,9 @@ exports.EnableBusiness = async (req, res) => {
     } = req.params;
   
     try {
+
         const business = await Business.findByPk(Id);
+
         if (!business) {
             return res.status(403).json({
                 errors: [{
@@ -225,16 +271,21 @@ exports.EnableBusiness = async (req, res) => {
                 }],
             });
         }
+
         await business.update({ 
             IsActive: true 
         });
+        
         res.status(200).json({ 
             message: "record enabled.", 
             business 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+        
     }
 };

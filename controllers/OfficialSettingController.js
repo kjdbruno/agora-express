@@ -1,5 +1,12 @@
-const { Op } = require("sequelize");
-const { OfficialSetting, Position, Resident, BarangaySetting } = require('../models');
+const { 
+    Op 
+} = require("sequelize");
+const { 
+    OfficialSetting, 
+    Position, 
+    Resident, 
+    BarangaySetting 
+} = require('../models');
 
 const fs = require('fs');
 const path = require('path');
@@ -7,10 +14,13 @@ const multer = require('multer');
 const sharp = require('sharp');
 
 exports.GetAllOfficialSetting = async (req, res) => {
+
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
+
     try {
+
         const { count, rows } = await OfficialSetting.findAndCountAll({
             include: [
                 {
@@ -28,6 +38,7 @@ exports.GetAllOfficialSetting = async (req, res) => {
             Offset,
             order: [['Id', 'ASC']]
         });
+
         res.json({
             Data: rows,
             Meta: {
@@ -36,27 +47,35 @@ exports.GetAllOfficialSetting = async (req, res) => {
                 CurrentPage: Page
             }
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
 exports.CreateOfficialSetting = async (req, res) => {
+
     const { 
         ResidentId, 
         PositionId, 
         IsSignatory 
     } = req.body;
+
     const file = req.file;
+
     try {
+
         const osExist = await OfficialSetting.findOne({
             where: { 
                 ResidentId,
                 PositionId
             }
         });
+
         if (osExist) {
             return res.status(403).json({
                 errors: [{
@@ -68,13 +87,13 @@ exports.CreateOfficialSetting = async (req, res) => {
                 }],
             });
         }
-        // get BarangaySettingId from BarangaySetting
+        
         const barangaySetting = await BarangaySetting.findOne({
             attributes: ['Id']
         });
-
-        // Save photos (if any)
+        
         if (file) {
+
             const filename = `signature-${Date.now()}${path.extname(file.originalname)}`;
             const uploadPath = path.join(__dirname, '../public/uploads', filename);
 
@@ -90,16 +109,20 @@ exports.CreateOfficialSetting = async (req, res) => {
                 Signature: filename, 
                 BarangaySettingId: barangaySetting.Id 
             });
+
             return res.status(201).json({ 
                 message: "Officrecord created.", 
                 os 
             });
+
         }
         
     } catch (error) {
+
         res.status(400).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -108,15 +131,19 @@ exports.UpdateOfficialSetting = async (req, res) => {
     const {
         Id
     } = req.params;
+
     const { 
         ResidentId, 
         PositionId, 
         IsSignatory 
     } = req.body;
+
     const file = req.file;
   
     try {
+
         const os = await OfficialSetting.findByPk(Id);
+
         if (!os) {
             return res.status(403).json({
                 errors: [{
@@ -128,6 +155,7 @@ exports.UpdateOfficialSetting = async (req, res) => {
                 }],
             });
         }
+
         const osExist = await OfficialSetting.findOne({
             where: {
                 ResidentId,
@@ -135,6 +163,7 @@ exports.UpdateOfficialSetting = async (req, res) => {
                 Id: { [Op.ne]: Id }
             },
         });
+
         if (osExist) {
             return res.status(403).json({
                 errors: [{
@@ -146,12 +175,13 @@ exports.UpdateOfficialSetting = async (req, res) => {
                 }],
             });
         }
-        // get BarangaySettingId from BarangaySetting
+        
         const barangaySetting = await BarangaySetting.findOne({
             attributes: ['Id']
         });
-        // Save photos (if any)
+        
         if (file) {
+
             const filename = `signature-${Date.now()}${path.extname(file.originalname)}`;
             const uploadPath = path.join(__dirname, '../public/uploads', filename);
 
@@ -167,15 +197,19 @@ exports.UpdateOfficialSetting = async (req, res) => {
                 Signature: filename, 
                 BarangaySettingId: barangaySetting.Id 
             });
+
             return res.status(200).json({ 
                 message: "record modified.", 
                 os 
             });
         }
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -186,23 +220,30 @@ exports.DisableOfficialSetting = async (req, res) => {
     } = req.params;
   
     try {
+
         const os = await OfficialSetting.findByPk(Id);
+
         if (!os) {
             return res.status(404).json({ 
                 error: "record not found." 
             });
         }
+
         await os.update({ 
             IsActive: false 
         });
+
         res.status(200).json({ 
             message: "record disabled.", 
             os 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -213,22 +254,29 @@ exports.EnableOfficialSetting = async (req, res) => {
     } = req.params;
   
     try {
+
         const os = await OfficialSetting.findByPk(Id);
+
         if (!os) {
             return res.status(404).json({ 
                 error: "record not found." 
             });
         }
+
         await os.update({ 
             IsActive: true 
         });
+
         res.status(200).json({ 
             message: "record enabled.",
             os 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+        
     }
 };

@@ -1,13 +1,20 @@
 const express = require('express');
 const router = express.Router();
 
-const { getAllBusinesses, getBusiness, createBusiness, updateBusiness, disableBusiness, enableBusiness } = require('../controllers/BusinessController');
+const { 
+    GetAllBusinesses, 
+    GetBusiness,
+    CreateBusiness,
+    UpdateBusiness,
+    DisableBusiness,
+    EnableBusiness
+} = require('../controllers/BusinessController');
 
-router.get('/', getAllBusinesses);
-router.get('/option', getBusiness);
-router.post('/', createBusiness);
-router.post('/:id/update', updateBusiness);
-router.post('/:id/disable', disableBusiness);
-router.post('/:id/enable', enableBusiness);
+router.get('/', GetAllBusinesses);
+router.get('/option', GetBusiness);
+router.post('/', CreateBusiness);
+router.post('/:id/update', UpdateBusiness);
+router.post('/:id/disable', DisableBusiness);
+router.post('/:id/enable', EnableBusiness);
 
 module.exports = router;

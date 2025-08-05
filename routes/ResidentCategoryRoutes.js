@@ -1,13 +1,20 @@
 const express = require('express');
 const router = express.Router();
 
-const { getAllResidentCategories, getResidentcategory, createResidentCategory, updateResidentCategory, disableResidentCategory, enableResidentCategory } = require('../controllers/ResidentCategoryController');
+const { 
+    GetAllResidentCategories, 
+    GetResidentcategory,
+    CreateResidentCategory,
+    UpdateResidentCategory,
+    DisableResidentCategory,
+    EnableResidentCategory
+} = require('../controllers/ResidentCategoryController');
 
-router.get('/', getAllResidentCategories);
-router.get('/option', getResidentcategory);
-router.post('/', createResidentCategory);
-router.post('/:id/update', updateResidentCategory);
-router.post('/:id/disable', disableResidentCategory);
-router.post('/:id/enable', enableResidentCategory);
+router.get('/', GetAllResidentCategories);
+router.get('/option', GetResidentcategory);
+router.post('/', CreateResidentCategory);
+router.post('/:id/update', UpdateResidentCategory);
+router.post('/:id/disable', DisableResidentCategory);
+router.post('/:id/enable', EnableResidentCategory);
 
 module.exports = router;

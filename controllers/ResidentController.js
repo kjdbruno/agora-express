@@ -1,11 +1,29 @@
-const { Op } = require("sequelize");
-const { Resident, ResidentInformation, ResidentCategory, ResidentPhoto, Sex, Zone, Religion, CivilStatus, BloodType, EducationalAttainment, Occupation, Nationality } = require('../models');
+const { 
+    Op 
+} = require("sequelize");
+const { 
+    Resident, 
+    ResidentInformation, 
+    ResidentCategory, 
+    ResidentPhoto, 
+    Sex, 
+    Zone, 
+    Religion, 
+    CivilStatus, 
+    BloodType, 
+    EducationalAttainment, 
+    Occupation, 
+    Nationality 
+} = require('../models');
 
 exports.GetAllResidents = async (req, res) => {
+
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
+
     try {
+
         const { count, rows } = await ResidentInformation.findAndCountAll({
             include: [
                 {
@@ -66,6 +84,7 @@ exports.GetAllResidents = async (req, res) => {
             Offset,
             order: [['Id', 'ASC']]
         });
+
         res.json({
             Data: rows,
             Meta: {
@@ -74,14 +93,18 @@ exports.GetAllResidents = async (req, res) => {
                 CurrentPage: Page
             }
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
 exports.CreateResident = async (req, res) => {
+
     const { 
         Firstname, 
         Middlename, 
@@ -113,12 +136,15 @@ exports.CreateResident = async (req, res) => {
         isSoloParent,
         isDeceased,
     } = req.body;
+
     try {
+
         const residentExist = await Resident.findOne({
             where: { 
                 Firstname, Lastname, Middlename, Suffix
             }
         });
+
         if (residentExist) {
             return res.status(403).json({
                 errors: [{
@@ -130,27 +156,26 @@ exports.CreateResident = async (req, res) => {
                 }],
             });
         }
-
-        // create resident id number
+        
         const category = await ResidentCategory.findByPk(ResidentCategoryId);
         const residentCategoryName = category.Alias;
-
-        // get the last resident number
+        
         const lastResident = await ResidentInformation.findOne({
             where: {
                 ResidentCategoryId: ResidentCategoryId
             },
             order: [['ResidentNo', 'DESC']]
         });
+
         let residentNo;
-        //if there is no last resident, start with 1
+        
         if (!lastResident) {
             residentNo = `${residentCategoryName}-0001`;
         } else {
             const lastNo = parseInt(lastResident.ResidentNo.split('-')[1]);
             residentNo = `${residentCategoryName}-${String(lastNo + 1).padStart(4, '0')}`;
         }
-        // create resident
+        
         const resident = await Resident.create({
             Firstname,
             Middlename,
@@ -158,7 +183,7 @@ exports.CreateResident = async (req, res) => {
             Suffix,
             IsResident: true
         });
-        // create resident information
+        
         const residentInfo = await ResidentInformation.create({
             ResidentId: resident.Id,
             ResidentNo: residentNo,
@@ -194,10 +219,13 @@ exports.CreateResident = async (req, res) => {
             resident, 
             residentInfo 
         });
+
     } catch (error) {
+
         res.status(400).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -206,6 +234,7 @@ exports.UpdateResident = async (req, res) => {
     const {
         Id
     } = req.params;
+
     const { 
         ResidentId,
         Firstname, 
@@ -240,7 +269,9 @@ exports.UpdateResident = async (req, res) => {
     } = req.body;
   
     try {
+
         const resident = await Resident.findByPk(ResidentId);
+
         if (!resident) {
             return res.status(403).json({
                 errors: [{
@@ -252,7 +283,9 @@ exports.UpdateResident = async (req, res) => {
                 }],
             });
         }
+
         const residentInfo = await ResidentInformation.findByPk(Id);
+
         if (!residentInfo) {
             return res.status(403).json({
                 errors: [{
@@ -264,14 +297,14 @@ exports.UpdateResident = async (req, res) => {
                 }],
             });
         }
-        // update resident
+        
         await resident.update({
             Firstname,
             Middlename,
             Lastname,
             Suffix,
         });
-        // update resident information
+        
         await residentInfo.update({
             ZoneId,
             SexId,
@@ -304,10 +337,13 @@ exports.UpdateResident = async (req, res) => {
             resident, 
             residentInfo 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -318,19 +354,21 @@ exports.DisableResident = async (req, res) => {
     } = req.params;
   
     try {
+
         const r = await ResidentInformation.findByPk(Id);
+
         if (!r) {
             return res.status(404).json({ 
                 error: "record not found." 
             });
         }
+
         await r.update({ 
             IsActive: false 
         });
-
-        //get resident
+        
         const resident = await Resident.findByPk(r.ResidentId);
-        //get resident information
+        
         const residentInfo = await ResidentInformation.findByPk(Id);
 
         res.status(200).json({ 
@@ -338,10 +376,13 @@ exports.DisableResident = async (req, res) => {
             resident, 
             residentInfo 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -352,19 +393,21 @@ exports.EnableResident = async (req, res) => {
     } = req.params;
   
     try {
+
         const r = await ResidentInformation.findByPk(Id);
+
         if (!r) {
             return res.status(404).json({ 
                 error: "record not found." 
             });
         }
+
         await r.update({ 
             IsActive: true 
         });
-
-        //get resident
+        
         const resident = await Resident.findByPk(r.ResidentId);
-        //get resident information
+        
         const residentInfo = await ResidentInformation.findByPk(Id);
 
         res.status(200).json({ 
@@ -372,9 +415,12 @@ exports.EnableResident = async (req, res) => {
             resident, 
             residentInfo 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+        
     }
 };

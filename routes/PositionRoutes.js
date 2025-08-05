@@ -1,13 +1,20 @@
 const express = require('express');
 const router = express.Router();
 
-const { getAllPositions, getPosition, createPosition, updatePosition, disablePosition, enablePosition } = require('../controllers/PositionController');
+const { 
+    GetAllPositions, 
+    GetPosition,
+    CreatePosition,
+    UpdatePosition,
+    DisablePosition,
+    EnablePosition
+} = require('../controllers/PositionController');
 
-router.get('/', getAllPositions);
-router.get('/option', getPosition);
-router.post('/', createPosition);
-router.post('/:id/update', updatePosition);
-router.post('/:id/disable', disablePosition);
-router.post('/:id/enable', enablePosition);
+router.get('/', GetAllPositions);
+router.get('/option', GetPosition);
+router.post('/', CreatePosition);
+router.post('/:id/update', UpdatePosition);
+router.post('/:id/disable', DisablePosition);
+router.post('/:id/enable', EnablePosition);
 
 module.exports = router;

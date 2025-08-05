@@ -1,13 +1,20 @@
 const express = require('express');
 const router = express.Router();
 
-const { getAllZones, getZone, createZone, updateZone, disableZone, enableZone } = require('../controllers/ZoneController');
+const { 
+    GetAllZones,
+    GetZone,
+    CreateZone,
+    UpdateZone,
+    DisableZone,
+    EnableZone
+ } = require('../controllers/ZoneController');
 
-router.get('/', getAllZones);
-router.get('/option', getZone);
-router.post('/', createZone);
-router.post('/:id/update', updateZone);
-router.post('/:id/disable', disableZone);
-router.post('/:id/enable', enableZone);
+router.get('/', GetAllZones);
+router.get('/option', GetZone);
+router.post('/', CreateZone);
+router.post('/:id/update', UpdateZone);
+router.post('/:id/disable', DisableZone);
+router.post('/:id/enable', EnableZone);
 
 module.exports = router;

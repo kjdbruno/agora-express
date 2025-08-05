@@ -1,20 +1,20 @@
 const express = require('express');
 const router = express.Router();
 
-const {
-    getAllMedications,
-    getMedication,
-    createMedication,
-    updateMedication,
-    disableMedication,
-    enableMedication
+const { 
+    GetAllMedications, 
+    GetMedication,
+    CreateMedication,
+    UpdateMedication,
+    DisableMedication,
+    EnableMedication
 } = require('../controllers/MedicationController');
 
-router.get('/', getAllMedications);
-router.get('/option', getMedication);
-router.post('/', createMedication);
-router.post('/:id/update', updateMedication);
-router.post('/:id/disable', disableMedication);
-router.post('/:id/enable', enableMedication);
+router.get('/', GetAllMedications);
+router.get('/option', GetMedication);
+router.post('/', CreateMedication);
+router.post('/:id/update', UpdateMedication);
+router.post('/:id/disable', DisableMedication);
+router.post('/:id/enable', EnableMedication);
 
 module.exports = router;

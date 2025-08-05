@@ -1,13 +1,20 @@
 const express = require('express');
 const router = express.Router();
 
-const { getAllReligions, getReligion, createReligion, updateReligion, disableReligion, enableReligion } = require('../controllers/ReligionController');
+const { 
+    GetAllReligions, 
+    GetReligion,
+    CreateReligion,
+    UpdateReligion,
+    DisableReligion,
+    EnableReligion
+} = require('../controllers/ReligionController');
 
-router.get('/', getAllReligions);
-router.get('/option', getReligion);
-router.post('/', createReligion);
-router.post('/:id/update', updateReligion);
-router.post('/:id/disable', disableReligion);
-router.post('/:id/enable', enableReligion);
+router.get('/', GetAllReligions);
+router.get('/option', GetReligion);
+router.post('/', CreateReligion);
+router.post('/:id/update', UpdateReligion);
+router.post('/:id/disable', DisableReligion);
+router.post('/:id/enable', EnableReligion);
 
 module.exports = router;

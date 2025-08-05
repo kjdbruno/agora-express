@@ -2,60 +2,60 @@ const express = require('express');
 const router = express.Router();
 
 const { 
-    getAllResidents, 
-    createResident, 
-    updateResident, 
-    disableResident, 
-    enableResident 
+    GetAllResidents, 
+    CreateResident,
+    UpdateResident,
+    DisableResident,
+    EnableResident
 } = require('../controllers/ResidentController');
 
 const { 
-    getAllHouseholds, 
-    getHousehold, 
-    getAllFamilies, 
-    getFamily,
-    getAllHouseholdMembers,
-    getAllFamilyMembers,
-    createHousehold,
-    createHouseholdMember,
-    createFamily,
-    createFamilyMember,
-    disableHousehold,
-    enableHousehold,
-    disableFamily,
-    enableFamily,
-    disableFamilyMember,
-    enableFamilyMember,
-    disableHouseholdMember,
-    enableHouseholdMember
+    GetAllHouseholds, 
+    GetHousehold, 
+    CreateHousehold,
+    DisableHousehold,
+    EnableHousehold,
+    GetAllHouseholdMembers,
+    CreateHouseholdMember,
+    DisableHouseholdMember,
+    EnableHouseholdMember,
+    GetAllFamilies,
+    GetFamily,
+    CreateFamily,
+    DisableFamily,
+    EnableFamily,
+    GetAllFamilyMembers,
+    CreateFamilyMember,
+    DisableFamilyMember,
+    EnableFamilyMember
 } = require('../controllers/HouseholdController');
 
-router.get('/', getAllResidents);
-router.post('/', createResident);
-router.post('/:id/update', updateResident);
-router.post('/:id/disable', disableResident);
-router.post('/:id/enable', enableResident);
+router.get('/', GetAllResidents);
+router.post('/', CreateResident);
+router.post('/:id/update', UpdateResident);
+router.post('/:id/disable', DisableResident);
+router.post('/:id/enable', EnableResident);
 
-router.get('/household', getAllHouseholds);
-router.get('/household/option', getHousehold);
-router.post('/household', createHousehold);
-router.post('/household/:id/disable', disableHousehold);
-router.post('/household/:id/enable', enableHousehold);
+router.get('/household', GetAllHouseholds);
+router.get('/household/option', GetHousehold);
+router.post('/household', CreateHousehold);
+router.post('/household/:id/disable', DisableHousehold);
+router.post('/household/:id/enable', EnableHousehold);
 
-router.get('/household/member', getAllHouseholdMembers);
-router.post('/household/member', createHouseholdMember);
-router.post('/household/member/:id/disable', disableHouseholdMember);
-router.post('/household/member/:id/enable', enableHouseholdMember);
+router.get('/household/member', GetAllHouseholdMembers);
+router.post('/household/member', CreateHouseholdMember);
+router.post('/household/member/:id/disable', DisableHouseholdMember);
+router.post('/household/member/:id/enable', EnableHouseholdMember);
 
-router.get('/family', getAllFamilies);
-router.get('/family/option', getFamily);
-router.post('/family', createFamily);
-router.post('/family/:id/disable', disableFamily);
-router.post('/family/:id/enable', enableFamily);
+router.get('/family', GetAllFamilies);
+router.get('/family/option', GetFamily);
+router.post('/family', CreateFamily);
+router.post('/family/:id/disable', DisableFamily);
+router.post('/family/:id/enable', EnableFamily);
 
-router.get('/family/member', getAllFamilyMembers);
-router.post('/family/member', createFamilyMember);
-router.post('/family/member/:id/disable', disableFamilyMember);
-router.post('/family/member/:id/enable', enableFamilyMember);
+router.get('/family/member', GetAllFamilyMembers);
+router.post('/family/member', CreateFamilyMember);
+router.post('/family/member/:id/disable', DisableFamilyMember);
+router.post('/family/member/:id/enable', EnableFamilyMember);
 
 module.exports = router;

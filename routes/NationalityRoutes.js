@@ -1,13 +1,20 @@
 const express = require('express');
 const router = express.Router();
 
-const { getAllNationalities, getNationality, createNationality, updateNationality, disableNationality, enableNationality } = require('../controllers/NationalityController');
+const { 
+    GetAllNationalities,
+    GetNationality,
+    CreateNationality,
+    UpdateNationality,
+    DisableNationality,
+    EnableNationality
+ } = require('../controllers/NationalityController');
 
-router.get('/', getAllNationalities);
-router.get('/option', getNationality);
-router.post('/', createNationality);
-router.post('/:id/update', updateNationality);
-router.post('/:id/disable', disableNationality);
-router.post('/:id/enable', enableNationality);
+router.get('/', GetAllNationalities);
+router.get('/option', GetNationality);
+router.post('/', CreateNationality);
+router.post('/:id/update', UpdateNationality);
+router.post('/:id/disable', DisableNationality);
+router.post('/:id/enable', EnableNationality);
 
 module.exports = router;

@@ -5,10 +5,14 @@ const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-const { getAllBarangaySettings, createBarangaySetting, updateBarangaySetting } = require('../controllers/BarangaySettingController');
+const { 
+    GetAllBarangaySettings, 
+    CreateBarangaySetting,
+    UpdateBarangaySetting
+} = require('../controllers/BarangaySettingController');
 
-router.get('/', getAllBarangaySettings);
-router.post('/', upload.single('file'), createBarangaySetting);
-router.post('/:id/update', upload.single('file'), updateBarangaySetting);
+router.get('/', GetAllBarangaySettings);
+router.post('/', upload.single('file'), CreateBarangaySetting);
+router.post('/:id/update', upload.single('file'), UpdateBarangaySetting);
 
 module.exports = router;

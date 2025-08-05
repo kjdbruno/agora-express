@@ -1,13 +1,20 @@
 const express = require('express');
 const router = express.Router();
 
-const { getAllBusinessTypes, getBusinessType, createBusinessType, updateBusinessType, disableBusinessType,enableBusinessType } = require('../controllers/BusinessTypeController');
+const { 
+    GetAllBusinessTypes,
+    GetBusinessType,
+    CreateBusinessType,
+    UpdateBusinessType,
+    DisableBusinessType,
+    EnableBusinessType
+} = require('../controllers/BusinessTypeController');
 
-router.get('/', getAllBusinessTypes);
-router.get('/option', getBusinessType);
-router.post('/', createBusinessType);
-router.post('/:id/update', updateBusinessType);
-router.post('/:id/disable', disableBusinessType);
-router.post('/:id/enable', enableBusinessType);
+router.get('/', GetAllBusinessTypes);
+router.get('/option', GetBusinessType);
+router.post('/', CreateBusinessType);
+router.post('/:id/update', UpdateBusinessType);
+router.post('/:id/disable', DisableBusinessType);
+router.post('/:id/enable', EnableBusinessType);
 
 module.exports = router;

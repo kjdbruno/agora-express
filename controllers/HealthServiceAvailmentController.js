@@ -1,4 +1,6 @@
-const { Op } = require("sequelize");
+const { 
+    Op 
+} = require("sequelize");
 const { 
     HealthServiceAvailment, 
     HealthService,
@@ -19,16 +21,24 @@ const {
     Medication
 } = require('../models');
 
-const { fn, col, where } = require('sequelize');
+const { 
+    fn, 
+    col, 
+    where 
+} = require('sequelize');
 
 exports.GetAllServiceAvailments = async (req, res) => {
+
     const {
         Month
     } = req.query;
+
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
+
     try {
+
         const { count, rows } = await HealthServiceAvailment.findAndCountAll({
             where: Month
                 ? where(fn('MONTH', col('HealthServiceAvailment.createdAt')), Month)
@@ -51,6 +61,7 @@ exports.GetAllServiceAvailments = async (req, res) => {
             Offset,
             order: [['Id', 'ASC']]
         });
+
         res.json({
             Data: rows,
             Meta: {
@@ -59,21 +70,28 @@ exports.GetAllServiceAvailments = async (req, res) => {
                 CurrentPage: Page
             }
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
 exports.GetAllHealthRecords = async (req, res) => {
+
     const {
         HealthRecordId
     } = req.params;
+
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
+
     try {
+
         const { count, rows } = await HealthRecord.findAndCountAll({
             where: {
                 Id: HealthRecordId
@@ -82,6 +100,7 @@ exports.GetAllHealthRecords = async (req, res) => {
             Offset,
             order: [['Id', 'ASC']]
         });
+
         res.json({
             Data: rows,
             Meta: {
@@ -90,14 +109,18 @@ exports.GetAllHealthRecords = async (req, res) => {
                 CurrentPage: Page
             }
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
 exports.CreateHealthRecord = async (req, res) => {
+
     const {
         ResidentId,
         ServiceId,
@@ -109,11 +132,14 @@ exports.CreateHealthRecord = async (req, res) => {
         PulseRate,
         Notes
     } = req.body;
+
     try {
+
         const serviceRecord = await HealthServiceAvailment.create({
             ResidentId,
             ServiceId
         });
+
         const healthRecord = await HealthRecord.create({ 
             ServiceAvailmentId: serviceRecord.Id,
             Height,
@@ -124,15 +150,19 @@ exports.CreateHealthRecord = async (req, res) => {
             PulseRate,
             Notes
         });
+
         res.status(201).json({ 
             message: "record created.", 
             serviceRecord,
             healthRecord 
         });
+
     } catch (error) {
+
         res.status(400).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -141,6 +171,7 @@ exports.UpdateHealthRecord = async (req, res) => {
     const {
         Id
     } = req.params;
+
     const {
         Height,
         Weight,
@@ -152,7 +183,9 @@ exports.UpdateHealthRecord = async (req, res) => {
     } = req.body;
   
     try {
+
         const healthRecord = await HealthRecord.findByPk(Id);
+
         if (!healthRecord) {
             return res.status(403).json({
                 errors: [{
@@ -164,6 +197,7 @@ exports.UpdateHealthRecord = async (req, res) => {
                 }],
             });
         }
+
         await HealthRecord.update({ 
             Height,
             Weight,
@@ -172,15 +206,19 @@ exports.UpdateHealthRecord = async (req, res) => {
             Temperature,
             PulseRate,
             Notes
-         });
+        });
+
         res.status(200).json({ 
             message: "record modified.", 
             healthRecord 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -191,7 +229,9 @@ exports.DisableHealthRecord = async (req, res) => {
     } = req.params;
   
     try {
+
         const healthRecord = await HealthRecord.findByPk(Id);
+
         if (!healthRecord) {
            return res.status(403).json({
                 errors: [{
@@ -203,17 +243,22 @@ exports.DisableHealthRecord = async (req, res) => {
                 }],
             });
         }
+
         await healthRecord.update({ 
             IsActive: false 
         });
+
         res.status(200).json({ 
             message: "record disabled.", 
             healthRecord 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -224,7 +269,9 @@ exports.EnableHealthRecord = async (req, res) => {
     } = req.params;
   
     try {
+
         const healthRecord = await HealthRecord.findByPk(Id);
+
         if (!healthRecord) {
             return res.status(403).json({
                 errors: [{
@@ -236,28 +283,37 @@ exports.EnableHealthRecord = async (req, res) => {
                 }],
             });
         }
+
         await healthRecord.update({ 
             IsActive: true 
         });
+
         res.status(200).json({ 
             message: "record enabled.", 
             healthRecord 
         });
+
     } catch (error) {
+        
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
 exports.GetAllMaternalRecords = async (req, res) => {
+
     const {
         Id
     } = req.query;
+
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
+
     try {
+
         const { count, rows } = await HealthMaternalRecord.findAndCountAll({
             where: {
                 ServiceAvailmentId: Id
@@ -266,6 +322,7 @@ exports.GetAllMaternalRecords = async (req, res) => {
             Offset,
             order: [['Id', 'ASC']]
         });
+
         res.json({
             Data: rows,
             Meta: {
@@ -274,14 +331,18 @@ exports.GetAllMaternalRecords = async (req, res) => {
                 CurrentPage: Page
             }
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
 exports.CreateMaternalRecord = async (req, res) => {
+
     const {
         ResidentId,
         ServiceId,
@@ -299,13 +360,14 @@ exports.CreateMaternalRecord = async (req, res) => {
         Status,
         Purpose
     } = req.body;
+
     try {
-        // Create Service Availed
+
         const serviceRecord = await HealthServiceAvailment.create({
             ResidentId,
             ServiceId
         });
-        // Create Health Record
+        
         const healthRecord = await HealthRecord.create({ 
             ServiceAvailmentId: serviceRecord.Id,
             Height,
@@ -316,7 +378,7 @@ exports.CreateMaternalRecord = async (req, res) => {
             PulseRate,
             Notes
         });
-        // Validate If Resident has ongoing maternal record
+        
         const hasOngoingMaternalRecord = await HealthMaternalRecord.findOne({
             where: {
                 Status: 'Ongoing'
@@ -332,6 +394,7 @@ exports.CreateMaternalRecord = async (req, res) => {
                 }
             ]
         });
+
         if (hasOngoingMaternalRecord) {
             return res.status(403).json({
                 errors: [{
@@ -343,7 +406,7 @@ exports.CreateMaternalRecord = async (req, res) => {
                 }],
             });
         }
-        // Create Maternal Record
+        
         const maternalRecord = await HealthMaternalRecord.create({
             ServiceAvailmentId: serviceRecord.Id,
             LMP,
@@ -353,16 +416,20 @@ exports.CreateMaternalRecord = async (req, res) => {
             Status,
             Purpose
         });
+
         res.status(201).json({ 
             message: "record created.", 
             serviceRecord,
             healthRecord,
             maternalRecord
         });
+
     } catch (error) {
+
         res.status(400).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -372,6 +439,7 @@ exports.UpdateMaternalRecord = async (req, res) => {
         HealthRecordId,
         MaternalRecordId
     } = req.params;
+
     const {
         Height,
         Weight,
@@ -389,7 +457,9 @@ exports.UpdateMaternalRecord = async (req, res) => {
     } = req.body;
   
     try {
+
         const healthRecord = await HealthRecord.findByPk(HealthRecordId);
+
         if (!healthRecord) {
             return res.status(403).json({
                 errors: [{
@@ -401,7 +471,9 @@ exports.UpdateMaternalRecord = async (req, res) => {
                 }],
             });
         }
+
         const maternalRecord = await HealthMaternalRecord.findByPk(MaternalRecordId);
+
         if (!maternalRecord) {
             return res.status(403).json({
                 errors: [{
@@ -413,6 +485,7 @@ exports.UpdateMaternalRecord = async (req, res) => {
                 }],
             });
         }
+
         await HealthRecord.update({ 
             Height,
             Weight,
@@ -422,23 +495,28 @@ exports.UpdateMaternalRecord = async (req, res) => {
             PulseRate,
             Notes
          });
-         await HealthMaternalRecord.update({ 
+
+        await HealthMaternalRecord.update({ 
             LMP,
             EDD,
             IsHighRisk,
             RiskFactors,
             Status,
             Purpose
-         });
+        });
+
         res.status(200).json({ 
             message: "record modified.", 
             healthRecord,
             maternalRecord
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -449,7 +527,9 @@ exports.DisableMaternalRecord = async (req, res) => {
     } = req.params;
   
     try {
+
         const maternalRecord = await HealthMaternalRecord.findByPk(Id);
+
         if (!maternalRecord) {
            return res.status(403).json({
                 errors: [{
@@ -461,17 +541,22 @@ exports.DisableMaternalRecord = async (req, res) => {
                 }],
             });
         }
+
         await maternalRecord.update({ 
             IsActive: false 
         });
+
         res.status(200).json({ 
             message: "record disabled.", 
             maternalRecord 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -482,7 +567,9 @@ exports.EnableMaternalRecord = async (req, res) => {
     } = req.params;
   
     try {
+
         const maternalRecord = await HealthMaternalRecord.findByPk(Id);
+
         if (!maternalRecord) {
             return res.status(403).json({
                 errors: [{
@@ -494,28 +581,37 @@ exports.EnableMaternalRecord = async (req, res) => {
                 }],
             });
         }
+
         await maternalRecord.update({ 
             IsActive: true 
         });
+
         res.status(200).json({ 
             message: "record enabled.", 
             maternalRecord 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
 exports.GetAllImmunizationRecords = async (req, res) => {
+
     const {
         Id
     } = req.query;
+
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
+
     try {
+
         const { count, rows } = await HealthImmunization.findAndCountAll({
             where: {
                 ServiceAvailmentId: Id
@@ -534,6 +630,7 @@ exports.GetAllImmunizationRecords = async (req, res) => {
             Offset,
             order: [['Id', 'ASC']]
         });
+
         res.json({
             Data: rows,
             Meta: {
@@ -542,14 +639,18 @@ exports.GetAllImmunizationRecords = async (req, res) => {
                 CurrentPage: Page
             }
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
 exports.CreateImmunizationRecord = async (req, res) => {
+
     const {
         ResidentId,
         ServiceId,
@@ -567,13 +668,14 @@ exports.CreateImmunizationRecord = async (req, res) => {
         Status,
         OfficialId
     } = req.body;
+
     try {
-        // Create Service Availed
+        
         const serviceRecord = await HealthServiceAvailment.create({
             ResidentId,
             ServiceId
         });
-        // Create Health Record
+        
         const healthRecord = await HealthRecord.create({ 
             ServiceAvailmentId: serviceRecord.Id,
             Height,
@@ -584,7 +686,7 @@ exports.CreateImmunizationRecord = async (req, res) => {
             PulseRate,
             Notes
         });
-        // Create Immunization Record
+        
         const immunizationRecord = await HealthImmunization.create({
             ServiceAvailmentId: serviceRecord.Id,
             VaccineId,
@@ -594,16 +696,20 @@ exports.CreateImmunizationRecord = async (req, res) => {
             Status,
             OfficialId
         })
+
         res.status(201).json({ 
             message: "record created.", 
             serviceRecord,
             healthRecord,
             immunizationRecord
         });
+
     } catch (error) {
+
         res.status(400).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -613,6 +719,7 @@ exports.UpdateImmunizationRecord = async (req, res) => {
         HealthRecordId,
         ImmunizationRecordId
     } = req.params;
+
     const {
         Height,
         Weight,
@@ -630,7 +737,9 @@ exports.UpdateImmunizationRecord = async (req, res) => {
     } = req.body;
   
     try {
+
         const healthRecord = await HealthRecord.findByPk(HealthRecordId);
+
         if (!healthRecord) {
             return res.status(403).json({
                 errors: [{
@@ -642,7 +751,9 @@ exports.UpdateImmunizationRecord = async (req, res) => {
                 }],
             });
         }
+
         const immunizationRecord = await HealthImmunization.findByPk(ImmunizationRecordId);
+
         if (!immunizationRecord) {
             return res.status(403).json({
                 errors: [{
@@ -654,6 +765,7 @@ exports.UpdateImmunizationRecord = async (req, res) => {
                 }],
             });
         }
+
         await HealthRecord.update({ 
             Height,
             Weight,
@@ -662,24 +774,29 @@ exports.UpdateImmunizationRecord = async (req, res) => {
             Temperature,
             PulseRate,
             Notes
-         });
-         await HealthImmunization.update({ 
+        });
+
+        await HealthImmunization.update({ 
             VaccineId,
             Dosage,
             ScheduleDate,
             GivenDate,
             Status,
             OfficialId
-         });
+        });
+
         res.status(200).json({ 
             message: "record modified.", 
             healthRecord,
             immunizationRecord
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -690,7 +807,9 @@ exports.DisableImmunizationRecord = async (req, res) => {
     } = req.params;
   
     try {
+
         const immunizationRecord = await HealthImmunization.findByPk(Id);
+
         if (!immunizationRecord) {
            return res.status(403).json({
                 errors: [{
@@ -702,17 +821,22 @@ exports.DisableImmunizationRecord = async (req, res) => {
                 }],
             });
         }
+
         await immunizationRecord.update({ 
             IsActive: false 
         });
+
         res.status(200).json({ 
             message: "record disabled.", 
             immunizationRecord 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -723,7 +847,9 @@ exports.EnableImmunizationRecord = async (req, res) => {
     } = req.params;
   
     try {
+
         const immunizationRecord = await HealthImmunization.findByPk(Id);
+
         if (!immunizationRecord) {
             return res.status(403).json({
                 errors: [{
@@ -735,28 +861,37 @@ exports.EnableImmunizationRecord = async (req, res) => {
                 }],
             });
         }
+
         await immunizationRecord.update({ 
             IsActive: true 
         });
+
         res.status(200).json({ 
             message: "record enabled.", 
             immunizationRecord 
         });
+
     } catch (error) {
+        
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
 exports.GetAllPrenatalRecords = async (req, res) => {
+
     const {
         Id
     } = req.query;
+
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
+
     try {
+
         const { count, rows } = await HealthPrenatal.findAndCountAll({
             where: {
                 MaternalRecordId: Id
@@ -765,6 +900,7 @@ exports.GetAllPrenatalRecords = async (req, res) => {
             Offset,
             order: [['Id', 'ASC']]
         });
+
         res.json({
             Data: rows,
             Meta: {
@@ -773,31 +909,41 @@ exports.GetAllPrenatalRecords = async (req, res) => {
                 CurrentPage: Page
             }
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
 exports.CreatePrenatalRecord = async (req, res) => {
+
     const {
         MaternalRecordId,
         Purpose
     } = req.body;
+
     try {
+
         const prenatalRecord = await HealthPrenatal.create({
             MaternalRecordId,
             Purpose
         });
+
         res.status(201).json({ 
             message: "record created.", 
             prenatalRecord
         });
+
     } catch (error) {
+
         res.status(400).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -806,12 +952,15 @@ exports.UpdatePrenatalRecord = async (req, res) => {
     const {
         Id
     } = req.params;
+
     const {
         Purpose
     } = req.body;
   
     try {
+
         const prenatalRecord = await HealthPrenatal.findByPk(Id);
+
         if (!prenatalRecord) {
             return res.status(403).json({
                 errors: [{
@@ -823,17 +972,22 @@ exports.UpdatePrenatalRecord = async (req, res) => {
                 }],
             });
         }
+
         await prenatalRecord.update({ 
             Purpose
-         });
+        });
+
         res.status(200).json({ 
             message: "record modified.", 
             prenatalRecord
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -844,7 +998,9 @@ exports.DisablePrenatalRecord = async (req, res) => {
     } = req.params;
   
     try {
+
         const prenatalRecord = await HealthPrenatal.findByPk(Id);
+
         if (!prenatalRecord) {
            return res.status(403).json({
                 errors: [{
@@ -856,17 +1012,22 @@ exports.DisablePrenatalRecord = async (req, res) => {
                 }],
             });
         }
+
         await prenatalRecord.update({ 
             IsActive: false 
         });
+
         res.status(200).json({ 
             message: "record disabled.", 
             prenatalRecord 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -877,7 +1038,9 @@ exports.EnablePrenatalRecord = async (req, res) => {
     } = req.params;
   
     try {
+
         const prenatalRecord = await HealthPrenatal.findByPk(Id);
+
         if (!prenatalRecord) {
             return res.status(403).json({
                 errors: [{
@@ -889,28 +1052,37 @@ exports.EnablePrenatalRecord = async (req, res) => {
                 }],
             });
         }
+
         await prenatalRecord.update({ 
             IsActive: true 
         });
+
         res.status(200).json({ 
             message: "record enabled.", 
             prenatalRecord 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
 exports.GetAllDeliveryRecords = async (req, res) => {
+
     const {
         Id
     } = req.query;
+
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
+
     try {
+
         const { count, rows } = await HealthDelivery.findAndCountAll({
             where: {
                 MaternalRecordId: Id
@@ -925,6 +1097,7 @@ exports.GetAllDeliveryRecords = async (req, res) => {
             Offset,
             order: [['Id', 'ASC']]
         });
+
         res.json({
             Data: rows,
             Meta: {
@@ -933,14 +1106,18 @@ exports.GetAllDeliveryRecords = async (req, res) => {
                 CurrentPage: Page
             }
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
 exports.CreateDeliveryRecord = async (req, res) => {
+
     const {
         Firstname,
         Middlename,
@@ -954,7 +1131,9 @@ exports.CreateDeliveryRecord = async (req, res) => {
         BirthLength,
         AgparScore
     } = req.body;
+
     try {
+
         const babyRecord = await Resident.create({
             Firstname,
             Middlename,
@@ -962,6 +1141,7 @@ exports.CreateDeliveryRecord = async (req, res) => {
             Suffix,
             IsResident: true
         });
+
         const deliveryRecord = await HealthDelivery.create({
             ResidentId: babyRecord.Id,
             MaternalRecordId,
@@ -973,15 +1153,19 @@ exports.CreateDeliveryRecord = async (req, res) => {
             AgparScore,
             Notes
         });
+
         res.status(201).json({ 
             message: "record  created.", 
             babyRecord,
             deliveryRecord 
         });
+
     } catch (error) {
+
         res.status(400).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -991,6 +1175,7 @@ exports.UpdateDeliveryRecord = async (req, res) => {
         ResidentId,
         DeliveryRecordId
     } = req.params;
+
     const {
         Firstname,
         Middlename,
@@ -1005,7 +1190,9 @@ exports.UpdateDeliveryRecord = async (req, res) => {
     } = req.body;
   
     try {
+
         const residentRecord = await Resident.findByPk(ResidentId);
+
         if (!residentRecord) {
             return res.status(403).json({
                 errors: [{
@@ -1017,7 +1204,9 @@ exports.UpdateDeliveryRecord = async (req, res) => {
                 }],
             });
         }
+
         const deliveryRecord = await HealthDelivery.findByPk(DeliveryRecordId);
+
         if (!deliveryRecord) {
             return res.status(403).json({
                 errors: [{
@@ -1029,29 +1218,35 @@ exports.UpdateDeliveryRecord = async (req, res) => {
                 }],
             });
         }
+
         await Resident.update({ 
             Firstname,
             Middlename,
             Lastname,
             Suffix,
-         });
-         await HealthDelivery.update({ 
+        });
+
+        await HealthDelivery.update({ 
             DeliveryDate,
             DeliveryPlace,
             DeliveryType,
             BirthWeight,
             BirthLength,
             AgparScore
-         });
+        });
+
         res.status(200).json({ 
             message: "record modified.", 
             residentRecord,
             deliveryRecord
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -1062,7 +1257,9 @@ exports.DisableDeliveryRecord = async (req, res) => {
     } = req.params;
   
     try {
+
         const deliveryRecord = await HealthDelivery.findByPk(Id);
+
         if (!deliveryRecord) {
            return res.status(403).json({
                 errors: [{
@@ -1074,17 +1271,22 @@ exports.DisableDeliveryRecord = async (req, res) => {
                 }],
             });
         }
+
         await deliveryRecord.update({ 
             IsActive: false 
         });
+
         res.status(200).json({ 
             message: "record disabled.", 
             deliveryRecord 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -1095,7 +1297,9 @@ exports.EnableDeliveryRecord = async (req, res) => {
     } = req.params;
   
     try {
+
         const deliveryRecord = await HealthDelivery.findByPk(Id);
+
         if (!deliveryRecord) {
             return res.status(403).json({
                 errors: [{
@@ -1107,28 +1311,37 @@ exports.EnableDeliveryRecord = async (req, res) => {
                 }],
             });
         }
+
         await deliveryRecord.update({ 
             IsActive: true 
         });
+
         res.status(200).json({ 
             message: "record enabled.", 
             deliveryRecord 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
 exports.GetAllPostnatalRecords = async (req, res) => {
+
     const {
         Id
     } = req.query;
+
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
+
     try {
+
         const { count, rows } = await HealthPostnatal.findAndCountAll({
             where: {
                 MaternalRecordId: Id
@@ -1137,6 +1350,7 @@ exports.GetAllPostnatalRecords = async (req, res) => {
             Offset,
             order: [['Id', 'ASC']]
         });
+
         res.json({
             Data: rows,
             Meta: {
@@ -1145,31 +1359,41 @@ exports.GetAllPostnatalRecords = async (req, res) => {
                 CurrentPage: Page
             }
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
 exports.CreatePostnatalRecord = async (req, res) => {
+
     const {
         MaternalRecordId,
         Purpose
     } = req.body;
+
     try {
+
         const postnatalRecord = await HealthPostnatal.create({
             MaternalRecordId,
             Purpose
         });
+
         res.status(201).json({ 
             message: "record created.", 
             postnatalRecord
         });
+
     } catch (error) {
+
         res.status(400).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -1178,12 +1402,15 @@ exports.UpdatePostnatalRecord = async (req, res) => {
     const {
         Id
     } = req.params;
+
     const {
         Purpose
     } = req.body;
   
     try {
+
         const postnatalRecord = await HealthPostnatal.findByPk(Id);
+
         if (!postnatalRecord) {
             return res.status(403).json({
                 errors: [{
@@ -1195,17 +1422,22 @@ exports.UpdatePostnatalRecord = async (req, res) => {
                 }],
             });
         }
+
         await postnatalRecord.update({ 
             Purpose
-         });
+        });
+
         res.status(200).json({ 
             message: "Record modified.", 
             postnatalRecord
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -1216,7 +1448,9 @@ exports.DisablePostnatalRecord = async (req, res) => {
     } = req.params;
   
     try {
+
         const postnatalRecord = await HealthPostnatal.findByPk(Id);
+
         if (!postnatalRecord) {
            return res.status(403).json({
                 errors: [{
@@ -1228,17 +1462,22 @@ exports.DisablePostnatalRecord = async (req, res) => {
                 }],
             });
         }
+
         await postnatalRecord.update({ 
             IsActive: false 
         });
+
         res.status(200).json({ 
             message: "record disabled.", 
             postnatalRecord 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -1249,7 +1488,9 @@ exports.EnablePostnatalRecord = async (req, res) => {
     } = req.params;
   
     try {
+
         const postnatalRecord = await HealthPostnatal.findByPk(Id);
+
         if (!postnatalRecord) {
             return res.status(403).json({
                 errors: [{
@@ -1261,28 +1502,37 @@ exports.EnablePostnatalRecord = async (req, res) => {
                 }],
             });
         }
+
         await postnatalRecord.update({ 
             IsActive: true 
         });
+
         res.status(200).json({ 
             message: "record enabled.", 
             postnatalRecord 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
 exports.GetAllDiseaseRecords = async (req, res) => {
+
     const {
         Id
     } = req.query;
+
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
+
     try {
+
         const { count, rows } = await HealthDisease.findAndCountAll({
             where: {
                 ServiceAvailmentId: Id
@@ -1297,6 +1547,7 @@ exports.GetAllDiseaseRecords = async (req, res) => {
             Offset,
             order: [['Id', 'ASC']]
         });
+
         res.json({
             Data: rows,
             Meta: {
@@ -1305,14 +1556,18 @@ exports.GetAllDiseaseRecords = async (req, res) => {
                 CurrentPage: Page
             }
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
 exports.CreateDiseaseRecord = async (req, res) => {
+
     const {
         ServiceAvailmentId,
         DiseaseId,
@@ -1321,7 +1576,9 @@ exports.CreateDiseaseRecord = async (req, res) => {
         Status,
         Notes
     } = req.body;
+
     try {
+
         const diseaseRecord = await HealthDisease.create({
             ServiceAvailmentId,
             DiseaseId,
@@ -1330,14 +1587,18 @@ exports.CreateDiseaseRecord = async (req, res) => {
             Status,
             Notes
         })
+
         res.status(201).json({ 
             message: "record created.", 
             diseaseRecord
         });
+
     } catch (error) {
+
         res.status(400).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -1346,6 +1607,7 @@ exports.UpdateDiseaseRecord = async (req, res) => {
     const {
         Id
     } = req.params;
+
     const {
         DiseaseId,
         DiagnosisDate,
@@ -1355,7 +1617,9 @@ exports.UpdateDiseaseRecord = async (req, res) => {
     } = req.body;
   
     try {
+
         const diseaseRecord = await HealthDisease.findByPk(Id);
+
         if (!diseaseRecord) {
             return res.status(403).json({
                 errors: [{
@@ -1367,21 +1631,26 @@ exports.UpdateDiseaseRecord = async (req, res) => {
                 }],
             });
         }
-         await diseaseRecord.update({ 
+
+        await diseaseRecord.update({ 
             DiseaseId,
             DiagnosisDate,
             OnsetDate,
             Status,
             Notes
-         });
+        });
+
         res.status(200).json({ 
             message: "record modified.", 
             diseaseRecord
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -1392,7 +1661,9 @@ exports.DisableDiseaseRecord = async (req, res) => {
     } = req.params;
   
     try {
+
         const diseaseRecord = await HealthDisease.findByPk(Id);
+
         if (!diseaseRecord) {
            return res.status(403).json({
                 errors: [{
@@ -1404,17 +1675,22 @@ exports.DisableDiseaseRecord = async (req, res) => {
                 }],
             });
         }
+
         await diseaseRecord.update({ 
             IsActive: false 
         });
+
         res.status(200).json({ 
             message: "record disabled.", 
             diseaseRecord 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -1425,7 +1701,9 @@ exports.EnableDiseaseRecord = async (req, res) => {
     } = req.params;
   
     try {
+
         const diseaseRecord = await HealthDisease.findByPk(Id);
+
         if (!diseaseRecord) {
             return res.status(403).json({
                 errors: [{
@@ -1437,28 +1715,37 @@ exports.EnableDiseaseRecord = async (req, res) => {
                 }],
             });
         }
+
         await diseaseRecord.update({ 
             IsActive: true 
         });
+
         res.status(200).json({ 
             message: "record enabled.", 
             diseaseRecord 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
 exports.GetAllIllnessRecords = async (req, res) => {
+
     const {
         Id
     } = req.query;
+
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
+
     try {
+
         const { count, rows } = await HealthIllness.findAndCountAll({
             where: {
                 ServiceAvailmentId: Id
@@ -1473,6 +1760,7 @@ exports.GetAllIllnessRecords = async (req, res) => {
             Offset,
             order: [['Id', 'ASC']]
         });
+
         res.json({
             Data: rows,
             Meta: {
@@ -1481,33 +1769,43 @@ exports.GetAllIllnessRecords = async (req, res) => {
                 CurrentPage: Page
             }
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
 exports.CreateIllnessRecord = async (req, res) => {
+
     const {
         ServiceAvailmentId,
         IllnessId,
         Notes
     } = req.body;
+
     try {
+
         const illnessRecord = await HealthIllness.create({
             ServiceAvailmentId,
             IllnessId,
             Notes
         })
+
         res.status(201).json({ 
             message: "record created.", 
             illnessRecord
         });
+
     } catch (error) {
+
         res.status(400).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -1516,13 +1814,16 @@ exports.UpdateIllnessRecord = async (req, res) => {
     const {
         Id
     } = req.params;
+
     const {
         IllnessId,
         Notes
     } = req.body;
   
     try {
+
         const illnessRecord = await HealthIllness.findByPk(Id);
+
         if (!illnessRecord) {
             return res.status(403).json({
                 errors: [{
@@ -1534,18 +1835,23 @@ exports.UpdateIllnessRecord = async (req, res) => {
                 }],
             });
         }
-         await illnessRecord.update({ 
+
+        await illnessRecord.update({ 
             IllnessId,
             Notes
-         });
+        });
+
         res.status(200).json({ 
             message: "record modified.", 
             illnessRecord
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -1556,7 +1862,9 @@ exports.DisableIllnessRecord = async (req, res) => {
     } = req.params;
   
     try {
+
         const illnessRecord = await HealthIllness.findByPk(Id);
+
         if (!illnessRecord) {
            return res.status(403).json({
                 errors: [{
@@ -1568,17 +1876,22 @@ exports.DisableIllnessRecord = async (req, res) => {
                 }],
             });
         }
+
         await illnessRecord.update({ 
             IsActive: false 
         });
+
         res.status(200).json({ 
             message: "record disabled.", 
             illnessRecord 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -1589,7 +1902,9 @@ exports.EnableIllnessRecord = async (req, res) => {
     } = req.params;
   
     try {
+
         const illnessRecord = await HealthIllness.findByPk(Id);
+
         if (!illnessRecord) {
             return res.status(403).json({
                 errors: [{
@@ -1601,28 +1916,37 @@ exports.EnableIllnessRecord = async (req, res) => {
                 }],
             });
         }
+
         await illnessRecord.update({ 
             IsActive: true 
         });
+
         res.status(200).json({ 
             message: "record enabled.", 
             illnessRecord 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
 exports.GetAllInterventionRecords = async (req, res) => {
+
     const {
         Id
     } = req.query;
+
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
+
     try {
+
         const { count, rows } = await HealthIntervention.findAndCountAll({
             where: {
                 ServiceAvailmentId: Id
@@ -1637,6 +1961,7 @@ exports.GetAllInterventionRecords = async (req, res) => {
             Offset,
             order: [['Id', 'ASC']]
         });
+
         res.json({
             Data: rows,
             Meta: {
@@ -1645,14 +1970,18 @@ exports.GetAllInterventionRecords = async (req, res) => {
                 CurrentPage: Page
             }
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
 exports.CreateInterventionRecord = async (req, res) => {
+
     const {
         ServiceAvailmentId,
         Type,
@@ -1663,7 +1992,9 @@ exports.CreateInterventionRecord = async (req, res) => {
         EndDate,
         Notes
     } = req.body;
+
     try {
+
         const interventionRecord = await HealthIntervention.create({
             ServiceAvailmentId,
             Type,
@@ -1674,14 +2005,18 @@ exports.CreateInterventionRecord = async (req, res) => {
             EndDate,
             Notes
         })
+
         res.status(201).json({ 
             message: "record created.", 
             interventionRecord
         });
+
     } catch (error) {
+
         res.status(400).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -1690,6 +2025,7 @@ exports.UpdateInterventionRecord = async (req, res) => {
     const {
         Id
     } = req.params;
+
     const {
         Type,
         MedicationId,
@@ -1701,7 +2037,9 @@ exports.UpdateInterventionRecord = async (req, res) => {
     } = req.body;
   
     try {
+
         const interventionRecord = await HealthIntervention.findByPk(Id);
+
         if (!interventionRecord) {
             return res.status(403).json({
                 errors: [{
@@ -1713,7 +2051,8 @@ exports.UpdateInterventionRecord = async (req, res) => {
                 }],
             });
         }
-         await interventionRecord.update({ 
+
+        await interventionRecord.update({ 
             Type,
             MedicationId,
             Dosage,
@@ -1721,15 +2060,19 @@ exports.UpdateInterventionRecord = async (req, res) => {
             StartDate,
             EndDate,
             Notes
-         });
+        });
+
         res.status(200).json({ 
             message: "record modified.", 
             interventionRecord
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -1740,7 +2083,9 @@ exports.DisableInterventionRecord = async (req, res) => {
     } = req.params;
   
     try {
+
         const interventionRecord = await HealthIntervention.findByPk(Id);
+
         if (!interventionRecord) {
            return res.status(403).json({
                 errors: [{
@@ -1752,17 +2097,22 @@ exports.DisableInterventionRecord = async (req, res) => {
                 }],
             });
         }
+
         await interventionRecord.update({ 
             IsActive: false 
         });
+
         res.status(200).json({ 
             message: "record disabled.", 
             interventionRecord 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
@@ -1773,7 +2123,9 @@ exports.EnableInterventionRecord = async (req, res) => {
     } = req.params;
   
     try {
+
         const interventionRecord = await HealthIntervention.findByPk(Id);
+
         if (!interventionRecord) {
             return res.status(403).json({
                 errors: [{
@@ -1785,16 +2137,21 @@ exports.EnableInterventionRecord = async (req, res) => {
                 }],
             });
         }
+
         await interventionRecord.update({ 
             IsActive: true 
         });
+
         res.status(200).json({ 
             message: "record enabled.", 
             interventionRecord 
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+        
     }
 };

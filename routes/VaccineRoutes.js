@@ -2,19 +2,19 @@ const express = require('express');
 const router = express.Router();
 
 const { 
-    getAllVaccines,
-    getVaccine,
-    createVaccine,
-    updateVaccine,
-    disableVaccine,
-    enableVaccine
+    GetAllVaccines, 
+    GetVaccine,
+    CreateVaccine,
+    UpdateVaccine,
+    DisableVaccine,
+    EnableVaccine
 } = require('../controllers/VaccineController');
 
-router.get('/', getAllVaccines);
-router.get('/option', getVaccine);
-router.post('/', createVaccine);
-router.post('/:id/update', updateVaccine);
-router.post('/:id/disable', disableVaccine);
-router.post('/:id/enable', enableVaccine);
+router.get('/', GetAllVaccines);
+router.get('/option', GetVaccine);
+router.post('/', CreateVaccine);
+router.post('/:id/update', UpdateVaccine);
+router.post('/:id/disable', DisableVaccine);
+router.post('/:id/enable', EnableVaccine);
 
 module.exports = router;

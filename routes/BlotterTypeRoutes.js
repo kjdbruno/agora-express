@@ -2,19 +2,19 @@ const express = require('express');
 const router = express.Router();
 
 const { 
-    getAllBlotterTypes, 
-    getBlotterType,
-    createBlotterType,
-    updateBlotterType,
-    disableBlotterType,
-    enableBlotterType
- } = require('../controllers/BlotterTypeController');
+    GetAllBlotterTypes, 
+    GetBlotterType,
+    CreateBlotterType,
+    UpdateBlotterType,
+    DisableBlotterType,
+    EnableBlotterType
+} = require('../controllers/BlotterTypeController');
 
-router.get('/', getAllBlotterTypes);
-router.get('/option', getBlotterType);
-router.post('/', createBlotterType);
-router.post('/:id/update', updateBlotterType);
-router.post('/:id/disable', disableBlotterType);
-router.post('/:id/enable', enableBlotterType);
+router.get('/', GetAllBlotterTypes);
+router.get('/option', GetBlotterType);
+router.post('/', CreateBlotterType);
+router.post('/:id/update', UpdateBlotterType);
+router.post('/:id/disable', DisableBlotterType);
+router.post('/:id/enable', EnableBlotterType);
 
 module.exports = router;

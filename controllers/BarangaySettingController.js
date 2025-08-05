@@ -1,18 +1,26 @@
-const { Op } = require("sequelize");
-const { BarangaySetting, Province, Town, Barangay } = require('../models');
+const { 
+    Op 
+} = require("sequelize");
+const { 
+    BarangaySetting, 
+    Province, 
+    Town, 
+    Barangay 
+} = require('../models');
 
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
 const sharp = require('sharp');
 
-exports.getAllBarangaySettings = async (req, res) => {
+exports.GetAllBarangaySettings = async (req, res) => {
 
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
 
     try {
+
         const { count, rows } = await BarangaySetting.findAndCountAll(
             {
                 Limit,
@@ -39,6 +47,7 @@ exports.getAllBarangaySettings = async (req, res) => {
                 ]
             }
         );
+
         res.json({
             Data: rows,
             Meta: {
@@ -47,28 +56,34 @@ exports.getAllBarangaySettings = async (req, res) => {
                 CurrentPage: Page
             }
         });
+
     } catch (error) {
+
         res.status(500).json({ 
             error: error.message 
         });
+
     }
 };
 
-exports.createBarangaySetting = async (req, res) => {
+exports.CreateBarangaySetting = async (req, res) => {
 
     const { 
         BarangayId, 
         TownId, 
         ProvinceId 
     } = req.body;
+
     const file = req.file; // From Multer
 
     try {
+
         const bsExist = await BarangaySetting.findOne({
             where: { 
                 BarangayId
             }
         });
+
         if (bsExist) {
             return res.status(403).json({
                 errors: [{
@@ -80,9 +95,9 @@ exports.createBarangaySetting = async (req, res) => {
                 }],
             });
         }
-
-        // Save photos (if any)
+        
         if (file) {
+            
             const filename = `seal-${Date.now()}${path.extname(file.originalname)}`;
             const uploadPath = path.join(__dirname, '../public/uploads', filename);
 
@@ -94,51 +109,77 @@ exports.createBarangaySetting = async (req, res) => {
             const bs = await BarangaySetting.create({ 
                 Seal: filename, 
                 BarangayId, 
-                TownId, ProvinceId });
-            return res.status(201).json({ message: "Barangay Setting created successfully.", bs });
+                TownId, 
+                ProvinceId 
+            });
+
+            return res.status(201).json({ 
+                message: "record created.", 
+                bs 
+            });
+
         }
+
     } catch (error) {
-        res.status(400).json({ error: error.message });
+
+        res.status(400).json({ 
+            error: error.message 
+        });
+
     }
 };
 
-exports.updateBarangaySetting = async (req, res) => {
+exports.UpdateBarangaySetting = async (req, res) => {
 
-    const { id } = req.params;
-    const { BarangayId, TownId, ProvinceId } = req.body;
+    const {
+        Id
+    } = req.params;
+
+    const { 
+        BarangayId, 
+        TownId, 
+        ProvinceId 
+    } = req.body;
+
     const file = req.file; // From Multer
 
     try {
-        const bs = await BarangaySetting.findByPk(id);
+
+        const bs = await BarangaySetting.findByPk(Id);
+
         if (!bs) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Setting not found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
+
         const bsExist = await BarangaySetting.findOne({
             where: {
-                [Op.or]: [{ BarangayId }, {TownId}, {ProvinceId} ],
-                Id: { [Op.ne]: id }
+                Name,
+                TownId,
+                ProvinceId,
+                Id: { [Op.ne]: Id }
             },
         });
+
         if (bsExist) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Setting is already in use!",
+                    msg: "record already exist!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        // Update photos (if any)
+        
         if (file) {
             const filename = `seal-${Date.now()}${path.extname(file.originalname)}`;
             const uploadPath = path.join(__dirname, '../public/uploads', filename);
@@ -148,7 +189,6 @@ exports.updateBarangaySetting = async (req, res) => {
                 .jpeg({ quality: 80 })
                 .toFile(uploadPath);
 
-            // Delete old file if exists
             if (bs.Seal) {
                 const oldFilePath = path.join(__dirname, '../public/uploads', bs.Seal);
                 if (fs.existsSync(oldFilePath)) {
@@ -156,10 +196,24 @@ exports.updateBarangaySetting = async (req, res) => {
                 }
             }
 
-            await bs.update({ Seal: filename, BarangayId, TownId, ProvinceId });
-            res.status(200).json({ message: "Barangay Setting updated successfully.", bs });
+            await bs.update({ 
+                Seal: filename, 
+                BarangayId, 
+                TownId, 
+                ProvinceId 
+            });
+
+            res.status(200).json({ 
+                message: "record modified.", 
+                bs 
+            });
+
         }
     } catch (error) {
-        res.status(500).json({ error: error.message });
+
+        res.status(500).json({ 
+            error: error.message 
+        });
+        
     }
 };

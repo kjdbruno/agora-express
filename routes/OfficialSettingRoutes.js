@@ -5,12 +5,18 @@ const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-const { getAllOfficialSetting, createOfficialSetting, updateOfficialSetting, disableOfficialSetting, enableOfficialSetting } = require('../controllers/OfficialSettingController');
+const { 
+    GetAllOfficialSetting, 
+    CreateOfficialSetting,
+    UpdateOfficialSetting,
+    DisableOfficialSetting,
+    EnableOfficialSetting
+} = require('../controllers/OfficialSettingController');
 
-router.get('/', getAllOfficialSetting);
-router.post('/', upload.single('file'), createOfficialSetting);
-router.post('/:id/update', upload.single('file'), updateOfficialSetting);
-router.post('/:id/disable', disableOfficialSetting);
-router.post('/:id/enable', enableOfficialSetting);
+router.get('/', GetAllOfficialSetting);
+router.post('/', upload.single('file'), CreateOfficialSetting);
+router.post('/:id/update', upload.single('file'), UpdateOfficialSetting);
+router.post('/:id/disable', DisableOfficialSetting);
+router.post('/:id/enable', EnableOfficialSetting);
 
 module.exports = router;
