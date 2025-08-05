@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
 const { CivilStatus } = require('../models');
 
-exports.getAllCivilStatuses = async (req, res) => {
+exports.GetAllCivilStatuses = async (req, res) => {
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
@@ -20,11 +20,13 @@ exports.getAllCivilStatuses = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.getCivilStatus = async (req, res) => {
+exports.GetCivilStatus = async (req, res) => {
     try {
         const statuses = await CivilStatus.findAll({
             where: {
@@ -34,16 +36,22 @@ exports.getCivilStatus = async (req, res) => {
         });
         res.json(statuses);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.createCivilStatus = async (req, res) => {
-    const { name } = req.body;
+exports.CreateCivilStatus = async (req, res) => {
+
+    const { 
+        Name
+    } = req.body;
+
     try {
         const statusExist = await CivilStatus.findOne({
             where: { 
-                [Op.or]: [{ Name: name }] 
+                Name
             }
         });
         if (statusExist) {
@@ -51,32 +59,43 @@ exports.createCivilStatus = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Civil Status already exists!",
+                    msg: "record already exists!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        const status = await CivilStatus.create({ Name: name });
-        res.status(201).json({ message: "Civil Status created successfully.", status });
+        const status = await CivilStatus.create({
+            Name
+        });
+        res.status(201).json({ 
+            message: "record created.", 
+            status 
+        });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.updateCivilStatus = async (req, res) => {
+exports.UpdateCivilStatus = async (req, res) => {
 
-    const { id } = req.params;
-    const { name } = req.body;
+    const {
+        Id
+    } = req.params;
+    const {
+        Name
+    } = req.body;
   
     try {
-        const status = await CivilStatus.findByPk(id);
+        const status = await CivilStatus.findByPk(Id);
         if (!status) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Civil Status not found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -84,8 +103,8 @@ exports.updateCivilStatus = async (req, res) => {
         }
         const statusExist = await CivilStatus.findOne({
             where: {
-                [Op.or]: [{ Name: name } ],
-                Id: { [Op.ne]: id }
+                Name,
+                Id: { [Op.ne]: Id }
             },
         });
         if (statusExist) {
@@ -93,47 +112,88 @@ exports.updateCivilStatus = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Civil Status is already in use!",
+                    msg: "record already exist!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        await status.update({ Name: name });
-        res.status(200).json({ message: "Civil Status updated successfully.", status });
+        await status.update({
+            Name
+        });
+        res.status(200).json({ 
+            message: "record modified.", 
+            status 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.disableCivilStatus = async (req, res) => {
+exports.DisableCivilStatus = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const status = await CivilStatus.findByPk(id);
+        const status = await CivilStatus.findByPk(Id);
         if (!status) {
-            return res.status(404).json({ error: "Civil Status not found." });
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
         }
-        await status.update({ IsActive: false });
-        res.status(200).json({ message: "Civil Status disabled successfully.", status });
+        await status.update({ 
+            IsActive: false 
+        });
+        res.status(200).json({ 
+            message: "record disabled.", 
+            status 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.enableCivilStatus = async (req, res) => {
+exports.EnableCivilStatus = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const status = await CivilStatus.findByPk(id);
+        const status = await CivilStatus.findByPk(Id);
         if (!status) {
-            return res.status(404).json({ error: "Civil Status not found." });
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
         }
-        await status.update({ IsActive: true });
-        res.status(200).json({ message: "Civil Status enabled successfully.", status });
+        await status.update({ 
+            IsActive: true 
+        });
+        res.status(200).json({ 
+            message: "record enabled.", 
+            status 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };

@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
 const { BusinessNature } = require('../models');
 
-exports.getAllBusinessNatures = async (req, res) => {
+exports.GetAllBusinessNatures = async (req, res) => {
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
@@ -20,11 +20,13 @@ exports.getAllBusinessNatures = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.getBusinessNature = async (req, res) => {
+exports.GetBusinessNature = async (req, res) => {
     try {
         const bn = await BusinessNature.findAll({
             where: {
@@ -34,16 +36,20 @@ exports.getBusinessNature = async (req, res) => {
         });
         res.json(bn);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.createBusinessNature = async (req, res) => {
-    const { Name } = req.body;
+exports.CreateBusinessNature = async (req, res) => {
+    const {
+        Name
+    } = req.body;
     try {
         const bnExist = await BusinessNature.findOne({
             where: { 
-                [Op.or]: [{ Name }] 
+                Name
             }
         });
         if (bnExist) {
@@ -51,32 +57,43 @@ exports.createBusinessNature = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Business nature already exists!",
+                    msg: "record already exists!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        const bn = await BusinessNature.create({ Name });
-        res.status(201).json({ message: "Business Nature created successfully.", bn });
+        const bn = await BusinessNature.create({
+            Name
+        });
+        res.status(201).json({ 
+            message: "record created.", 
+            bn 
+        });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.updateBusinessNature = async (req, res) => {
+exports.UpdateBusinessNature = async (req, res) => {
 
-    const { id } = req.params;
-    const { Name } = req.body;
+    const {
+        Id
+    } = req.params;
+    const {
+        Name
+    } = req.body;
   
     try {
-        const bn = await BusinessNature.findByPk(id);
+        const bn = await BusinessNature.findByPk(Id);
         if (!bn) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Business Nature not found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -84,8 +101,8 @@ exports.updateBusinessNature = async (req, res) => {
         }
         const bnExist = await BusinessNature.findOne({
             where: {
-                [Op.or]: [{ Name } ],
-                Id: { [Op.ne]: id }
+                Name,
+                Id: { [Op.ne]: Id }
             },
         });
         if (bnExist) {
@@ -93,47 +110,88 @@ exports.updateBusinessNature = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Business Nature is already in use!",
+                    msg: "record already exist!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        await bn.update({ Name });
-        res.status(200).json({ message: "Business nature updated successfully.", bn });
+        await bn.update({
+            Name
+        });
+        res.status(200).json({ 
+            message: "record modified.", 
+            bn 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.disableBusinessNature = async (req, res) => {
+exports.DisableBusinessNature = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const bn = await BusinessNature.findByPk(id);
+        const bn = await BusinessNature.findByPk(Id);
         if (!bn) {
-            return res.status(404).json({ error: "Business Nature not found." });
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
         }
-        await bn.update({ IsActive: false });
-        res.status(200).json({ message: "Business Nature disabled successfully.", bn });
+        await bn.update({ 
+            IsActive: false 
+        });
+        res.status(200).json({ 
+            message: "record disabled.", 
+            bn 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.enableBusinessNature = async (req, res) => {
+exports.EnableBusinessNature = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const bn = await BusinessNature.findByPk(id);
+        const bn = await BusinessNature.findByPk(Id);
         if (!bn) {
-            return res.status(404).json({ error: "Business Nature not found." });
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
         }
-        await bn.update({ IsActive: true });
-        res.status(200).json({ message: "Business Nature enabled successfully.", bn });
+        await bn.update({ 
+            IsActive: true 
+        });
+        res.status(200).json({ 
+            message: "record enabled.", 
+            bn 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };

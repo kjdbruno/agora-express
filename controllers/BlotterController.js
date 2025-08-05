@@ -17,7 +17,7 @@ const path = require('path');
 const multer = require('multer');
 const sharp = require('sharp');
 
-exports.getAllBlotters = async (req, res) => {
+exports.GetAllBlotters = async (req, res) => {
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
@@ -42,17 +42,21 @@ exports.getAllBlotters = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.createBlotter = async (req, res) => {
+exports.CreateBlotter = async (req, res) => {
+
     const { 
         BlotterTypeId, 
         IncidentDate, 
         Location, 
         Description 
     } = req.body;
+
     try {
         
         const currentYear = new Date().getFullYear();
@@ -82,29 +86,37 @@ exports.createBlotter = async (req, res) => {
             Description
         });
 
-        res.status(201).json({ message: "Blotter created successfully.", blotter });
+        res.status(201).json({ 
+            message: "record created.", 
+            blotter 
+        });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.updateBlotter = async (req, res) => {
+exports.UpdateBlotter = async (req, res) => {
 
-    const { id } = req.params;
+    const { 
+        Id 
+    } = req.params;
     const { 
         BlotterTypeId, 
         IncidentDate, 
         Location, 
         Description 
     } = req.body;
+
     try {
-        const blotter = await Blotter.findByPk(id);
+        const blotter = await Blotter.findByPk(Id);
         if (!blotter) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Blotter not found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -117,47 +129,88 @@ exports.updateBlotter = async (req, res) => {
             Description
         });
 
-        res.status(200).json({ message: "Blotter updated successfully.", blotter });
+        res.status(200).json({ 
+            message: "record modified.", 
+            blotter 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
 exports.disableBlotter = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const blotter = await Blotter.findByPk(id);
+        const blotter = await Blotter.findByPk(Id);
         if (!blotter) {
-            return res.status(404).json({ error: "Blotter not found." });
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
         }
-        await blotter.update({ IsActive: false });
-        res.status(200).json({ message: "Blotter disabled successfully.", blotter });
+        await blotter.update({ 
+            IsActive: false 
+        });
+        res.status(200).json({ 
+            message: "record disabled.", 
+            blotter 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.enableBlotter = async (req, res) => {
+exports.EnableBlotter = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const blotter = await Blotter.findByPk(id);
+        const blotter = await Blotter.findByPk(Id);
         if (!blotter) {
-            return res.status(404).json({ error: "Blotter not found." });
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
         }
-        await blotter.update({ IsActive: true });
-        res.status(200).json({ message: "Blotter enabled successfully.", blotter });
+        await blotter.update({ 
+            IsActive: true 
+        });
+        res.status(200).json({ 
+            message: "record enabled.", 
+            blotter 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.getAllBlotterParties = async (req, res) => {
+exports.GetAllBlotterParties = async (req, res) => {
 
-    const { id } = req.query;
+    const {
+        Id
+    } = req.query;
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
@@ -168,7 +221,7 @@ exports.getAllBlotterParties = async (req, res) => {
             Offset,
             order: [['Id', 'ASC']],
             where: {
-                BlotterId: id
+                BlotterId: Id
             },
             include: [
                 {
@@ -186,11 +239,14 @@ exports.getAllBlotterParties = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.createBlotterParty = async (req, res) => {
+exports.CreateBlotterParty = async (req, res) => {
+
     const { 
         Firstname,
         Middlename,
@@ -201,6 +257,7 @@ exports.createBlotterParty = async (req, res) => {
         Role,
         Statement
     } = req.body;
+
     try {
         if (ResidentId) {
             const partyExists = await BlotterParty.findOne({
@@ -214,7 +271,7 @@ exports.createBlotterParty = async (req, res) => {
                     errors: [{
                         type: "manual",
                         value: "",
-                        msg: "This party already exist!",
+                        msg: "record already exist!",
                         path: "name",
                         location: "body",
                     }],
@@ -226,7 +283,10 @@ exports.createBlotterParty = async (req, res) => {
                 Role,
                 Statement
             });
-            res.status(201).json({ message: "Blotter party created successfully.", blotter });
+            res.status(201).json({ 
+                message: "Blotter party created successfully.", 
+                blotter 
+            });
         } else {
             const rExist = await Resident.findOne({
                 where: { 
@@ -241,7 +301,7 @@ exports.createBlotterParty = async (req, res) => {
                         errors: [{
                             type: "manual",
                             value: "",
-                            msg: "Resident already exist!",
+                            msg: "record already exist!",
                             path: "name",
                             location: "body",
                         }],
@@ -251,7 +311,7 @@ exports.createBlotterParty = async (req, res) => {
                         errors: [{
                             type: "manual",
                             value: "",
-                            msg: "Person already exists!",
+                            msg: "record already exists!",
                             path: "name",
                             location: "body",
                         }],
@@ -271,48 +331,89 @@ exports.createBlotterParty = async (req, res) => {
                 Role,
                 Statement
             });
-            res.status(201).json({ message: "Blotter party created successfully.", blotter });
+            res.status(201).json({ 
+                message: "record created.", 
+                blotter 
+            });
         }
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.disableBlotterParty = async (req, res) => {
+exports.DisableBlotterParty = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const blotter = await BlotterParty.findByPk(id);
+        const blotter = await BlotterParty.findByPk(Id);
         if (!blotter) {
-            return res.status(404).json({ error: "Blotter party not found." });
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
         }
-        await blotter.update({ IsActive: false });
-        res.status(200).json({ message: "Blotter party disabled successfully.", blotter });
+        await blotter.update({ 
+            IsActive: false 
+        });
+        res.status(200).json({ 
+            message: "record disabled.", 
+            blotter 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.enableBlotterParty = async (req, res) => {
+exports.EnableBlotterParty = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const blotter = await BlotterParty.findByPk(id);
+        const blotter = await BlotterParty.findByPk(Id);
         if (!blotter) {
-            return res.status(404).json({ error: "Blotter party not found." });
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
         }
-        await blotter.update({ IsActive: true });
-        res.status(200).json({ message: "Blotter party enabled successfully.", blotter });
+        await blotter.update({ 
+            IsActive: true 
+        });
+        res.status(200).json({ 
+            message: "record enabled.", 
+            blotter 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.getAllBlotterHandlers = async (req, res) => {
+exports.GetAllBlotterHandlers = async (req, res) => {
 
-    const { id } = req.query;
+    const {
+        Id
+    } = req.query;
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
@@ -323,7 +424,7 @@ exports.getAllBlotterHandlers = async (req, res) => {
             Offset,
             order: [['Id', 'ASC']],
             where: {
-                BlotterId: id
+                BlotterId: Id
             },
             include: [
                 {
@@ -351,16 +452,20 @@ exports.getAllBlotterHandlers = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.createBlotterHandler = async (req, res) => {
+exports.CreateBlotterHandler = async (req, res) => {
+
     const { 
         BlotterId,
         OfficialId,
         Role
     } = req.body;
+
     try {
         const bhExist = await BlotterHandler.findOne({
             where: { 
@@ -373,7 +478,7 @@ exports.createBlotterHandler = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Handler already exists!",
+                    msg: "record already exist!",
                     path: "name",
                     location: "body",
                 }],
@@ -386,47 +491,88 @@ exports.createBlotterHandler = async (req, res) => {
             Role
         });
 
-        res.status(201).json({ message: "Blotter handler created successfully.", blotter });
+        res.status(201).json({ 
+            message: "record created.", 
+            blotter 
+        });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.disableBlotterHandler = async (req, res) => {
+exports.DisableBlotterHandler = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
+  
+    try {
+        const blotter = await BlotterHandler.findByPk(Id);
+        if (!blotter) {
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
+        }
+        await blotter.update({ 
+            IsActive: false 
+        });
+        res.status(200).json({ 
+            message: "record disabled.", 
+            blotter 
+        });
+    } catch (error) {
+        res.status(500).json({ 
+            error: error.message 
+        });
+    }
+};
+
+exports.EnableBlotterHandler = async (req, res) => {
+
+    const {
+        Id
+    } = req.params;
   
     try {
         const blotter = await BlotterHandler.findByPk(id);
         if (!blotter) {
-            return res.status(404).json({ error: "Blotter handler not found." });
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
         }
-        await blotter.update({ IsActive: false });
-        res.status(200).json({ message: "Blotter handler disabled successfully.", blotter });
+        await blotter.update({ 
+            IsActive: true 
+        });
+        res.status(200).json({ 
+            message: "record enabled.", 
+            blotter 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({
+            error: error.message 
+        });
     }
 };
 
-exports.enableBlotterHandler = async (req, res) => {
+exports.GetAllBlotterActions = async (req, res) => {
 
-    const { id } = req.params;
-  
-    try {
-        const blotter = await BlotterHandler.findByPk(id);
-        if (!blotter) {
-            return res.status(404).json({ error: "Blotter handler not found." });
-        }
-        await blotter.update({ IsActive: true });
-        res.status(200).json({ message: "Blotter handler enabled successfully.", blotter });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
-exports.getAllBlotterActions = async (req, res) => {
-
-    const { id } = req.query;
+    const {
+        Id
+    } = req.query;
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
@@ -437,7 +583,7 @@ exports.getAllBlotterActions = async (req, res) => {
             Offset,
             order: [['Id', 'ASC']],
             where: {
-                BlotterId: id
+                BlotterId: Id
             }
         });
         res.json({
@@ -449,17 +595,21 @@ exports.getAllBlotterActions = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.createBlotterAction = async (req, res) => {
+exports.CreateBlotterAction = async (req, res) => {
+
     const { 
         BlotterId,
         Action,
         Date,
         Remarks
     } = req.body;
+
     try {
         const blotter = await BlotterAction.create({
             BlotterId,
@@ -468,65 +618,110 @@ exports.createBlotterAction = async (req, res) => {
             Remarks
         });
 
-        res.status(201).json({ message: "Blotter action created successfully.", blotter });
+        res.status(201).json({ 
+            message: "record created.", 
+            blotter 
+        });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.disableBlotterAction = async (req, res) => {
+exports.DisableBlotterAction = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
+  
+    try {
+        const blotter = await BlotterAction.findByPk(Id);
+        if (!blotter) {
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
+        }
+        await blotter.update({ 
+            IsActive: false 
+        });
+        res.status(200).json({ 
+            message: "record disabled.", 
+            blotter 
+        });
+    } catch (error) {
+        res.status(500).json({ 
+            error: error.message 
+        });
+    }
+};
+
+exports.EnableBlotterAction = async (req, res) => {
+
+    const {
+        Id
+    } = req.params;
   
     try {
         const blotter = await BlotterAction.findByPk(id);
         if (!blotter) {
-            return res.status(404).json({ error: "Blotter action not found." });
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
         }
-        await blotter.update({ IsActive: false });
-        res.status(200).json({ message: "Blotter action disabled successfully.", blotter });
+        await blotter.update({ 
+            IsActive: true 
+        });
+        res.status(200).json({ 
+            message: "record enabled.", 
+            blotter 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.enableBlotterAction = async (req, res) => {
+exports.GetAllBlotterAttachments = async (req, res) => {
 
-    const { id } = req.params;
-  
-    try {
-        const blotter = await BlotterAction.findByPk(id);
-        if (!blotter) {
-            return res.status(404).json({ error: "Blotter action not found." });
-        }
-        await blotter.update({ IsActive: true });
-        res.status(200).json({ message: "Blotter action enabled successfully.", blotter });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
-exports.getAllBlotterAttachments = async (req, res) => {
-
-    const { id } = req.query;
+    const {
+        Id
+    } = req.query;
 
     try {
         const blotters = await BlotterAttachment.findAll({
             where: {
-                BlotterId: id
+                BlotterId: Id
             }
         });
         res.json(blotters);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.createBlotterAttachment = async (req, res) => {
+exports.CreateBlotterAttachment = async (req, res) => {
+
     const { 
         BlotterId
     } = req.body;
     const files = req.files; // From Multer
+
     try {
         if (files && files.length > 0) {
 
@@ -552,20 +747,35 @@ exports.createBlotterAttachment = async (req, res) => {
             }
         })
 
-        res.status(201).json({ message: "Blotter attachment created successfully.", attachments});
+        res.status(201).json({ 
+            message: "record created.", 
+            attachments
+        });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.deleteBlotterAttachment = async (req, res) => {
+exports.DeleteBlotterAttachment = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const attachment = await BlotterAttachment.findByPk(id);
+        const attachment = await BlotterAttachment.findByPk(Id);
         if (!attachment) {
-            return res.status(404).json({ message: 'Attachment not found.' });
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
         }
         
         const filePath = path.join(__dirname, '../public/uploads', attachment.File);
@@ -575,33 +785,43 @@ exports.deleteBlotterAttachment = async (req, res) => {
         }
 
         await attachment.destroy();
-        res.status(200).json({ message: "Blotter attachment deleted successfully." });
+        res.status(200).json({ 
+            message: "record deleted." 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.getAllBlotterActionAttachments = async (req, res) => {
+exports.GetAllBlotterActionAttachments = async (req, res) => {
 
-    const { id } = req.query;
+    const {
+        Id
+    } = req.query;
 
     try {
         const blotters = await BlotterActionAttachment.findAll({
             where: {
-                BlotterActionId: id
+                BlotterActionId: Id
             }
         });
         res.json(blotters);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.createBlotterActionAttachment = async (req, res) => {
+exports.CreateBlotterActionAttachment = async (req, res) => {
+
     const { 
         BlotterActionId
     } = req.body;
     const files = req.files; // From Multer
+
     try {
         if (files && files.length > 0) {
 
@@ -626,20 +846,35 @@ exports.createBlotterActionAttachment = async (req, res) => {
                 BlotterActionId
             }
         })
-        res.status(201).json({ message: "Blotter attachment created successfully.", attachments});
+        res.status(201).json({ 
+            message: "record created.", 
+            attachments
+        });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.deleteBlotterActionAttachment = async (req, res) => {
+exports.DeleteBlotterActionAttachment = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const attachment = await BlotterActionAttachment.findByPk(id);
+        const attachment = await BlotterActionAttachment.findByPk(Id);
         if (!attachment) {
-            return res.status(404).json({ message: 'Attachment not found.' });
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
         }
         
         const filePath = path.join(__dirname, '../public/uploads', attachment.File);
@@ -649,8 +884,12 @@ exports.deleteBlotterActionAttachment = async (req, res) => {
         }
 
         await attachment.destroy();
-        res.status(200).json({ message: "Blotter attachment deleted successfully." });
+        res.status(200).json({ 
+            message: "record deleted." 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };

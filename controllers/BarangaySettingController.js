@@ -7,9 +7,11 @@ const multer = require('multer');
 const sharp = require('sharp');
 
 exports.getAllBarangaySettings = async (req, res) => {
+
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
+
     try {
         const { count, rows } = await BarangaySetting.findAndCountAll(
             {
@@ -46,17 +48,25 @@ exports.getAllBarangaySettings = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
 exports.createBarangaySetting = async (req, res) => {
-    const { BarangayId, TownId, ProvinceId } = req.body;
+
+    const { 
+        BarangayId, 
+        TownId, 
+        ProvinceId 
+    } = req.body;
     const file = req.file; // From Multer
+
     try {
         const bsExist = await BarangaySetting.findOne({
             where: { 
-                [Op.or]: [{ BarangayId }] 
+                BarangayId
             }
         });
         if (bsExist) {
@@ -64,7 +74,7 @@ exports.createBarangaySetting = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Setting already exists!",
+                    msg: "record already exists!",
                     path: "name",
                     location: "body",
                 }],
@@ -81,7 +91,10 @@ exports.createBarangaySetting = async (req, res) => {
                 .jpeg({ quality: 80 })
                 .toFile(uploadPath);
 
-            const bs = await BarangaySetting.create({ Seal: filename, BarangayId, TownId, ProvinceId });
+            const bs = await BarangaySetting.create({ 
+                Seal: filename, 
+                BarangayId, 
+                TownId, ProvinceId });
             return res.status(201).json({ message: "Barangay Setting created successfully.", bs });
         }
     } catch (error) {

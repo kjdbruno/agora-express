@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
 const { BusinessType, Business } = require('../models');
 
-exports.getAllBusinessTypes = async (req, res) => {
+exports.GetAllBusinessTypes = async (req, res) => {
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
@@ -20,11 +20,13 @@ exports.getAllBusinessTypes = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.getBusinessType = async (req, res) => {
+exports.GetBusinessType = async (req, res) => {
     try {
         const bt = await BusinessType.findAll({
             where: {
@@ -34,16 +36,22 @@ exports.getBusinessType = async (req, res) => {
         });
         res.json(bt);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.createBusinessType = async (req, res) => {
-    const { Name } = req.body;
+exports.CreateBusinessType = async (req, res) => {
+
+    const { 
+        Name 
+    } = req.body;
+
     try {
         const btExist = await BusinessType.findOne({
             where: { 
-                [Op.or]: [{ Name }] 
+                Name
             }
         });
         if (btExist) {
@@ -51,23 +59,34 @@ exports.createBusinessType = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Business type already exists!",
+                    msg: "record already exists!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        const bt = await BusinessType.create({ Name });
-        res.status(201).json({ message: "Business type created successfully.", bt });
+        const bt = await BusinessType.create({ 
+            Name 
+        });
+        res.status(201).json({ 
+            message: "record created.", 
+            bt 
+        });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.updateBusinessType = async (req, res) => {
+exports.UpdateBusinessType = async (req, res) => {
 
-    const { id } = req.params;
-    const { Name } = req.body;
+    const {
+        Id
+    } = req.params;
+    const {
+        Name
+    } = req.body;
   
     try {
         const bt = await BusinessType.findByPk(id);
@@ -76,7 +95,7 @@ exports.updateBusinessType = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Business type not found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -84,8 +103,8 @@ exports.updateBusinessType = async (req, res) => {
         }
         const btExist = await BusinessType.findOne({
             where: {
-                [Op.or]: [{ Name } ],
-                Id: { [Op.ne]: id }
+                Name,
+                Id: { [Op.ne]: Id }
             },
         });
         if (btExist) {
@@ -93,47 +112,88 @@ exports.updateBusinessType = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Business type is already in use!",
+                    msg: "record already exist!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        await bt.update({ Name });
-        res.status(200).json({ message: "Business type updated successfully.", bt });
+        await bt.update({
+            Name
+        });
+        res.status(200).json({ 
+            message: "record modified.", 
+            bt 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.disableBusinessType = async (req, res) => {
+exports.DisableBusinessType = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const bt = await BusinessType.findByPk(id);
+        const bt = await BusinessType.findByPk(Id);
         if (!bt) {
-            return res.status(404).json({ error: "Business Type not found." });
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
         }
-        await bt.update({ IsActive: false });
-        res.status(200).json({ message: "Business Type disabled successfully.", bt });
+        await bt.update({ 
+            IsActive: false 
+        });
+        res.status(200).json({ 
+            message: "record disabled.", 
+            bt 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.enableBusinessType = async (req, res) => {
+exports.EnableBusinessType = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const bt = await BusinessType.findByPk(id);
+        const bt = await BusinessType.findByPk(Id);
         if (!bt) {
-            return res.status(404).json({ error: "Business Type not found." });
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
         }
-        await bt.update({ IsActive: true });
-        res.status(200).json({ message: "Business Type enabled successfully.", bt });
+        await bt.update({ 
+            IsActive: true 
+        });
+        res.status(200).json({ 
+            message: "record enabled.", 
+            bt 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };

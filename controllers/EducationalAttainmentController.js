@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
 const { EducationalAttainment } = require('../models');
 
-exports.getAllEducationalAttainments = async (req, res) => {
+exports.GetAllEducationalAttainments = async (req, res) => {
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
@@ -20,11 +20,13 @@ exports.getAllEducationalAttainments = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message
+        });
     }
 };
 
-exports.getEducationalAttainment = async (req, res) => {
+exports.GetEducationalAttainment = async (req, res) => {
     try {
         const ea = await EducationalAttainment.findAll({
             where: {
@@ -34,16 +36,20 @@ exports.getEducationalAttainment = async (req, res) => {
         });
         res.json(ea);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.createEducationalAttainment = async (req, res) => {
-    const { name } = req.body;
+exports.CreateEducationalAttainment = async (req, res) => {
+    const { 
+        Name
+    } = req.body;
     try {
         const eaExist = await EducationalAttainment.findOne({
             where: { 
-                [Op.or]: [{ Name: name }] 
+                Name
             }
         });
         if (eaExist) {
@@ -51,32 +57,43 @@ exports.createEducationalAttainment = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Educational attainment already exists!",
+                    msg: "record already exists!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        const ea = await EducationalAttainment.create({ Name: name });
-        res.status(201).json({ message: "Educational attainment created successfully.", ea });
+        const ea = await EducationalAttainment.create({
+            Name
+        });
+        res.status(201).json({ 
+            message: "record created.", 
+            ea 
+        });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.updateEducationalAttainment = async (req, res) => {
+exports.UpdateEducationalAttainment = async (req, res) => {
 
-    const { id } = req.params;
-    const { name } = req.body;
+    const {
+        Id
+    } = req.params;
+    const { 
+        Name
+    } = req.body;
   
     try {
-        const ea = await EducationalAttainment.findByPk(id);
+        const ea = await EducationalAttainment.findByPk(Id);
         if (!ea) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Educational attainment not found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -84,8 +101,8 @@ exports.updateEducationalAttainment = async (req, res) => {
         }
         const eaExist = await EducationalAttainment.findOne({
             where: {
-                [Op.or]: [{ Name: name } ],
-                Id: { [Op.ne]: id }
+                Name,
+                Id: { [Op.ne]: Id }
             },
         });
         if (eaExist) {
@@ -93,47 +110,88 @@ exports.updateEducationalAttainment = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Educational attainment is already in use!",
+                    msg: "record already exist!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        await ea.update({ Name: name });
-        res.status(200).json({ message: "Educational attainment updated successfully.", ea });
+        await ea.update({
+            Name
+        });
+        res.status(200).json({ 
+            message: "record modified.", 
+            ea 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.disableEducationalAttainment = async (req, res) => {
+exports.DisableEducationalAttainment = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const ea = await EducationalAttainment.findByPk(id);
+        const ea = await EducationalAttainment.findByPk(Id);
         if (!ea) {
-            return res.status(404).json({ error: "Educational attainment not found." });
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found",
+                    path: "name",
+                    location: "body",
+                }],
+            });
         }
-        await ea.update({ IsActive: false });
-        res.status(200).json({ message: "Educational attainment disabled successfully.", ea });
+        await ea.update({ 
+            IsActive: false 
+        });
+        res.status(200).json({ 
+            message: "record disabled.", 
+            ea 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.enableEducationalAttainment = async (req, res) => {
+exports.EnableEducationalAttainment = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const ea = await EducationalAttainment.findByPk(id);
+        const ea = await EducationalAttainment.findByPk(Id);
         if (!ea) {
-            return res.status(404).json({ error: "Educational attainment not found." });
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found",
+                    path: "name",
+                    location: "body",
+                }],
+            });
         }
-        await ea.update({ IsActive: true });
-        res.status(200).json({ message: "Educational attainment enabled successfully.", ea });
+        await ea.update({ 
+            IsActive: true 
+        });
+        res.status(200).json({ 
+            message: "record enabled.", 
+            ea 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };

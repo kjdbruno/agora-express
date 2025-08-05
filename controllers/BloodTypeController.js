@@ -1,10 +1,12 @@
 const { Op } = require("sequelize");
 const { BloodType } = require('../models');
 
-exports.getAllBloodTypes = async (req, res) => {
+exports.GetAllBloodTypes = async (req, res) => {
+
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
+
     try {
         const { count, rows } = await BloodType.findAndCountAll({
             Limit,
@@ -20,11 +22,13 @@ exports.getAllBloodTypes = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.getBloodType = async (req, res) => {
+exports.GetBloodType = async (req, res) => {
     try {
         const types = await BloodType.findAll({
             where: {
@@ -34,16 +38,22 @@ exports.getBloodType = async (req, res) => {
         });
         res.json(types);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.createBloodType = async (req, res) => {
-    const { name } = req.body;
+exports.CreateBloodType = async (req, res) => {
+
+    const {
+        Name
+    } = req.body;
+
     try {
         const typeExist = await BloodType.findOne({
             where: { 
-                [Op.or]: [{ Name: name }] 
+                Name
             }
         });
         if (typeExist) {
@@ -51,32 +61,43 @@ exports.createBloodType = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Blood type already exists!",
+                    msg: "record already exists!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        const type = await BloodType.create({ Name: name });
-        res.status(201).json({ message: "Blood type created successfully.", type });
+        const type = await BloodType.create({ 
+            Name 
+        });
+        res.status(201).json({ 
+            message: "record created.", 
+            type 
+        });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.updateBloodType = async (req, res) => {
+exports.UpdateBloodType = async (req, res) => {
 
-    const { id } = req.params;
-    const { name } = req.body;
+    const {
+        Id
+    } = req.params;
+    const {
+        Name
+    } = req.body;
   
     try {
-        const type = await BloodType.findByPk(id);
+        const type = await BloodType.findByPk(Id);
         if (!type) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Blood type not found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -84,8 +105,8 @@ exports.updateBloodType = async (req, res) => {
         }
         const typeExist = await BloodType.findOne({
             where: {
-                [Op.or]: [{ Name: name } ],
-                Id: { [Op.ne]: id }
+                Name,
+                Id: { [Op.ne]: Id }
             },
         });
         if (typeExist) {
@@ -93,47 +114,88 @@ exports.updateBloodType = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Blood type is already in use!",
+                    msg: "record already exist!",
                     path: "name",
                     location: "body",
                 }],
             });
         }
-        await type.update({ Name: name });
-        res.status(200).json({ message: "Blood type updated successfully.", type });
+        await type.update({ 
+            Name 
+        });
+        res.status(200).json({ 
+            message: "record modified.", 
+            type 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.disableBloodType = async (req, res) => {
+exports.DisableBloodType = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const type = await BloodType.findByPk(id);
+        const type = await BloodType.findByPk(Id);
         if (!type) {
-            return res.status(404).json({ error: "Blood type not found." });
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
         }
-        await type.update({ IsActive: false });
-        res.status(200).json({ message: "Blood type disabled successfully.", type });
+        await type.update({ 
+            IsActive: false 
+        });
+        res.status(200).json({ 
+            message: "record disabled.", 
+            type 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };
 
-exports.enableBloodType = async (req, res) => {
+exports.EnableBloodType = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const type = await BloodType.findByPk(id);
+        const type = await BloodType.findByPk(Id);
         if (!type) {
-            return res.status(404).json({ error: "Blood type not found." });
+            return res.status(403).json({
+                errors: [{
+                    type: "manual",
+                    value: "",
+                    msg: "record not found!",
+                    path: "name",
+                    location: "body",
+                }],
+            });
         }
-        await type.update({ IsActive: true });
-        res.status(200).json({ message: "Blood type enabled successfully.", type });
+        await type.update({ 
+            IsActive: true 
+        });
+        res.status(200).json({ 
+            message: "record enabled.", 
+            type 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message 
+        });
     }
 };

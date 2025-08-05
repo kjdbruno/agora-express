@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
 const { Disease } = require('../models');
 
-exports.getAllDiseases = async (req, res) => {
+exports.GetAllDiseases = async (req, res) => {
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
     const Offset = (Page - 1) * Limit;
@@ -26,7 +26,7 @@ exports.getAllDiseases = async (req, res) => {
     }
 };
 
-exports.getDisease = async (req, res) => {
+exports.GetDisease = async (req, res) => {
     try {
         const diseases = await Disease.findAll({
             where: {
@@ -42,8 +42,12 @@ exports.getDisease = async (req, res) => {
     }
 };
 
-exports.createDisease = async (req, res) => {
-    const { Name } = req.body;
+exports.CreateDisease = async (req, res) => {
+
+    const { 
+        Name 
+    } = req.body;
+
     try {
         const diseaseExist = await Disease.findOne({
             where: { 
@@ -55,7 +59,7 @@ exports.createDisease = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Disease already exists!",
+                    msg: "record already exists!",
                     path: "name",
                     location: "body",
                 }],
@@ -65,7 +69,7 @@ exports.createDisease = async (req, res) => {
             Name 
         });
         res.status(201).json({
-            message: "Disease created successfully.", 
+            message: "record created.", 
             disease 
         });
     } catch (error) {
@@ -75,19 +79,23 @@ exports.createDisease = async (req, res) => {
     }
 };
 
-exports.updateDisease = async (req, res) => {
+exports.UpdateDisease = async (req, res) => {
 
-    const { id } = req.params;
-    const { Name } = req.body;
+    const {
+        Id
+    } = req.params;
+    const { 
+        Name 
+    } = req.body;
   
     try {
-        const disease = await Disease.findByPk(id);
+        const disease = await Disease.findByPk(Id);
         if (!disease) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Disease not found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -96,7 +104,7 @@ exports.updateDisease = async (req, res) => {
         const diseaseExist = await Disease.findOne({
             where: {
                 Name,
-                Id: { [Op.ne]: id }
+                Id: { [Op.ne]: Id }
             },
         });
         if (diseaseExist) {
@@ -104,7 +112,7 @@ exports.updateDisease = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Disease is already in use!",
+                    msg: "record already exist!",
                     path: "name",
                     location: "body",
                 }],
@@ -114,7 +122,7 @@ exports.updateDisease = async (req, res) => {
             Name
          });
         res.status(200).json({ 
-            message: "Disease updated successfully.", 
+            message: "record modified.", 
             disease 
         });
     } catch (error) {
@@ -124,18 +132,20 @@ exports.updateDisease = async (req, res) => {
     }
 };
 
-exports.disableDisease = async (req, res) => {
+exports.DisableDisease = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const disease = await Disease.findByPk(id);
+        const disease = await Disease.findByPk(Id);
         if (!disease) {
            return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Disease not found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -145,7 +155,7 @@ exports.disableDisease = async (req, res) => {
             IsActive: false 
         });
         res.status(200).json({ 
-            message: "Disease disabled successfully.", 
+            message: "record disabled.", 
             disease 
         });
     } catch (error) {
@@ -155,18 +165,20 @@ exports.disableDisease = async (req, res) => {
     }
 };
 
-exports.enableDisease = async (req, res) => {
+exports.EnableDisease = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const disease = await Disease.findByPk(id);
+        const disease = await Disease.findByPk(Id);
         if (!disease) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Disease not found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -176,7 +188,7 @@ exports.enableDisease = async (req, res) => {
             IsActive: true 
         });
         res.status(200).json({ 
-            message: "Disease enabled successfully.", 
+            message: "record enabled.", 
             disease 
         });
     } catch (error) {

@@ -21,7 +21,7 @@ const {
 
 const { fn, col, where } = require('sequelize');
 
-exports.getAllServiceAvailments = async (req, res) => {
+exports.GetAllServiceAvailments = async (req, res) => {
     const {
         Month
     } = req.query;
@@ -66,7 +66,7 @@ exports.getAllServiceAvailments = async (req, res) => {
     }
 };
 
-exports.getAllHealthRecords = async (req, res) => {
+exports.GetAllHealthRecords = async (req, res) => {
     const {
         HealthRecordId
     } = req.params;
@@ -97,7 +97,7 @@ exports.getAllHealthRecords = async (req, res) => {
     }
 };
 
-exports.createHealthRecord = async (req, res) => {
+exports.CreateHealthRecord = async (req, res) => {
     const {
         ResidentId,
         ServiceId,
@@ -125,7 +125,7 @@ exports.createHealthRecord = async (req, res) => {
             Notes
         });
         res.status(201).json({ 
-            message: "Consultation created successfully.", 
+            message: "record created.", 
             serviceRecord,
             healthRecord 
         });
@@ -136,9 +136,11 @@ exports.createHealthRecord = async (req, res) => {
     }
 };
 
-exports.updateHealthRecord = async (req, res) => {
+exports.UpdateHealthRecord = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
     const {
         Height,
         Weight,
@@ -150,13 +152,13 @@ exports.updateHealthRecord = async (req, res) => {
     } = req.body;
   
     try {
-        const healthRecord = await HealthRecord.findByPk(id);
+        const healthRecord = await HealthRecord.findByPk(Id);
         if (!healthRecord) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -172,7 +174,7 @@ exports.updateHealthRecord = async (req, res) => {
             Notes
          });
         res.status(200).json({ 
-            message: "Record updated successfully.", 
+            message: "record modified.", 
             healthRecord 
         });
     } catch (error) {
@@ -182,20 +184,20 @@ exports.updateHealthRecord = async (req, res) => {
     }
 };
 
-exports.disableHealthRecord = async (req, res) => {
+exports.DisableHealthRecord = async (req, res) => {
 
     const {
-        id
+        Id
     } = req.params;
   
     try {
-        const healthRecord = await HealthRecord.findByPk(id);
+        const healthRecord = await HealthRecord.findByPk(Id);
         if (!healthRecord) {
            return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -205,7 +207,7 @@ exports.disableHealthRecord = async (req, res) => {
             IsActive: false 
         });
         res.status(200).json({ 
-            message: "Record disabled successfully.", 
+            message: "record disabled.", 
             healthRecord 
         });
     } catch (error) {
@@ -215,18 +217,20 @@ exports.disableHealthRecord = async (req, res) => {
     }
 };
 
-exports.enableHealthRecord = async (req, res) => {
+exports.EnableHealthRecord = async (req, res) => {
 
-    const { id } = req.params;
+    const {
+        Id
+    } = req.params;
   
     try {
-        const healthRecord = await HealthRecord.findByPk(id);
+        const healthRecord = await HealthRecord.findByPk(Id);
         if (!healthRecord) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -236,7 +240,7 @@ exports.enableHealthRecord = async (req, res) => {
             IsActive: true 
         });
         res.status(200).json({ 
-            message: "Record enabled successfully.", 
+            message: "record enabled.", 
             healthRecord 
         });
     } catch (error) {
@@ -246,9 +250,9 @@ exports.enableHealthRecord = async (req, res) => {
     }
 };
 
-exports.getAllMaternalRecords = async (req, res) => {
+exports.GetAllMaternalRecords = async (req, res) => {
     const {
-        id
+        Id
     } = req.query;
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
@@ -256,7 +260,7 @@ exports.getAllMaternalRecords = async (req, res) => {
     try {
         const { count, rows } = await HealthMaternalRecord.findAndCountAll({
             where: {
-                ServiceAvailmentId: id
+                ServiceAvailmentId: Id
             },
             Limit,
             Offset,
@@ -277,7 +281,7 @@ exports.getAllMaternalRecords = async (req, res) => {
     }
 };
 
-exports.createMaternalRecord = async (req, res) => {
+exports.CreateMaternalRecord = async (req, res) => {
     const {
         ResidentId,
         ServiceId,
@@ -333,7 +337,7 @@ exports.createMaternalRecord = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "Patient has ongoing maternal record!",
+                    msg: "record already exist!",
                     path: "name",
                     location: "body",
                 }],
@@ -350,7 +354,7 @@ exports.createMaternalRecord = async (req, res) => {
             Purpose
         });
         res.status(201).json({ 
-            message: "Maternal consultation created successfully.", 
+            message: "record created.", 
             serviceRecord,
             healthRecord,
             maternalRecord
@@ -362,7 +366,7 @@ exports.createMaternalRecord = async (req, res) => {
     }
 };
 
-exports.updateMaternalRecord = async (req, res) => {
+exports.UpdateMaternalRecord = async (req, res) => {
 
     const {
         HealthRecordId,
@@ -391,7 +395,7 @@ exports.updateMaternalRecord = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -403,7 +407,7 @@ exports.updateMaternalRecord = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -427,7 +431,7 @@ exports.updateMaternalRecord = async (req, res) => {
             Purpose
          });
         res.status(200).json({ 
-            message: "Record updated successfully.", 
+            message: "record modified.", 
             healthRecord,
             maternalRecord
         });
@@ -438,20 +442,20 @@ exports.updateMaternalRecord = async (req, res) => {
     }
 };
 
-exports.disableMaternalRecord = async (req, res) => {
+exports.DisableMaternalRecord = async (req, res) => {
 
     const {
-        id
+        Id
     } = req.params;
   
     try {
-        const maternalRecord = await HealthMaternalRecord.findByPk(id);
+        const maternalRecord = await HealthMaternalRecord.findByPk(Id);
         if (!maternalRecord) {
            return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -461,7 +465,7 @@ exports.disableMaternalRecord = async (req, res) => {
             IsActive: false 
         });
         res.status(200).json({ 
-            message: "Record disabled successfully.", 
+            message: "record disabled.", 
             maternalRecord 
         });
     } catch (error) {
@@ -471,18 +475,20 @@ exports.disableMaternalRecord = async (req, res) => {
     }
 };
 
-exports.enableMaternalRecord = async (req, res) => {
+exports.EnableMaternalRecord = async (req, res) => {
 
-    const { id } = req.params;
+    const { 
+        Id
+    } = req.params;
   
     try {
-        const maternalRecord = await HealthMaternalRecord.findByPk(id);
+        const maternalRecord = await HealthMaternalRecord.findByPk(Id);
         if (!maternalRecord) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -492,7 +498,7 @@ exports.enableMaternalRecord = async (req, res) => {
             IsActive: true 
         });
         res.status(200).json({ 
-            message: "Record enabled successfully.", 
+            message: "record enabled.", 
             maternalRecord 
         });
     } catch (error) {
@@ -502,9 +508,9 @@ exports.enableMaternalRecord = async (req, res) => {
     }
 };
 
-exports.getAllImmunizationRecords = async (req, res) => {
+exports.GetAllImmunizationRecords = async (req, res) => {
     const {
-        id
+        Id
     } = req.query;
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
@@ -512,7 +518,7 @@ exports.getAllImmunizationRecords = async (req, res) => {
     try {
         const { count, rows } = await HealthImmunization.findAndCountAll({
             where: {
-                ServiceAvailmentId: id
+                ServiceAvailmentId: Id
             },
             include: [
                 {
@@ -543,7 +549,7 @@ exports.getAllImmunizationRecords = async (req, res) => {
     }
 };
 
-exports.createImmunizationRecord = async (req, res) => {
+exports.CreateImmunizationRecord = async (req, res) => {
     const {
         ResidentId,
         ServiceId,
@@ -589,7 +595,7 @@ exports.createImmunizationRecord = async (req, res) => {
             OfficialId
         })
         res.status(201).json({ 
-            message: "Immunization created successfully.", 
+            message: "record created.", 
             serviceRecord,
             healthRecord,
             immunizationRecord
@@ -601,7 +607,7 @@ exports.createImmunizationRecord = async (req, res) => {
     }
 };
 
-exports.updateImmunizationRecord = async (req, res) => {
+exports.UpdateImmunizationRecord = async (req, res) => {
 
     const {
         HealthRecordId,
@@ -630,7 +636,7 @@ exports.updateImmunizationRecord = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -642,7 +648,7 @@ exports.updateImmunizationRecord = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -666,7 +672,7 @@ exports.updateImmunizationRecord = async (req, res) => {
             OfficialId
          });
         res.status(200).json({ 
-            message: "Record updated successfully.", 
+            message: "record modified.", 
             healthRecord,
             immunizationRecord
         });
@@ -677,20 +683,20 @@ exports.updateImmunizationRecord = async (req, res) => {
     }
 };
 
-exports.disableImmunizationRecord = async (req, res) => {
+exports.DisableImmunizationRecord = async (req, res) => {
 
     const {
-        id
+        Id
     } = req.params;
   
     try {
-        const immunizationRecord = await HealthImmunization.findByPk(id);
+        const immunizationRecord = await HealthImmunization.findByPk(Id);
         if (!immunizationRecord) {
            return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -700,7 +706,7 @@ exports.disableImmunizationRecord = async (req, res) => {
             IsActive: false 
         });
         res.status(200).json({ 
-            message: "Record disabled successfully.", 
+            message: "record disabled.", 
             immunizationRecord 
         });
     } catch (error) {
@@ -710,18 +716,20 @@ exports.disableImmunizationRecord = async (req, res) => {
     }
 };
 
-exports.enableImmunizationRecord = async (req, res) => {
+exports.EnableImmunizationRecord = async (req, res) => {
 
-    const { id } = req.params;
+    const { 
+        Id
+    } = req.params;
   
     try {
-        const immunizationRecord = await HealthImmunization.findByPk(id);
+        const immunizationRecord = await HealthImmunization.findByPk(Id);
         if (!immunizationRecord) {
             return res.status(403).json({
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -731,7 +739,7 @@ exports.enableImmunizationRecord = async (req, res) => {
             IsActive: true 
         });
         res.status(200).json({ 
-            message: "Record enabled successfully.", 
+            message: "record enabled.", 
             immunizationRecord 
         });
     } catch (error) {
@@ -741,9 +749,9 @@ exports.enableImmunizationRecord = async (req, res) => {
     }
 };
 
-exports.getAllPrenatalRecords = async (req, res) => {
+exports.GetAllPrenatalRecords = async (req, res) => {
     const {
-        id
+        Id
     } = req.query;
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
@@ -751,7 +759,7 @@ exports.getAllPrenatalRecords = async (req, res) => {
     try {
         const { count, rows } = await HealthPrenatal.findAndCountAll({
             where: {
-                MaternalRecordId: id
+                MaternalRecordId: Id
             },
             Limit,
             Offset,
@@ -772,7 +780,7 @@ exports.getAllPrenatalRecords = async (req, res) => {
     }
 };
 
-exports.createPrenatalRecord = async (req, res) => {
+exports.CreatePrenatalRecord = async (req, res) => {
     const {
         MaternalRecordId,
         Purpose
@@ -783,7 +791,7 @@ exports.createPrenatalRecord = async (req, res) => {
             Purpose
         });
         res.status(201).json({ 
-            message: "Prenatal consultation created successfully.", 
+            message: "record created.", 
             prenatalRecord
         });
     } catch (error) {
@@ -793,7 +801,7 @@ exports.createPrenatalRecord = async (req, res) => {
     }
 };
 
-exports.updatePrenatalRecord = async (req, res) => {
+exports.UpdatePrenatalRecord = async (req, res) => {
 
     const {
         Id
@@ -809,7 +817,7 @@ exports.updatePrenatalRecord = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -819,7 +827,7 @@ exports.updatePrenatalRecord = async (req, res) => {
             Purpose
          });
         res.status(200).json({ 
-            message: "Record updated successfully.", 
+            message: "record modified.", 
             prenatalRecord
         });
     } catch (error) {
@@ -829,7 +837,7 @@ exports.updatePrenatalRecord = async (req, res) => {
     }
 };
 
-exports.disablePrenatalRecord = async (req, res) => {
+exports.DisablePrenatalRecord = async (req, res) => {
 
     const {
         Id
@@ -842,7 +850,7 @@ exports.disablePrenatalRecord = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -852,7 +860,7 @@ exports.disablePrenatalRecord = async (req, res) => {
             IsActive: false 
         });
         res.status(200).json({ 
-            message: "Record disabled successfully.", 
+            message: "record disabled.", 
             prenatalRecord 
         });
     } catch (error) {
@@ -862,7 +870,7 @@ exports.disablePrenatalRecord = async (req, res) => {
     }
 };
 
-exports.enablePrenatalRecord = async (req, res) => {
+exports.EnablePrenatalRecord = async (req, res) => {
 
     const {
         Id
@@ -875,7 +883,7 @@ exports.enablePrenatalRecord = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -885,7 +893,7 @@ exports.enablePrenatalRecord = async (req, res) => {
             IsActive: true 
         });
         res.status(200).json({ 
-            message: "Record enabled successfully.", 
+            message: "record enabled.", 
             prenatalRecord 
         });
     } catch (error) {
@@ -895,9 +903,9 @@ exports.enablePrenatalRecord = async (req, res) => {
     }
 };
 
-exports.getAllDeliveryRecords = async (req, res) => {
+exports.GetAllDeliveryRecords = async (req, res) => {
     const {
-        id
+        Id
     } = req.query;
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
@@ -905,7 +913,7 @@ exports.getAllDeliveryRecords = async (req, res) => {
     try {
         const { count, rows } = await HealthDelivery.findAndCountAll({
             where: {
-                MaternalRecordId: id
+                MaternalRecordId: Id
             },
             include: [
                 {
@@ -932,7 +940,7 @@ exports.getAllDeliveryRecords = async (req, res) => {
     }
 };
 
-exports.createDeliveryRecord = async (req, res) => {
+exports.CreateDeliveryRecord = async (req, res) => {
     const {
         Firstname,
         Middlename,
@@ -966,7 +974,7 @@ exports.createDeliveryRecord = async (req, res) => {
             Notes
         });
         res.status(201).json({ 
-            message: "Delivery created successfully.", 
+            message: "record  created.", 
             babyRecord,
             deliveryRecord 
         });
@@ -977,7 +985,7 @@ exports.createDeliveryRecord = async (req, res) => {
     }
 };
 
-exports.updateDeliveryRecord = async (req, res) => {
+exports.UpdateDeliveryRecord = async (req, res) => {
 
     const {
         ResidentId,
@@ -1003,7 +1011,7 @@ exports.updateDeliveryRecord = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -1015,7 +1023,7 @@ exports.updateDeliveryRecord = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -1036,7 +1044,7 @@ exports.updateDeliveryRecord = async (req, res) => {
             AgparScore
          });
         res.status(200).json({ 
-            message: "Record updated successfully.", 
+            message: "record modified.", 
             residentRecord,
             deliveryRecord
         });
@@ -1047,7 +1055,7 @@ exports.updateDeliveryRecord = async (req, res) => {
     }
 };
 
-exports.disableDeliveryRecord = async (req, res) => {
+exports.DisableDeliveryRecord = async (req, res) => {
 
     const {
         Id
@@ -1060,7 +1068,7 @@ exports.disableDeliveryRecord = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -1070,7 +1078,7 @@ exports.disableDeliveryRecord = async (req, res) => {
             IsActive: false 
         });
         res.status(200).json({ 
-            message: "Record disabled successfully.", 
+            message: "record disabled.", 
             deliveryRecord 
         });
     } catch (error) {
@@ -1080,7 +1088,7 @@ exports.disableDeliveryRecord = async (req, res) => {
     }
 };
 
-exports.enableDeliveryRecord = async (req, res) => {
+exports.EnableDeliveryRecord = async (req, res) => {
 
     const {
         Id
@@ -1093,7 +1101,7 @@ exports.enableDeliveryRecord = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -1103,7 +1111,7 @@ exports.enableDeliveryRecord = async (req, res) => {
             IsActive: true 
         });
         res.status(200).json({ 
-            message: "Record enabled successfully.", 
+            message: "record enabled.", 
             deliveryRecord 
         });
     } catch (error) {
@@ -1113,9 +1121,9 @@ exports.enableDeliveryRecord = async (req, res) => {
     }
 };
 
-exports.getAllPostnatalRecords = async (req, res) => {
+exports.GetAllPostnatalRecords = async (req, res) => {
     const {
-        id
+        Id
     } = req.query;
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
@@ -1123,7 +1131,7 @@ exports.getAllPostnatalRecords = async (req, res) => {
     try {
         const { count, rows } = await HealthPostnatal.findAndCountAll({
             where: {
-                MaternalRecordId: id
+                MaternalRecordId: Id
             },
             Limit,
             Offset,
@@ -1144,7 +1152,7 @@ exports.getAllPostnatalRecords = async (req, res) => {
     }
 };
 
-exports.createPostnatalRecord = async (req, res) => {
+exports.CreatePostnatalRecord = async (req, res) => {
     const {
         MaternalRecordId,
         Purpose
@@ -1155,7 +1163,7 @@ exports.createPostnatalRecord = async (req, res) => {
             Purpose
         });
         res.status(201).json({ 
-            message: "Postnatal consultation created successfully.", 
+            message: "record created.", 
             postnatalRecord
         });
     } catch (error) {
@@ -1165,7 +1173,7 @@ exports.createPostnatalRecord = async (req, res) => {
     }
 };
 
-exports.updatePostnatalRecord = async (req, res) => {
+exports.UpdatePostnatalRecord = async (req, res) => {
 
     const {
         Id
@@ -1181,7 +1189,7 @@ exports.updatePostnatalRecord = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -1191,7 +1199,7 @@ exports.updatePostnatalRecord = async (req, res) => {
             Purpose
          });
         res.status(200).json({ 
-            message: "Record updated successfully.", 
+            message: "Record modified.", 
             postnatalRecord
         });
     } catch (error) {
@@ -1201,7 +1209,7 @@ exports.updatePostnatalRecord = async (req, res) => {
     }
 };
 
-exports.disablePostnatalRecord = async (req, res) => {
+exports.DisablePostnatalRecord = async (req, res) => {
 
     const {
         Id
@@ -1214,7 +1222,7 @@ exports.disablePostnatalRecord = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -1224,7 +1232,7 @@ exports.disablePostnatalRecord = async (req, res) => {
             IsActive: false 
         });
         res.status(200).json({ 
-            message: "Record disabled successfully.", 
+            message: "record disabled.", 
             postnatalRecord 
         });
     } catch (error) {
@@ -1234,7 +1242,7 @@ exports.disablePostnatalRecord = async (req, res) => {
     }
 };
 
-exports.enablePostnatalRecord = async (req, res) => {
+exports.EnablePostnatalRecord = async (req, res) => {
 
     const {
         Id
@@ -1247,7 +1255,7 @@ exports.enablePostnatalRecord = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -1257,7 +1265,7 @@ exports.enablePostnatalRecord = async (req, res) => {
             IsActive: true 
         });
         res.status(200).json({ 
-            message: "Record enabled successfully.", 
+            message: "record enabled.", 
             postnatalRecord 
         });
     } catch (error) {
@@ -1267,9 +1275,9 @@ exports.enablePostnatalRecord = async (req, res) => {
     }
 };
 
-exports.getAllDiseaseRecords = async (req, res) => {
+exports.GetAllDiseaseRecords = async (req, res) => {
     const {
-        id
+        Id
     } = req.query;
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
@@ -1277,7 +1285,7 @@ exports.getAllDiseaseRecords = async (req, res) => {
     try {
         const { count, rows } = await HealthDisease.findAndCountAll({
             where: {
-                ServiceAvailmentId: id
+                ServiceAvailmentId: Id
             },
             include: [
                 {
@@ -1304,7 +1312,7 @@ exports.getAllDiseaseRecords = async (req, res) => {
     }
 };
 
-exports.createDiseaseRecord = async (req, res) => {
+exports.CreateDiseaseRecord = async (req, res) => {
     const {
         ServiceAvailmentId,
         DiseaseId,
@@ -1323,7 +1331,7 @@ exports.createDiseaseRecord = async (req, res) => {
             Notes
         })
         res.status(201).json({ 
-            message: "Health disease created successfully.", 
+            message: "record created.", 
             diseaseRecord
         });
     } catch (error) {
@@ -1333,7 +1341,7 @@ exports.createDiseaseRecord = async (req, res) => {
     }
 };
 
-exports.updateDiseaseRecord = async (req, res) => {
+exports.UpdateDiseaseRecord = async (req, res) => {
 
     const {
         Id
@@ -1353,7 +1361,7 @@ exports.updateDiseaseRecord = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -1367,7 +1375,7 @@ exports.updateDiseaseRecord = async (req, res) => {
             Notes
          });
         res.status(200).json({ 
-            message: "Record updated successfully.", 
+            message: "record modified.", 
             diseaseRecord
         });
     } catch (error) {
@@ -1377,7 +1385,7 @@ exports.updateDiseaseRecord = async (req, res) => {
     }
 };
 
-exports.disableDiseaseRecord = async (req, res) => {
+exports.DisableDiseaseRecord = async (req, res) => {
 
     const {
         Id
@@ -1390,7 +1398,7 @@ exports.disableDiseaseRecord = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -1400,7 +1408,7 @@ exports.disableDiseaseRecord = async (req, res) => {
             IsActive: false 
         });
         res.status(200).json({ 
-            message: "Record disabled successfully.", 
+            message: "record disabled.", 
             diseaseRecord 
         });
     } catch (error) {
@@ -1410,7 +1418,7 @@ exports.disableDiseaseRecord = async (req, res) => {
     }
 };
 
-exports.enableDiseaseRecord = async (req, res) => {
+exports.EnableDiseaseRecord = async (req, res) => {
 
     const {
         Id
@@ -1423,7 +1431,7 @@ exports.enableDiseaseRecord = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -1433,7 +1441,7 @@ exports.enableDiseaseRecord = async (req, res) => {
             IsActive: true 
         });
         res.status(200).json({ 
-            message: "Record enabled successfully.", 
+            message: "record enabled.", 
             diseaseRecord 
         });
     } catch (error) {
@@ -1443,9 +1451,9 @@ exports.enableDiseaseRecord = async (req, res) => {
     }
 };
 
-exports.getAllIllnessRecords = async (req, res) => {
+exports.GetAllIllnessRecords = async (req, res) => {
     const {
-        id
+        Id
     } = req.query;
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
@@ -1453,7 +1461,7 @@ exports.getAllIllnessRecords = async (req, res) => {
     try {
         const { count, rows } = await HealthIllness.findAndCountAll({
             where: {
-                ServiceAvailmentId: id
+                ServiceAvailmentId: Id
             },
             include: [
                 {
@@ -1480,7 +1488,7 @@ exports.getAllIllnessRecords = async (req, res) => {
     }
 };
 
-exports.createIllnessRecord = async (req, res) => {
+exports.CreateIllnessRecord = async (req, res) => {
     const {
         ServiceAvailmentId,
         IllnessId,
@@ -1493,7 +1501,7 @@ exports.createIllnessRecord = async (req, res) => {
             Notes
         })
         res.status(201).json({ 
-            message: "Health illness created successfully.", 
+            message: "record created.", 
             illnessRecord
         });
     } catch (error) {
@@ -1503,7 +1511,7 @@ exports.createIllnessRecord = async (req, res) => {
     }
 };
 
-exports.updateIllnessRecord = async (req, res) => {
+exports.UpdateIllnessRecord = async (req, res) => {
 
     const {
         Id
@@ -1520,7 +1528,7 @@ exports.updateIllnessRecord = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -1531,7 +1539,7 @@ exports.updateIllnessRecord = async (req, res) => {
             Notes
          });
         res.status(200).json({ 
-            message: "Record updated successfully.", 
+            message: "record modified.", 
             illnessRecord
         });
     } catch (error) {
@@ -1541,7 +1549,7 @@ exports.updateIllnessRecord = async (req, res) => {
     }
 };
 
-exports.disableIllnessRecord = async (req, res) => {
+exports.DisableIllnessRecord = async (req, res) => {
 
     const {
         Id
@@ -1554,7 +1562,7 @@ exports.disableIllnessRecord = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -1564,7 +1572,7 @@ exports.disableIllnessRecord = async (req, res) => {
             IsActive: false 
         });
         res.status(200).json({ 
-            message: "Record disabled successfully.", 
+            message: "record disabled.", 
             illnessRecord 
         });
     } catch (error) {
@@ -1574,7 +1582,7 @@ exports.disableIllnessRecord = async (req, res) => {
     }
 };
 
-exports.enableIllnessRecord = async (req, res) => {
+exports.EnableIllnessRecord = async (req, res) => {
 
     const {
         Id
@@ -1587,7 +1595,7 @@ exports.enableIllnessRecord = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -1597,7 +1605,7 @@ exports.enableIllnessRecord = async (req, res) => {
             IsActive: true 
         });
         res.status(200).json({ 
-            message: "Record enabled successfully.", 
+            message: "record enabled.", 
             illnessRecord 
         });
     } catch (error) {
@@ -1607,9 +1615,9 @@ exports.enableIllnessRecord = async (req, res) => {
     }
 };
 
-exports.getAllInterventionRecords = async (req, res) => {
+exports.GetAllInterventionRecords = async (req, res) => {
     const {
-        id
+        Id
     } = req.query;
     const Page = parseInt(req.query.Page) || 1;
     const Limit = parseInt(req.query.Limit) || 10;
@@ -1617,7 +1625,7 @@ exports.getAllInterventionRecords = async (req, res) => {
     try {
         const { count, rows } = await HealthIntervention.findAndCountAll({
             where: {
-                ServiceAvailmentId: id
+                ServiceAvailmentId: Id
             },
             include: [
                 {
@@ -1644,7 +1652,7 @@ exports.getAllInterventionRecords = async (req, res) => {
     }
 };
 
-exports.createInterventionRecord = async (req, res) => {
+exports.CreateInterventionRecord = async (req, res) => {
     const {
         ServiceAvailmentId,
         Type,
@@ -1667,7 +1675,7 @@ exports.createInterventionRecord = async (req, res) => {
             Notes
         })
         res.status(201).json({ 
-            message: "Health intervention created successfully.", 
+            message: "record created.", 
             interventionRecord
         });
     } catch (error) {
@@ -1677,7 +1685,7 @@ exports.createInterventionRecord = async (req, res) => {
     }
 };
 
-exports.updateInterventionRecord = async (req, res) => {
+exports.UpdateInterventionRecord = async (req, res) => {
 
     const {
         Id
@@ -1699,7 +1707,7 @@ exports.updateInterventionRecord = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -1715,7 +1723,7 @@ exports.updateInterventionRecord = async (req, res) => {
             Notes
          });
         res.status(200).json({ 
-            message: "Record updated successfully.", 
+            message: "record modified.", 
             interventionRecord
         });
     } catch (error) {
@@ -1725,7 +1733,7 @@ exports.updateInterventionRecord = async (req, res) => {
     }
 };
 
-exports.disableInterventionRecord = async (req, res) => {
+exports.DisableInterventionRecord = async (req, res) => {
 
     const {
         Id
@@ -1738,7 +1746,7 @@ exports.disableInterventionRecord = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -1748,7 +1756,7 @@ exports.disableInterventionRecord = async (req, res) => {
             IsActive: false 
         });
         res.status(200).json({ 
-            message: "Record disabled successfully.", 
+            message: "record disabled.", 
             interventionRecord 
         });
     } catch (error) {
@@ -1758,7 +1766,7 @@ exports.disableInterventionRecord = async (req, res) => {
     }
 };
 
-exports.enableInterventionRecord = async (req, res) => {
+exports.EnableInterventionRecord = async (req, res) => {
 
     const {
         Id
@@ -1771,7 +1779,7 @@ exports.enableInterventionRecord = async (req, res) => {
                 errors: [{
                     type: "manual",
                     value: "",
-                    msg: "No record found!",
+                    msg: "record not found!",
                     path: "name",
                     location: "body",
                 }],
@@ -1781,7 +1789,7 @@ exports.enableInterventionRecord = async (req, res) => {
             IsActive: true 
         });
         res.status(200).json({ 
-            message: "Record enabled successfully.", 
+            message: "record enabled.", 
             interventionRecord 
         });
     } catch (error) {
